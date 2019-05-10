@@ -123,7 +123,7 @@ public class CommandDictionary implements BaseDictionaryInterface {
             return mDictionary.get(key);
         } else if (cmdHelpMatch.find()) {
             String cmd = key.getRawData().split(" ")[0];
-            Log.d(TAG, "cmd content:"+cmd);
+//            Log.d(TAG, "cmd content:"+cmd);
             if (cmd.equals("sh")) {
                 cmd = "ssh";
             }

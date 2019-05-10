@@ -91,16 +91,16 @@ public class TextDictionary implements BaseDictionaryInterface {
     }
 
     public BaseAction lookUpAction(BaseWord key) {
-        Log.e(TAG, "in text !!!!lookUpAction: search for key: " + key.getRawData()+";" );
-        Log.e(TAG,key.getNatureType().toString());
+//        Log.e(TAG, "in text !!!!lookUpAction: search for key: " + key.getRawData()+";" );
+//        Log.e(TAG,key.getNatureType().toString());
         CustomWord new_key = new CustomWord("b", NatureLanguageType.ENGLISH);
-        Log.e(TAG, mDictionary.containsKey(new_key)?"True":"false");
-        Log.e(TAG,mDictionary.keySet().toString());
+  //      Log.e(TAG, mDictionary.containsKey(new_key)?"True":"false");
+ //       Log.e(TAG,mDictionary.keySet().toString());
 
         for (Map.Entry<BaseWord, BaseAction> entry : mDictionary.entrySet()) {
             //entry.getKey();
             //entry.getValue();
-            Log.e(TAG, "Key:"+entry.getKey().getRawData() + " Value:" + entry.getValue().getActionType() );
+//            Log.e(TAG, "Key:"+entry.getKey().getRawData() + " Value:" + entry.getValue().getActionType() );
         }
 
 

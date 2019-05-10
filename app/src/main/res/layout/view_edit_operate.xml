@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<com.bingduoduo.editor.lib.ExpandableLinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                                                     xmlns:app="http://schemas.android.com/apk/res-auto"
+                                                     android:layout_width="match_parent"
+                                                     android:layout_height="wrap_content"
+                                                     android:background="@color/colorPrimary"
+                                                     android:orientation="vertical"
+                                                     app:el_duration="400"
+                                                     app:el_expanded="false" >
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="42dp"
+        app:layout_expandable="true"
+        android:text="test"/>
+
+</com.bingduoduo.editor.lib.ExpandableLinearLayout>

@@ -5,6 +5,7 @@
     android:orientation="vertical"
     android:fitsSystemWindows="true">
 
+
     <Button
         android:id="@+id/btn_voice"
         android:layout_width="wrap_content"
@@ -86,5 +87,8 @@
         android:layout_width="match_parent"
         android:layout_height="37.5dp"
         android:background="@android:drawable/screen_background_dark_transparent"
-        android:layout_alignParentBottom="true" />
+        android:layout_alignParentBottom="true" >
+
+    </androidx.viewpager.widget.ViewPager>
+
 </RelativeLayout>
