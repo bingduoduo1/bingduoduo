@@ -1,7 +1,8 @@
-# backend
-backend
+# bingduoduo
 
+合幷了前后端项目
 
+* 解决了兼容性的问题，统一都用androidx
 
 =======
 [![Travis build status](https://travis-ci.org/termux/termux-app.svg?branch=master)](https://travis-ci.org/termux/termux-app)
