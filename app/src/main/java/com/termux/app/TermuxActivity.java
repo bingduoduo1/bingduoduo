@@ -37,6 +37,7 @@ import android.text.style.StyleSpan;
 import android.util.Log;
 import android.view.ContextMenu;
 import android.view.ContextMenu.ContextMenuInfo;
+import android.view.GestureDetector;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -54,6 +55,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 import android.content.Context;
 
+import com.bingduoduo.editor.view.MainActivity;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.iflytek.cloud.ErrorCode;
 import com.iflytek.cloud.InitListener;
 import com.iflytek.cloud.SpeechConstant;
@@ -166,6 +169,7 @@ public final class TermuxActivity extends Activity implements ServiceConnection 
 
 
     //冰多多
+    private GestureDetector mGestureDetector;
     SpeechRecognitionIat mRecognition;
     Handler han = new Handler() {
 
@@ -298,6 +302,8 @@ public final class TermuxActivity extends Activity implements ServiceConnection 
         mTerminalView.setKeepScreenOn(mSettings.isScreenAlwaysOn());
         mTerminalView.requestFocus();
 
+
+
         //禁用输入法
         //getWindow().setFlags(WindowManager.LayoutParams.FLAG_ALT_FOCUSABLE_IM,
         //    WindowManager.LayoutParams.FLAG_ALT_FOCUSABLE_IM);
@@ -427,21 +433,16 @@ public final class TermuxActivity extends Activity implements ServiceConnection 
         mRecognition = new SpeechRecognitionIat( TermuxActivity.this,"userwords");
 
         Button btn_voice = (Button) findViewById(R.id.btn_voice);
+        FloatingActionButton fab_switch = (FloatingActionButton) findViewById(R.id.switch_btn);
 
         btn_voice.setOnTouchListener(new View.OnTouchListener() {
-
             @Override
             public boolean onTouch(View v, MotionEvent event) {
                 switch (event.getAction()) {
-
                     case MotionEvent.ACTION_DOWN: {
                         //mReconition.cancelRecognize();
                         Log.d(TAG, "upup31312 : "+System.currentTimeMillis());
                         mRecognition.startRecognize();
-                        //han.sendEmptyMessageDelayed(0,1000);
-                        //按住事件发生后执行代码的区域
-                        //
-
                         break;
                         // 开始识别
                     }
@@ -456,7 +457,6 @@ public final class TermuxActivity extends Activity implements ServiceConnection 
                        han.sendMessageDelayed(message,800);
                             //松开事件发生后执行代码的区域
                             break;
-
                     }
                     default:
                         break;
@@ -465,11 +465,95 @@ public final class TermuxActivity extends Activity implements ServiceConnection 
             }
         });
 
+        fab_switch.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View v){
+                Intent intent = new Intent(TermuxActivity.this, MainActivity.class);
+                startActivity(intent);
+            }
+        });
         Log.d(TAG, "onCreate: " + getFilesDir()+"---------------------------");
 
-
+        // Create an object of our Custom Gesture Detector Class
+        CustomGestureDetector customGestureDetector = new CustomGestureDetector();
+        // Create a GestureDetector
+        mGestureDetector = new GestureDetector(this, customGestureDetector);
+        // Attach listeners that'll be called for double-tap and related gestures
     }
     //end onCreate
+
+    @Override
+    public boolean onTouchEvent(MotionEvent event) {
+        mGestureDetector.onTouchEvent(event);
+        return super.onTouchEvent(event);
+    }
+
+    class CustomGestureDetector implements GestureDetector.OnGestureListener {
+        @Override
+        public boolean onDown(MotionEvent e) {
+            Log.d(TAG, "onDown");
+           // mGestureText.setText("onDown");
+            return true;
+        }
+
+        @Override
+        public void onShowPress(MotionEvent e) {
+            Log.d(TAG, "onShowPress");
+           // mGestureText.setText("onShowPress");
+        }
+
+        @Override
+        public boolean onSingleTapUp(MotionEvent e) {
+            Log.d(TAG, "onSingleTapUp");
+           // mGestureText.setText("onSingleTapUp");
+            return true;
+        }
+
+        @Override
+        public boolean onScroll(MotionEvent e1, MotionEvent e2, float distanceX, float distanceY) {
+            Log.d(TAG, "onScroll");
+            //mGestureText.setText("onScroll");
+            return true;
+        }
+
+        @Override
+        public void onLongPress(MotionEvent e) {
+           // mGestureText.setText("onLongPress");
+            Log.d(TAG, "onLongPress");
+        }
+
+        @Override
+        public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX, float velocityY) {
+           // mGestureText.setText("onFling");
+            //判断竖直方向移动的大小
+            Log.d(TAG, "onFling:迅速滑动，并松开");
+            if(Math.abs(e1.getRawY() - e2.getRawY())>100){
+                //Toast.makeText(getApplicationContext(), "动作不合法", 0).show();
+                return true;
+            }
+            if(Math.abs(velocityX)<150){
+                //Toast.makeText(getApplicationContext(), "移动的太慢", 0).show();
+                return true;
+            }
+
+            if((e1.getRawX() - e2.getRawX()) >200){// 表示 向右滑动表示下一页
+                //显示下一页
+                Log.d("MainActivity", "onFling: 右$$$$$$$$$$$$$$$$$$$");
+                Intent intent = new Intent(TermuxActivity.this, MainActivity.class);
+                startActivity(intent);
+                return true;
+            }
+
+            if((e2.getRawX() - e1.getRawX()) >200){  //向左滑动 表示 上一页
+                //显示上一页
+                Log.d("MainActivity", "onFling: 左$$$$$$$$$$$$$$$$$$$");
+                return true;//消费掉当前事件  不让当前事件继续向下传递
+            }
+            return true;
+        }
+    }
+
+
 
     private void requestPermissions(){
         try {

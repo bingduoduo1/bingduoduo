@@ -5,6 +5,8 @@ package com.bingduoduo.editor.base;
 import android.content.Context;
 import android.os.Bundle;
 import androidx.appcompat.app.AppCompatActivity;
+
+import android.view.GestureDetector;
 import android.view.LayoutInflater;
 
 import com.bingduoduo.editor.utils.SystemBarUtils;

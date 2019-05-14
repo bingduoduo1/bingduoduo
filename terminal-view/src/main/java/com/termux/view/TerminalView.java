@@ -5,6 +5,7 @@ import android.annotation.TargetApi;
 import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Canvas;
 import android.graphics.Rect;
 import android.graphics.Typeface;
@@ -29,12 +30,15 @@ import android.view.inputmethod.BaseInputConnection;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputConnection;
 import android.widget.Scroller;
+import android.widget.Toast;
 
 import com.termux.terminal.EmulatorDebug;
 import com.termux.terminal.KeyHandler;
 import com.termux.terminal.TerminalBuffer;
 import com.termux.terminal.TerminalEmulator;
 import com.termux.terminal.TerminalSession;
+
+import static android.content.ContentValues.TAG;
 
 /** View displaying and interacting with a {@link TerminalSession}. */
 
@@ -154,10 +158,12 @@ public final class TerminalView extends View {
             }
 
             @Override
-            public boolean onFling(final MotionEvent e2, float velocityX, float velocityY) {
+            public boolean onFling(final MotionEvent e1,  final MotionEvent e2, float velocityX, float velocityY) {
                 if (mEmulator == null || mIsSelectingText) return true;
                 // Do not start scrolling until last fling has been taken care of:
                 if (!mScroller.isFinished()) return true;
+
+                Log.d(TAG, "onFling: +++++++++++++++++++++++++++");
 
                 final boolean mouseTrackingAtStartOfFling = mEmulator.isMouseTrackingActive();
                 float SCALE = 0.25f;

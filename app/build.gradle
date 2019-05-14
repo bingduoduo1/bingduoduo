@@ -77,6 +77,10 @@ dependencies {
 
     implementation 'com.github.michael-rapp:android-bottom-sheet:1.3.0'
     implementation 'ren.qinc.edit:lib:0.0.4'
+
+    //button
+    implementation'com.thefinestartist:movingbutton:1.0.0'
+
 }
 
 repositories {

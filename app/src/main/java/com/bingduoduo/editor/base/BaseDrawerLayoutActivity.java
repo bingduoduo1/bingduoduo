@@ -2,15 +2,21 @@
 
 package com.bingduoduo.editor.base;
 
+import android.content.Intent;
 import android.content.res.ColorStateList;
 import com.google.android.material.navigation.NavigationView;
 import androidx.core.view.GravityCompat;
 import 	androidx.drawerlayout.widget.DrawerLayout;
 import androidx.appcompat.app.ActionBarDrawerToggle;
+
+import android.view.GestureDetector;
+import android.view.MotionEvent;
 import android.view.View;
+import android.widget.TextView;
 
 import com.termux.R;
 import com.bingduoduo.editor.utils.SystemBarUtils;
+import com.termux.app.TermuxActivity;
 
 import butterknife.Bind;
 
@@ -20,6 +26,7 @@ public abstract class BaseDrawerLayoutActivity extends BaseToolbarActivity imple
     protected DrawerLayout mDrawerLayout;
     @Bind(R.id.id_navigation_view)
     protected NavigationView mNavigationView;
+
 
     protected DrawerLayout getDrawerLayout() {
         return mDrawerLayout;
@@ -35,6 +42,8 @@ public abstract class BaseDrawerLayoutActivity extends BaseToolbarActivity imple
         initDrawer();
         this.getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_FULLSCREEN);
     }
+
+
 
     protected void initStatusBar() {
         SystemBarUtils.tintStatusBarForDrawer(this, mDrawerLayout, getResources().getColor(R.color.colorPrimary));

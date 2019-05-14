@@ -8,7 +8,7 @@
               tools:context=".view.EditorActivity"
 >
     <include layout="@layout/view_common_toolbar_scroll"/>
-    <android.support.v4.widget.NestedScrollView
+    <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:fillViewport="true">
@@ -77,5 +77,5 @@
                     android:text="@string/copy_right"/>
             </LinearLayout>
         </LinearLayout>
-    </android.support.v4.widget.NestedScrollView>
+    </androidx.core.widget.NestedScrollView>
 </LinearLayout>
