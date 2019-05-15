@@ -19,33 +19,56 @@
 
         <FrameLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="match_parent"
+            android:id="@+id/frameLayout">
+
+            <Button
+                android:id="@+id/btn_voice_editor"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="335dp"
+                android:layout_marginEnd="0dp"
+                android:radius="100dp"
+                android:text="@string/btn_voice"
+                android:visibility="visible" />
+
             <androidx.viewpager.widget.ViewPager
                 android:id="@+id/pager"
                 android:background="@color/white"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"/>
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                tools:layout_conversion_absoluteHeight="675dp"
+                tools:layout_editor_absoluteY="56dp"
+                tools:layout_editor_absoluteX="0dp"
+                tools:layout_conversion_absoluteWidth="411dp">
 
-            <ImageView
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:background="@drawable/shadow"/>
+            </androidx.viewpager.widget.ViewPager>
 
             <com.bingduoduo.editor.lib.ExpandableLinearLayout
                 android:id="@+id/action_other_operate"
-                android:layout_width="match_parent"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:background="@color/colorPrimary"
                 android:elevation="4dp"
                 android:orientation="vertical"
                 app:el_duration="400"
-                app:el_expanded="false">
+                app:el_expanded="false"
+                tools:layout_conversion_absoluteHeight="0dp"
+                tools:layout_editor_absoluteY="56dp"
+                tools:layout_editor_absoluteX="0dp"
+                tools:layout_conversion_absoluteWidth="411dp">
 
                 <com.bingduoduo.editor.widget.TabIconView
                     android:id="@+id/tabIconView"
-                    android:layout_width="match_parent"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    app:layout_expandable="true"/>
+                    app:layout_expandable="true"
+                    tools:layout_conversion_absoluteHeight="0dp"
+                    tools:layout_editor_absoluteY="56dp"
+                    tools:layout_editor_absoluteX="0dp"
+                    tools:layout_conversion_absoluteWidth="0dp">
+
+                </com.bingduoduo.editor.widget.TabIconView>
 
             </com.bingduoduo.editor.lib.ExpandableLinearLayout>
         </FrameLayout>
