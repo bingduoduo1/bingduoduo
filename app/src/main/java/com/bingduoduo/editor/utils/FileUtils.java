@@ -102,17 +102,23 @@ public class FileUtils {
     public static String getFile(@NonNull Context context) {
         File savedir = null;
         if (Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED)) {
-            savedir = context.getExternalFilesDir(null);
+//            savedir = context.getExternalFilesDir(null);
+            savedir = context.getFilesDir();
+            android.util.Log.d("filedir1", "getFile: "+savedir.getAbsolutePath());
+
         }
 
         if (savedir == null) {
             savedir = context.getFilesDir();
+            android.util.Log.d("filedir2", "getFile: "+savedir.getAbsolutePath());
+
         }
 
         if (!savedir.exists()) {
             savedir.mkdirs();
         }
-        return savedir.getAbsolutePath();
+        android.util.Log.d("filedir", "getFile: "+savedir.getAbsolutePath());
+        return savedir.getAbsolutePath() + "/home";
     }
 
     /**
