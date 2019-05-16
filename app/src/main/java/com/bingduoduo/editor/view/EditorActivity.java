@@ -45,9 +45,9 @@ import butterknife.Bind;
 
 public class EditorActivity extends BaseToolbarActivity implements IEditorActivityView, View.OnClickListener {
     public static final String SHARED_ELEMENT_NAME = "SHARED_ELEMENT_NAME";
-    public static final String SHARED_ELEMENT_COLOR_NAME = "SHARED_ELEMENT_COLOR_NAME";
+//    public static final String SHARED_ELEMENT_COLOR_NAME = "SHARED_ELEMENT_COLOR_NAME";
     private static final String SCHEME_FILE = "file";
-    private static final String SCHEME_Folder = "folder";
+//    private static final String SCHEME_Folder = "folder";
 
     private EditorFragment mEditorFragment;
 

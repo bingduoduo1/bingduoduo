@@ -10,40 +10,35 @@ import java.util.Date;
 public class FileBean {
     /**
      * 文件名字
-     * The Name.
      */
     public String name;
     /**
      * 绝对路径
-     * The Abs path.
      */
     public String absPath;
     /**
      * 是否文件夹
-     * The Is folder.
      */
     public boolean isDirectory;
     /**
      * 最后修改时间
-     * The Last time.
      */
     public Date lastTime;
 
     /**
      * 文件大小
-     * The Size.
      */
     public long size;
 
     public boolean isSelect = false;
 
-    public FileBean(String name, String absPath, boolean isDirectory, Date lastTime, long size) {
-        this.name = name;
-        this.absPath = absPath;
-        this.isDirectory = isDirectory;
-        this.lastTime = lastTime;
-        this.size = size;
-    }
+//    public FileBean(String name, String absPath, boolean isDirectory, Date lastTime, long size) {
+//        this.name = name;
+//        this.absPath = absPath;
+//        this.isDirectory = isDirectory;
+//        this.lastTime = lastTime;
+//        this.size = size;
+//    }
 
     public FileBean() {
     }

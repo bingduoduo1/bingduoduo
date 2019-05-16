@@ -13,7 +13,7 @@ import android.view.View;
 
 import com.bingduoduo.editor.utils.Check;
 
-public abstract class BaseApplication extends Application {
+public class BaseApplication extends Application {
     static Context context;
     static Resources resource;
 

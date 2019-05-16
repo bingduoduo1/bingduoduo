@@ -16,7 +16,6 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.Toast;
 
-import com.bingduoduo.editor.AppContext;
 import com.termux.R;
 import com.bingduoduo.editor.base.BaseApplication;
 import com.bingduoduo.editor.base.BaseFragment;
@@ -71,7 +70,7 @@ public class EditorFragment extends BaseFragment implements IEditorFragmentView,
         Bundle arguments = getArguments();
         String fileTemp = arguments.getString(FILE_PATH_KEY);
         if (fileTemp == null) {
-            Toast.makeText(AppContext.context(), "路径参数有误！", Toast.LENGTH_SHORT).show();
+            Toast.makeText(BaseApplication.context(), "路径参数有误！", Toast.LENGTH_SHORT).show();
             return;
         }
 
