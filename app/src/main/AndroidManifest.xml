@@ -45,16 +45,16 @@
 
 
     <application
-        android:extractNativeLibs="true"
+        android:name="com.bingduoduo.editor.base.BaseApplication"
         android:allowBackup="true"
+        android:banner="@drawable/banner"
+        android:extractNativeLibs="true"
         android:fullBackupContent="@xml/backupscheme"
         android:icon="@drawable/ic_launcher"
-        android:banner="@drawable/banner"
         android:label="@string/application_name"
-        android:theme="@style/AppTheme.NoActionBar"
         android:supportsRtl="true"
-        tools:replace="android:label"
-        android:name="com.bingduoduo.editor.AppContext">
+        android:theme="@style/AppTheme.NoActionBar"
+        tools:replace="android:label">
 
         <!-- This (or rather, value 2.1 or higher) is needed to make the Samsung Galaxy S8
              mark the app with "This app is optimized to run in full screen." -->
@@ -66,10 +66,10 @@
             android:launchMode="singleTask"
             android:resizeableActivity="true"
             android:windowSoftInputMode="adjustResize|stateAlwaysVisible" >
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
+            <!--<intent-filter>-->
+                <!--<action android:name="android.intent.action.MAIN" />-->
+                <!--<category android:name="android.intent.category.LAUNCHER" />-->
+            <!--</intent-filter>-->
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LEANBACK_LAUNCHER" />

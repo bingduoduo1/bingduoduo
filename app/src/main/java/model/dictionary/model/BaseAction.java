@@ -9,9 +9,10 @@ public abstract class BaseAction {
         mExecutePlace = executePlace;
     }
 
-    public ActionType getActionType() {
-        return mActionType;
-    }
+//    public ActionType getActionType()
+//    {
+//        return mActionType;
+//    }
 
     public ExecutePlaceType getExecutePlace() {
         return mExecutePlace;

@@ -11,8 +11,5 @@ import com.bingduoduo.editor.base.mvp.IMvpView;
  */
 public interface IEditorActivityView extends IMvpView {
     int CALL_GET_FILES = 1;
-
-
     void onNameChange(@NonNull String name);
-
 }
