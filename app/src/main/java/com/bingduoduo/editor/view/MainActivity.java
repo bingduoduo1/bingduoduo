@@ -46,28 +46,28 @@ public class MainActivity extends BaseDrawerLayoutActivity {
             @Override
             public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX,
                                    float velocityY) {// e1: 第一次按下的位置   e2   当手离开屏幕 时的位置  velocityX  沿x 轴的速度  velocityY： 沿Y轴方向的速度
-                //判断竖直方向移动的大小
+                // 判断竖直方向移动的大小
                 if(Math.abs(e1.getRawY() - e2.getRawY())>100){
                     //Toast.makeText(getApplicationContext(), "动作不合法", 0).show();
                     return true;
                 }
-                if(Math.abs(velocityX)<150){
+                if(Math.abs(velocityX) < 150){
                     //Toast.makeText(getApplicationContext(), "移动的太慢", 0).show();
                     return true;
                 }
 
-                if((e1.getRawX() - e2.getRawX()) >200){// 表示 向右滑动表示下一页
-                    //显示下一页
+                if((e1.getRawX() - e2.getRawX()) > 200){  // 表示 向右滑动表示下一页
+                    // 显示下一页
                     Log.d("MainActivity", "onFling: 右$$$$$$$$$$$$$$$$$$$");
                     Intent intent = new Intent(MainActivity.this, TermuxActivity.class);
                     startActivity(intent);
                     return true;
                 }
 
-                if((e2.getRawX() - e1.getRawX()) >200){  //向左滑动 表示 上一页
-                    //显示上一页
+                if((e2.getRawX() - e1.getRawX()) > 200){  // 向左滑动 表示 上一页
+                    // 显示上一页
                     Log.d("MainActivity", "onFling: 左$$$$$$$$$$$$$$$$$$$");
-                    return true;//消费掉当前事件  不让当前事件继续向下传递
+                    return true;// 消费掉当前事件  不让当前事件继续向下传递
                 }
                 return true;
             }
