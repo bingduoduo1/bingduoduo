@@ -146,6 +146,10 @@ public class MainActivity extends BaseDrawerLayoutActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
+            case R.id.menu_helper:
+                //WebHelperActivity.startHelpActivity(this);
+                AboutActivity.startAboutActivity(this);
+                return true;
             case R.id.menu_about:
                 AboutActivity.startAboutActivity(this);
                 return true;
