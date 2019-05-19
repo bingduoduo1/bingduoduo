@@ -120,16 +120,6 @@ public class MainActivity extends BaseDrawerLayoutActivity {
 
     @Override
     public boolean onNavigationItemSelected(MenuItem item) {
-        int id = item.getItemId();
-        if (id == R.id.localhost) {//|| id == R.id.other
-            if (id == currentMenuId) {
-                return false;
-            }
-            currentMenuId = id;
-            getDrawerLayout().closeDrawer(GravityCompat.START);
-            return true;
-        }
-
         if (onOptionsItemSelected(item)) {
             getDrawerLayout().closeDrawer(GravityCompat.START);
         }
@@ -147,8 +137,7 @@ public class MainActivity extends BaseDrawerLayoutActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.menu_helper:
-                //WebHelperActivity.startHelpActivity(this);
-                AboutActivity.startAboutActivity(this);
+                WebHelperActivity.startHelpActivity(this);
                 return true;
             case R.id.menu_about:
                 AboutActivity.startAboutActivity(this);
