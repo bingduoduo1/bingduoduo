@@ -1,4 +1,3 @@
-
 package com.bingduoduo.editor.view;
 
 import android.content.Context;

@@ -22,20 +22,12 @@
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.READ_CONTACTS" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
-    <uses-permission android:name="android.permission.WRITE_SETTINGS" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+    <uses-permission android:name="android.permission.WRITE_INTERNAL_STORAGE"/>
 
     <!--editor-->
-    <!-- 联网 -->
-    <uses-permission android:name="android.permission.INTERNET"/>
-    <!-- 内存卡读写 -->
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
-    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
-    <uses-permission android:name="android.permission.WRITE_INTERNAL_STORAGE"/>
-    <!-- 获取网络状态 -->
-    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
     <supports-screens
         android:largeScreens="true"
         android:normalScreens="true"
@@ -54,6 +46,7 @@
         android:label="@string/application_name"
         android:supportsRtl="true"
         android:theme="@style/AppTheme.NoActionBar"
+        android:usesCleartextTraffic="true"
         tools:replace="android:label">
 
         <!-- This (or rather, value 2.1 or higher) is needed to make the Samsung Galaxy S8
@@ -177,6 +170,12 @@
             android:exported="false"
             android:windowSoftInputMode="adjustResize|stateAlwaysHidden"/>
 
+        <activity
+            android:name="com.bingduoduo.editor.view.WebHelperActivity"
+            android:configChanges="keyboardHidden|orientation|screenSize"
+            android:launchMode="singleTop"
+            android:exported="false"
+            android:windowSoftInputMode="adjustResize|stateAlwaysHidden"/>
 
         <activity
             android:name="com.bingduoduo.editor.view.EditorActivity"
