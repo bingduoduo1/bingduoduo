@@ -82,6 +82,7 @@ dependencies {
     //button
     implementation'com.thefinestartist:movingbutton:1.0.0'
     implementation 'androidx.constraintlayout:constraintlayout:1.1.3'
+    implementation 'com.github.medyo:fancybuttons:1.9.1'
 
 }
 
