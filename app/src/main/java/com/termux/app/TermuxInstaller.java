@@ -46,7 +46,7 @@ import static android.content.ContentValues.TAG;
  * (5) The zip, containing entries relative to the $PREFIX, is is downloaded and extracted by a zip input stream
  * continuously encountering zip file entries:
  * <p/>
- * (5.1) If the zip entry encountered is SYMLINKS.txt, go through it and remember all symlinks to setup.
+ * (5.1) If the zip entry encountered is SYMLINKS.tx    t, go through it and remember all symlinks to setup.
  * <p/>
  * (5.2) For every other zip entry, extract it into $STAGING_PREFIX and set execute permissions if necessary.
  */
