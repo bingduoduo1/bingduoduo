@@ -1,10 +1,14 @@
 
 package com.bingduoduo.editor.view;
 
+import android.Manifest;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.os.Build;
 import android.os.Bundle;
 import androidx.annotation.IdRes;
 import androidx.annotation.LongDef;
+import androidx.core.app.ActivityCompat;
 import androidx.core.view.GravityCompat;
 
 import android.util.Log;
@@ -27,64 +31,51 @@ import com.termux.app.TermuxActivity;
 public class MainActivity extends BaseDrawerLayoutActivity {
     private BaseFragment mCurrentFragment;
     private int currentMenuId;
-    private GestureDetector mGestureDetector;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        FloatingActionButton fab_switch = (FloatingActionButton)findViewById(R.id.switch_btn_editor);
-        fab_switch.setOnClickListener(new View.OnClickListener(){
-            @Override
-            public void onClick(View v){
-                Intent intent = new Intent(MainActivity.this, TermuxActivity.class);
-                startActivity(intent);
-            }
-        });
-        mGestureDetector = new GestureDetector(this,new GestureDetector.SimpleOnGestureListener(){
-            @Override
-            public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX,
-                                   float velocityY) { // e1: 第一次按下的位置   e2   当手离开屏幕 时的位置  velocityX  沿x 轴的速度  velocityY： 沿Y轴方向的速度
-                // 判断竖直方向移动的大小
-                if (Math.abs(e1.getRawY() - e2.getRawY()) > 100) {
-                    //Toast.makeText(getApplicationContext(), "动作不合法", 0).show();
-                    return true;
-                }
-                if (Math.abs(velocityX) < 150) {
-                    //Toast.makeText(getApplicationContext(), "移动的太慢", 0).show();
-                    return true;
-                }
-
-                if ((e1.getRawX() - e2.getRawX()) > 200) {  // 表示 向右滑动表示下一页
-                    // 显示下一页
-                    Log.d("MainActivity", "onFling: 右$$$$$$$$$$$$$$$$$$$");
-                    Intent intent = new Intent(MainActivity.this, TermuxActivity.class);
-                    startActivity(intent);
-                    return true;
-                }
-
-                if ((e2.getRawX() - e1.getRawX()) > 200) {  // 向左滑动 表示 上一页
-                    // 显示上一页
-                    Log.d("MainActivity", "onFling: 左$$$$$$$$$$$$$$$$$$$");
-                    return true;// 消费掉当前事件  不让当前事件继续向下传递
-                }
-                return true;
-            }
-        });
-
-
+        this.requestPermissions();
+        // 在 FolderMangaerFragment 用
+        // @OnClick(R.id.menu2_fab_switch)//default is R.id.fab
+        // 代替了这个fab
+        //FloatingActionButton fab_switch = (FloatingActionButton)findViewById(R.id.switch_btn_editor);
+        //fab_switch.setOnClickListener(new View.OnClickListener(){
+        //    @Override
+        //    public void onClick(View v){
+        //        Intent intent = new Intent(MainActivity.this, TermuxActivity.class);
+        //        startActivity(intent);
+        //    }
+        //});
     }
 
 
 
-    @Override
-    public boolean onTouchEvent(MotionEvent event) {
-        //2.让手势识别器生效
-        mGestureDetector.onTouchEvent(event);
-        return super.onTouchEvent(event);
-    }
+    private void requestPermissions(){
+        try {
+            if (Build.VERSION.SDK_INT >= 21) {
+                int permission = ActivityCompat.checkSelfPermission(this,
+                    Manifest.permission.WRITE_EXTERNAL_STORAGE);
+                if(permission!= PackageManager.PERMISSION_GRANTED) {
+                    ActivityCompat.requestPermissions(this,new String[]
+                        {Manifest.permission.WRITE_EXTERNAL_STORAGE,
+                            Manifest.permission.LOCATION_HARDWARE,Manifest.permission.READ_PHONE_STATE,
+                            Manifest.permission.WRITE_SETTINGS,Manifest.permission.READ_EXTERNAL_STORAGE,
+                            Manifest.permission.RECORD_AUDIO,Manifest.permission.READ_CONTACTS},0x0010);
+                }
 
+                if(permission != PackageManager.PERMISSION_GRANTED) {
+                    ActivityCompat.requestPermissions(this,new String[] {
+                        Manifest.permission.ACCESS_COARSE_LOCATION,
+                        Manifest.permission.ACCESS_FINE_LOCATION},0x0010);
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 
     @Override
     protected void onDestroy() {

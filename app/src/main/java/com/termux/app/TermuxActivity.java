@@ -56,7 +56,7 @@ import android.widget.Toast;
 import android.content.Context;
 
 import com.bingduoduo.editor.view.MainActivity;
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.github.clans.fab.FloatingActionButton;
 import com.iflytek.cloud.ErrorCode;
 import com.iflytek.cloud.InitListener;
 import com.iflytek.cloud.SpeechConstant;
@@ -93,7 +93,7 @@ import androidx.viewpager.widget.ViewPager;
 import android.view.View.OnClickListener;
 
 
-
+import mehdi.sakout.fancybuttons.FancyButton;
 
 import static android.content.ContentValues.TAG;
 
@@ -432,8 +432,10 @@ public final class TermuxActivity extends Activity implements ServiceConnection 
 
         mRecognition = new SpeechRecognitionIat( TermuxActivity.this,"userwords");
 
-        Button btn_voice = (Button) findViewById(R.id.btn_voice);
-        FloatingActionButton fab_switch = (FloatingActionButton) findViewById(R.id.switch_btn);
+        FloatingActionButton btn_voice = (FloatingActionButton)findViewById(R.id.menu_fab_voice);
+        //Button btn_voice = (Button) findViewById(R.id.btn_voice);
+
+        FloatingActionButton fab_switch = (FloatingActionButton) findViewById(R.id.menu_fab_switch);
 
         btn_voice.setOnTouchListener(new View.OnTouchListener() {
             @Override

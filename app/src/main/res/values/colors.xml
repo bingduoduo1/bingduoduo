@@ -15,12 +15,22 @@
     <color name="content_color">#737373</color>
 
 
+<!-->
     <color name="colorPrimary">#795548</color>
     <color name="colorPrimary66">#66795548</color>
     <color name="colorPrimaryTransparent">#99795548</color>
     <color name="colorPrimaryDark">#795548</color>
     <color name="colorPrimaryDarkReal">#4D342B</color>
-    <color name="colorPrimaryLight">#CFD8DC</color><!--一般用于colorPrimary为背景的文字颜色-->
+    <color name="colorPrimaryLight">#CFD8DC</color>
+    <-->
+    <color name="colorPrimary">#5f5f5f</color>
+    <color name="colorPrimary66">#858282</color>
+    <color name="colorPrimaryTransparent">#757272</color>
+    <color name="colorPrimaryDark">#afa9a9</color>
+    <color name="colorPrimaryDarkReal">#a3a1b4</color>
+    <color name="colorPrimaryLight">#D8DCDD</color>
+
+    <!--一般用于colorPrimary为背景的文字颜色-->
     <color name="colorAccent">#795548</color>
     <color name="colorPrimaryText">#212121</color>
     <color name="colorSecondaryText">#727272</color>

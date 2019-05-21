@@ -4,25 +4,29 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    xmlns:fab="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@drawable/shadow"
     tools:context=".view.EditorActivity">
 
 
+
+
     <LinearLayout
+        android:id="@+id/linearLayout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical">
 
-        <include layout="@layout/view_common_toolbar_scroll"/>
+        <include layout="@layout/view_common_toolbar_scroll" />
 
         <FrameLayout
+            android:id="@+id/frameLayout"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:id="@+id/frameLayout">
+            android:layout_height="match_parent">
 
-            <Button
+            <!--Button
                 android:id="@+id/btn_voice_editor"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -30,17 +34,17 @@
                 android:layout_marginEnd="0dp"
                 android:radius="100dp"
                 android:text="@string/btn_voice"
-                android:visibility="visible" />
+                android:visibility="visible" /-->
 
             <androidx.viewpager.widget.ViewPager
                 android:id="@+id/pager"
-                android:background="@color/white"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:background="@color/white"
                 tools:layout_conversion_absoluteHeight="675dp"
-                tools:layout_editor_absoluteY="56dp"
+                tools:layout_conversion_absoluteWidth="411dp"
                 tools:layout_editor_absoluteX="0dp"
-                tools:layout_conversion_absoluteWidth="411dp">
+                tools:layout_editor_absoluteY="56dp">
 
             </androidx.viewpager.widget.ViewPager>
 
@@ -54,9 +58,11 @@
                 app:el_duration="400"
                 app:el_expanded="false"
                 tools:layout_conversion_absoluteHeight="0dp"
-                tools:layout_editor_absoluteY="56dp"
+                tools:layout_conversion_absoluteWidth="411dp"
                 tools:layout_editor_absoluteX="0dp"
-                tools:layout_conversion_absoluteWidth="411dp">
+                tools:layout_editor_absoluteY="56dp">
+
+
 
                 <com.bingduoduo.editor.widget.TabIconView
                     android:id="@+id/tabIconView"
@@ -64,14 +70,37 @@
                     android:layout_height="wrap_content"
                     app:layout_expandable="true"
                     tools:layout_conversion_absoluteHeight="0dp"
-                    tools:layout_editor_absoluteY="56dp"
+                    tools:layout_conversion_absoluteWidth="0dp"
                     tools:layout_editor_absoluteX="0dp"
-                    tools:layout_conversion_absoluteWidth="0dp">
+                    tools:layout_editor_absoluteY="56dp">
 
                 </com.bingduoduo.editor.widget.TabIconView>
 
+
             </com.bingduoduo.editor.lib.ExpandableLinearLayout>
+
         </FrameLayout>
 
     </LinearLayout>
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <com.bingduoduo.editor.view.DraggableFloatingActionButton
+            android:id="@+id/fab_voice_editor"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentBottom="true"
+            android:layout_marginEnd="55dp"
+            android:layout_marginBottom="168dp"
+            android:src="@android:drawable/ic_btn_speak_now"
+            app:backgroundTint="@color/divider_light"
+            app:layout_anchorGravity="end|center"
+            fab:fab_colorNormal="@color/colorPrimaryLight"
+            fab:fab_colorPressed="@color/divider_light"
+            fab:fab_label="Menu item 2"
+            fab:fab_size="normal" />
+    </RelativeLayout>
+
 </androidx.coordinatorlayout.widget.CoordinatorLayout>
