@@ -67,13 +67,6 @@ public class UnitsUtils {
         } else if (days < 365) {
             ftime = dateFormater2.get().format(time);
         }
-//        else if (days >= 31 && days <= 2 * 31) {
-//            ftime = "一个月前";
-//        } else if (days > 2 * 31 && days <= 3 * 31) {
-//            ftime = "2个月前";
-//        } else if (days > 3 * 31 && days <= 4 * 31) {
-//            ftime = "3个月前";
-//        }
         else {
             ftime = dateFormater3.get().format(time);
         }

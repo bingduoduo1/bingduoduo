@@ -46,54 +46,6 @@ public class FileUtils {
     }
 
     /**
-     * 获取文件夹大小
-     *
-     * @param file the file
-     * @return the folder size
-     * @throws Exception the exception
-     */
-    public static long getFolderSize(@NonNull File file) throws Exception {
-        long size = 0;
-        try {
-            File[] fileList = file.listFiles();
-            for (int i = 0; i < fileList.length; i++) {
-                // 如果下面还有文件
-                if (fileList[i].isDirectory()) {
-                    size = size + getFolderSize(fileList[i]);
-                } else {
-                    size = size + fileList[i].length();
-                }
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return size;
-    }
-
-    /**
-     * 获取缓存目录
-     *
-     * @param context  the mContext
-     * @param fileName the file name
-     * @return file
-     */
-    public static File getCacheFile(@NonNull Context context, @NonNull String fileName) {
-        File savedir = null;
-        if (Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED)) {
-            savedir = new File(context.getExternalCacheDir(), fileName);
-        }
-
-        if (savedir == null) {
-            savedir = new File(context.getCacheDir(), fileName);
-        }
-
-        if (!savedir.exists()) {
-            savedir.mkdirs();
-        }
-        return savedir;
-    }
-
-    /**
      * 获取文件目录
      *
      * @param context the mContext
@@ -121,35 +73,6 @@ public class FileUtils {
         return savedir.getAbsolutePath() + "/home";
     }
 
-    /**
-     * Gets root path.
-     *
-     * @param context the context
-     * @return the root path
-     * @description 获取存储路径(如果有内存卡，这是内存卡根目录，如果没有内存卡，则是软件的包file目录)
-     */
-    public static String getRootFolder(@NonNull Context context) {
-        String rootPath = null;
-
-        if (Environment.MEDIA_MOUNTED.equals(Environment.getExternalStorageState())) {
-            rootPath = Environment.getExternalStorageDirectory().getAbsolutePath();
-        } else {
-            rootPath = context.getFilesDir().getAbsolutePath();
-        }
-        return rootPath;
-    }
-
-    /**
-     * 写字节
-     * Write byte.
-     *
-     * @param path    the path
-     * @param content the content
-     * @throws IOException the io exception
-     */
-    public static boolean writeByte(@NonNull String path, @NonNull String content) {
-        return writeByte(new File(path), content);
-    }
 
     /**
      * 写字节
@@ -185,36 +108,6 @@ public class FileUtils {
             CloseableClose(out);
         }
     }
-
-    /**
-     * 追加
-     * Add byte.
-     *
-     * @param fileName the file
-     * @param content  the content
-     */
-    public static boolean addByte(@NonNull File fileName, @NonNull String content) {
-        if (!fileName.isFile()) {
-            return false;
-        }
-        OutputStream out = null;
-        try {
-            out = new FileOutputStream(fileName, true);
-            byte[] b = content.getBytes();
-            for (int i = 0; i < b.length; i++) {
-                out.write(b[i]);
-            }
-            return true;
-        } catch (IOException e) {
-            e.printStackTrace();
-            return false;
-        } catch (Exception e) {
-            return false;
-        } finally {
-            CloseableClose(out);
-        }
-    }
-
     /**
      * 读取文件，一次性读取
      * Read file string.
@@ -271,18 +164,6 @@ public class FileUtils {
         }
 
         return builder.toString();
-    }
-
-    /**
-     * 复制文件
-     * Copy file boolean.
-     *
-     * @param sourceFilePath the source file path
-     * @param targetFilePath the target file path
-     * @return the boolean
-     */
-    public static boolean copyFile(@NonNull String sourceFilePath, @NonNull String targetFilePath) {
-        return copyFile(new File(sourceFilePath), new File(targetFilePath));
     }
 
     /**
@@ -367,30 +248,6 @@ public class FileUtils {
     /**
      * 移动文件到指定目录
      *
-     * @param oldPath String  如：/test/abc.md
-     * @param newPath String  如：/abc.md
-     */
-    public static boolean moveFile(@NonNull String oldPath, @NonNull String newPath) {
-        return moveFile(new File(oldPath), new File(newPath));
-    }
-
-    public static boolean moveFile(@NonNull File oldPath, @NonNull File newPath) {
-        if (!oldPath.isFile()) {
-            return false;
-        }
-        //如果是文件夹，这创建文件
-        if (newPath.isDirectory()) newPath = new File(newPath, oldPath.getName());
-        try {
-            return oldPath.renameTo(newPath);
-        } catch (Exception e) {
-            e.printStackTrace();
-            return false;
-        }
-    }
-
-    /**
-     * 移动文件到指定目录
-     *
      * @param oldPath String
      * @param newPath String
      */
@@ -423,9 +280,7 @@ public class FileUtils {
     public static void CloseableClose(Closeable closeable) {
         if (closeable != null) {
             try {
-                closeable.close();
-            } catch (IOException e) {
-            }
+                closeable.close();} catch (IOException e) { }
         }
     }
 

@@ -32,9 +32,7 @@ public class BasePresenter<T extends IMvpView> implements IPresenter<T> {
         this.mCompositeSubscription = null;
         this.mMvpView = null;
     }
-    public boolean isViewAttached() {
-        return mMvpView != null;
-    }
+
     public T getMvpView() {
         return mMvpView;
     }

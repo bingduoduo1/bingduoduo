@@ -1,10 +1,14 @@
 
 package com.bingduoduo.editor.view;
 
+import android.Manifest;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.os.Build;
 import android.os.Bundle;
 import androidx.annotation.IdRes;
 import androidx.annotation.LongDef;
+import androidx.core.app.ActivityCompat;
 import androidx.core.view.GravityCompat;
 
 import android.util.Log;
@@ -33,6 +37,7 @@ public class MainActivity extends BaseDrawerLayoutActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        this.requestPermissions();
         // 在 FolderMangaerFragment 用
         // @OnClick(R.id.menu2_fab_switch)//default is R.id.fab
         // 代替了这个fab
@@ -48,6 +53,29 @@ public class MainActivity extends BaseDrawerLayoutActivity {
 
 
 
+    private void requestPermissions(){
+        try {
+            if (Build.VERSION.SDK_INT >= 21) {
+                int permission = ActivityCompat.checkSelfPermission(this,
+                    Manifest.permission.WRITE_EXTERNAL_STORAGE);
+                if(permission!= PackageManager.PERMISSION_GRANTED) {
+                    ActivityCompat.requestPermissions(this,new String[]
+                        {Manifest.permission.WRITE_EXTERNAL_STORAGE,
+                            Manifest.permission.LOCATION_HARDWARE,Manifest.permission.READ_PHONE_STATE,
+                            Manifest.permission.WRITE_SETTINGS,Manifest.permission.READ_EXTERNAL_STORAGE,
+                            Manifest.permission.RECORD_AUDIO,Manifest.permission.READ_CONTACTS},0x0010);
+                }
+
+                if(permission != PackageManager.PERMISSION_GRANTED) {
+                    ActivityCompat.requestPermissions(this,new String[] {
+                        Manifest.permission.ACCESS_COARSE_LOCATION,
+                        Manifest.permission.ACCESS_FINE_LOCATION},0x0010);
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 
     @Override
     protected void onDestroy() {
@@ -83,16 +111,6 @@ public class MainActivity extends BaseDrawerLayoutActivity {
 
     @Override
     public boolean onNavigationItemSelected(MenuItem item) {
-        int id = item.getItemId();
-        if (id == R.id.localhost) {//|| id == R.id.other
-            if (id == currentMenuId) {
-                return false;
-            }
-            currentMenuId = id;
-            getDrawerLayout().closeDrawer(GravityCompat.START);
-            return true;
-        }
-
         if (onOptionsItemSelected(item)) {
             getDrawerLayout().closeDrawer(GravityCompat.START);
         }
@@ -109,6 +127,9 @@ public class MainActivity extends BaseDrawerLayoutActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
+            case R.id.menu_helper:
+                WebHelperActivity.startHelpActivity(this);
+                return true;
             case R.id.menu_about:
                 AboutActivity.startAboutActivity(this);
                 return true;
