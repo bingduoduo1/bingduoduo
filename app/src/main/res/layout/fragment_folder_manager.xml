@@ -96,8 +96,9 @@
             android:layout_height="wrap_content"
             android:layout_alignParentEnd="true"
             android:layout_alignParentBottom="true"
-            android:layout_centerHorizontal="true"
             android:layout_gravity="bottom"
+            android:layout_marginEnd="24dp"
+            android:layout_marginBottom="25dp"
             app:layout_anchorGravity="end|bottom"
             app:menu_colorNormal="@color/gray"
             app:menu_colorPressed="@color/divider_light"
@@ -115,7 +116,8 @@
             fab:menu_shadowRadius="4dp"
             fab:menu_shadowXOffset="1dp"
             fab:menu_shadowYOffset="3dp"
-            fab:menu_showShadow="true">
+            fab:menu_showShadow="true"
+            app:layout_behavior="com.bingduoduo.editor.widget.ScrollAwareFABBehavior2">
 
 
             <com.github.clans.fab.FloatingActionButton

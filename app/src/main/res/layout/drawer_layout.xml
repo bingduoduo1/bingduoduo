@@ -38,6 +38,8 @@
                 android:layout_alignParentEnd="true"
                 android:layout_alignParentBottom="true"
                 android:layout_gravity="bottom"
+                android:layout_marginEnd="24dp"
+                android:layout_marginBottom="25dp"
                 fab:menu_animationDelayPerItem="50"
                 fab:menu_backgroundColor="@android:color/transparent"
                 fab:menu_buttonSpacing="0dp"
