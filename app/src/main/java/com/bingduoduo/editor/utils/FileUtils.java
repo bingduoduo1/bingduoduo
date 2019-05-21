@@ -185,36 +185,6 @@ public class FileUtils {
             CloseableClose(out);
         }
     }
-
-    /**
-     * 追加
-     * Add byte.
-     *
-     * @param fileName the file
-     * @param content  the content
-     */
-    public static boolean addByte(@NonNull File fileName, @NonNull String content) {
-        if (!fileName.isFile()) {
-            return false;
-        }
-        OutputStream out = null;
-        try {
-            out = new FileOutputStream(fileName, true);
-            byte[] b = content.getBytes();
-            for (int i = 0; i < b.length; i++) {
-                out.write(b[i]);
-            }
-            return true;
-        } catch (IOException e) {
-            e.printStackTrace();
-            return false;
-        } catch (Exception e) {
-            return false;
-        } finally {
-            CloseableClose(out);
-        }
-    }
-
     /**
      * 读取文件，一次性读取
      * Read file string.
@@ -271,18 +241,6 @@ public class FileUtils {
         }
 
         return builder.toString();
-    }
-
-    /**
-     * 复制文件
-     * Copy file boolean.
-     *
-     * @param sourceFilePath the source file path
-     * @param targetFilePath the target file path
-     * @return the boolean
-     */
-    public static boolean copyFile(@NonNull String sourceFilePath, @NonNull String targetFilePath) {
-        return copyFile(new File(sourceFilePath), new File(targetFilePath));
     }
 
     /**
@@ -362,30 +320,6 @@ public class FileUtils {
             return false;
         }
 
-    }
-
-    /**
-     * 移动文件到指定目录
-     *
-     * @param oldPath String  如：/test/abc.md
-     * @param newPath String  如：/abc.md
-     */
-    public static boolean moveFile(@NonNull String oldPath, @NonNull String newPath) {
-        return moveFile(new File(oldPath), new File(newPath));
-    }
-
-    public static boolean moveFile(@NonNull File oldPath, @NonNull File newPath) {
-        if (!oldPath.isFile()) {
-            return false;
-        }
-        //如果是文件夹，这创建文件
-        if (newPath.isDirectory()) newPath = new File(newPath, oldPath.getName());
-        try {
-            return oldPath.renameTo(newPath);
-        } catch (Exception e) {
-            e.printStackTrace();
-            return false;
-        }
     }
 
     /**

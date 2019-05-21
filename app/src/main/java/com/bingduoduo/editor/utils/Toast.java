@@ -28,16 +28,6 @@ public class Toast {
     }
 
     /**
-     * 短时间显示Toast
-     *
-     * @param context
-     * @param message
-     */
-    public static void showShort(Context context, int message) {
-        showToast(context, context.getResources().getString(message), LENGTH_SHORT);
-    }
-
-    /**
      * 长时间显示Toast
      *
      * @param context
@@ -45,16 +35,6 @@ public class Toast {
      */
     public static void showLong(Context context, CharSequence message) {
         showToast(context, message.toString(), LENGTH_LONG);
-    }
-
-    /**
-     * 长时间显示Toast
-     *
-     * @param context
-     * @param message
-     */
-    public static void showLong(Context context, int message) {
-        showToast(context, context.getResources().getString(message), LENGTH_LONG);
     }
 
     /**
@@ -80,11 +60,6 @@ public class Toast {
     }
 
     private static void showToast(Context context, String message, int duration) {
-//		if(context==null){
-//			context = NewsApplication.getInstance();
-//		}
-
-
         if (!isShow || message == null || context == null) {
             return;
         }
