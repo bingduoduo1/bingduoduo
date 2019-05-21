@@ -14,7 +14,6 @@ public class FileUtilsTest {
     File file;
     @Before
     public void setUp() throws Exception {
-        file = new File();
 
     }
 
@@ -26,8 +25,6 @@ public class FileUtilsTest {
     @Test
     public void getFile() {
         //获取文件目录
-
-        System.out.println(FileUtils.getFile());
     }
 
 
