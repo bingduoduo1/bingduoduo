@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-   <string name="application_name">冰多多(内测版)</string>
+   <string name="application_name">冰多多</string>
     <string name="btn_voice">voice</string>
     <string name="shared_user_label">Termux user</string>
    <string name="new_session">New session</string>
