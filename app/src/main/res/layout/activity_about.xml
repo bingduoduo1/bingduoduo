@@ -38,18 +38,24 @@
                 android:textColor="@color/c_595959"
                 android:textSize="14sp"/>
 
+            <TextView
+                android:id="@+id/version"
+                style="@style/about_item"
+                android:layout_width="128dp"
+                android:layout_height="wrap_content"
+                android:background="?android:attr/selectableItemBackground"
+                android:drawablePadding="8dp" />
+
             <View
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/space_05"
                 android:background="@color/c_e1e1e1"/>
 
             <TextView
-                android:id="@+id/version"
-                style="@style/about_item"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:background="?android:attr/selectableItemBackground"
-                android:drawablePadding="8dp"/>
+                android:id="@+id/textView"
+                android:layout_width="wrap_content"
+                android:layout_height="30dp"
+                android:text="语音核心技术由科大讯飞提供" />
 
             <View
                 android:layout_width="match_parent"

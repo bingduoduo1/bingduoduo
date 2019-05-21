@@ -56,6 +56,7 @@ import com.iflytek.cloud.SpeechRecognizer;
 import com.iflytek.cloud.SpeechUtility;
 import com.iflytek.speech.util.FucUtil;
 import com.iflytek.voicedemo.SpeechRecognitionIat;
+import com.termux.terminal.TerminalSession;
 
 import static android.content.ContentValues.TAG;
 
@@ -77,19 +78,34 @@ public class EditorActivity extends BaseToolbarActivity implements IEditorActivi
         @Override
         public void handleMessage(Message msg) {
             mret.append(mReconition.getAction());
-            if (mret.toString().equals("\n")) {
-                Toast.showLong(EditorActivity.this, "No keywords, Please retry!");
-                mret.setLength(0);
-            } else {
-                Toast.showLong(EditorActivity.this, mret.toString());
-                int pos = mEditorFragment.mContent.getSelectionStart();
-                Editable e = mEditorFragment.mContent.getText();
-                e.insert(pos, mret.toString());
-                mret.setLength(0);
-            }
+
+            doAction();
             mReconition.stopRecognize();
         }
+
+        private void doAction() {
+            int pos = mEditorFragment.mContent.getSelectionStart();
+            Editable e = mEditorFragment.mContent.getText();
+            if(mret.length()==0){
+                //pass 无Action
+                // or \n?
+                e.insert(pos, "\n");
+            }else{
+
+                switch(mret.toString()){
+                    case "backspace":// 参考 TermuxView:row:682
+                        e.insert(pos, " ");
+                        break;
+                    default:
+                        e.insert(pos, mret.toString());
+
+                }
+                mret.setLength(0);
+
+            }
+        }
     };
+
 
     @Bind(R.id.pager)
     protected ViewPager mViewPager;
