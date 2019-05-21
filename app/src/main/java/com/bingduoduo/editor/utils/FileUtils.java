@@ -25,9 +25,6 @@ public class FileUtils {
 
     /**
      * 递归删除文件夹
-     *
-     * @param dir the dir
-     * @return the boolean
      */
     public static boolean deleteDir(@NonNull File dir) {
         if (dir != null && dir.isDirectory()) {
@@ -54,16 +51,13 @@ public class FileUtils {
     public static String getFile(@NonNull Context context) {
         File savedir = null;
         if (Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED)) {
-//            savedir = context.getExternalFilesDir(null);
             savedir = context.getFilesDir();
             android.util.Log.d("filedir1", "getFile: "+savedir.getAbsolutePath());
-
         }
 
         if (savedir == null) {
             savedir = context.getFilesDir();
             android.util.Log.d("filedir2", "getFile: "+savedir.getAbsolutePath());
-
         }
 
         if (!savedir.exists()) {
