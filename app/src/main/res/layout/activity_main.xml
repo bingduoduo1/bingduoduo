@@ -3,6 +3,7 @@
     android:id="@+id/id_drawer_layout"
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:fab="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -26,23 +27,22 @@
         android:overScrollMode="never"
         android:scrollbars="none"
         app:headerLayout="@layout/nav_header_main"
-        app:menu="@menu/menu_main_drawer"/>
+        app:menu="@menu/menu_main_drawer">
 
-    <FrameLayout
+    </com.google.android.material.navigation.NavigationView>
+
+    <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">
-        <com.google.android.material.floatingactionbutton.FloatingActionButton
+
+        <!--com.google.android.material.floatingactionbutton.FloatingActionButton
             android:id="@+id/switch_btn_editor"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentEnd="true"
-            android:layout_alignParentBottom="true"
-            android:layout_gravity="bottom|left"
-            android:src="@android:drawable/ic_menu_send" />
+            android:layout_gravity="bottom"
+            android:src="@android:drawable/ic_menu_send" /-->
 
-
-
-
-    </FrameLayout>
+    </RelativeLayout>
 
 </androidx.drawerlayout.widget.DrawerLayout>

@@ -29,6 +29,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
 
+import com.github.clans.fab.FloatingActionButton;
 import com.termux.R;
 import com.bingduoduo.editor.adapter.FileListAdapter;
 import com.bingduoduo.editor.adapter.OnItemClickLitener;
@@ -41,8 +42,8 @@ import com.bingduoduo.editor.presenter.IFolderManagerView;
 import com.bingduoduo.editor.utils.Check;
 import com.bingduoduo.editor.utils.ViewUtils;
 import com.bingduoduo.editor.widget.TabView;
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.textfield.TextInputLayout;
+import com.termux.app.TermuxActivity;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -66,7 +67,7 @@ public class FolderManagerFragment extends BaseRefreshFragment implements IFolde
     protected TabView mTabView;
     @Bind(R.id.noContent)
     protected View noContent;
-    @Bind(R.id.fab)
+    @Bind(R.id.menu2_add)//default is fab;
     protected FloatingActionButton mActionButton;
 
     private FolderManagerPresenter mPresenter;
@@ -385,7 +386,7 @@ public class FolderManagerFragment extends BaseRefreshFragment implements IFolde
 
     }
 
-    @OnClick(R.id.fab)
+    @OnClick(R.id.menu2_add)//default is R.id.fab
     public void newNote(View v) {
         Intent intent = new Intent(mContext, EditorActivity.class);
         intent.setAction(Intent.ACTION_VIEW);
@@ -395,6 +396,14 @@ public class FolderManagerFragment extends BaseRefreshFragment implements IFolde
 //        ViewUtils.startActivity(intent, getActivity(), v, EditorActivity.SHARED_ELEMENT_COLOR_NAME);
         startActivity(intent);
     }
+
+
+    @OnClick(R.id.menu2_fab_switch)//default is R.id.fab
+    public void OnClick(View view){
+        Intent intent  = new Intent(mContext, TermuxActivity.class);
+        startActivity(intent);
+    }
+
 
     /**
      * 新建文件夹

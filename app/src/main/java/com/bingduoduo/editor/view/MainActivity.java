@@ -34,14 +34,17 @@ public class MainActivity extends BaseDrawerLayoutActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        FloatingActionButton fab_switch = (FloatingActionButton)findViewById(R.id.switch_btn_editor);
-        fab_switch.setOnClickListener(new View.OnClickListener(){
-            @Override
-            public void onClick(View v){
-                Intent intent = new Intent(MainActivity.this, TermuxActivity.class);
-                startActivity(intent);
-            }
-        });
+        // 在 FolderMangaerFragment 用
+        // @OnClick(R.id.menu2_fab_switch)//default is R.id.fab
+        // 代替了这个fab
+        //FloatingActionButton fab_switch = (FloatingActionButton)findViewById(R.id.switch_btn_editor);
+        //fab_switch.setOnClickListener(new View.OnClickListener(){
+        //    @Override
+        //    public void onClick(View v){
+        //        Intent intent = new Intent(MainActivity.this, TermuxActivity.class);
+        //        startActivity(intent);
+        //    }
+        //});
         mGestureDetector = new GestureDetector(this,new GestureDetector.SimpleOnGestureListener(){
             @Override
             public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX,

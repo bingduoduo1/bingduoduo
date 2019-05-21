@@ -30,6 +30,7 @@ import android.widget.EditText;
 import android.widget.Button;
 import android.util.Log;
 
+import com.github.clans.fab.FloatingActionButton;
 import com.termux.R;
 import com.bingduoduo.editor.base.BaseApplication;
 import com.bingduoduo.editor.base.BaseToolbarActivity;
@@ -113,7 +114,7 @@ public class EditorActivity extends BaseToolbarActivity implements IEditorActivi
         SpeechUtility.createUtility(this, "appid=5c9cc920");// appid需要和sdk的id相匹配
         mReconition = new SpeechRecognitionIat( EditorActivity.this,"userwords");
 
-        Button btn_voice = (Button) findViewById(R.id.btn_voice_editor);
+        FloatingActionButton btn_voice = (FloatingActionButton) findViewById(R.id.fab_voice_editor);
         btn_voice.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
