@@ -5,7 +5,7 @@ package com.bingduoduo.editor.adapter;
 import android.content.Context;
 import android.graphics.PorterDuff;
 import android.graphics.PorterDuffColorFilter;
-import 	androidx.recyclerview.widget.RecyclerView;
+import androidx.recyclerview.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;

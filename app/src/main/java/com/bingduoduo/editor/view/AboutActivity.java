@@ -43,19 +43,12 @@ public class AboutActivity extends BaseToolbarActivity {
 
     @Override
     public void initData() {
-
     }
 
     @Override
     protected void initStatusBar() {
         SystemBarUtils.tintStatusBar(this, getResources().getColor(R.color.colorPrimary));
     }
-
-
-
-
-
-
 
     @NonNull
     @Override

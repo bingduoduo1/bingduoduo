@@ -3,8 +3,6 @@ package com.bingduoduo.editor.utils;
 
 import java.util.Collection;
 import java.util.Map;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 public class Check {
 
@@ -31,8 +29,7 @@ public class Check {
     }
 
     public static void CheckNull(Object o, String message) {
-        if (o == null) throw new IllegalStateException(message);
-    }
+        if (o == null) throw new IllegalStateException(message); }
 
     /**
      * 判断给定字符串是否空白串。 空白串是指由空格、制表符、回车符、换行符组成的字符串 若输入字符串为null或空字符串，返回true

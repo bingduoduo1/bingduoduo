@@ -35,7 +35,6 @@ public interface IMvpView {
 
     /**
      * 隐藏Progress
-     *
      * @param flag 标志
      */
     void hideWait(int flag);

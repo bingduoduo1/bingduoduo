@@ -16,8 +16,7 @@ public class RxUtils {
     @SuppressWarnings("unchecked")
     private static <T> Observable.Transformer<T, T> getScheduler() {
         if (transformer == null) {
-            Observable.Transformer<T, T> ttTransformer = observable -> observable.subscribeOn(Schedulers.io())
-                    .observeOn(AndroidSchedulers.mainThread());
+            Observable.Transformer<T, T> ttTransformer = observable -> observable.subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread());
             transformer = ttTransformer;
             return ttTransformer;
         } else {

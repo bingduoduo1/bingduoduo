@@ -6,8 +6,6 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import androidx.annotation.NonNull;
-//import androidx.core.app.FragmentActivity;
-//import android.support.v7.app.AlertDialog;
 import android.text.Editable;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -177,10 +175,6 @@ public class EditorFragment extends BaseFragment implements IEditorFragmentView,
     }
 
 
-    public PerformEditable getPerformEditable() {
-        return mPerformEditable;
-    }
-
     @Override
     public boolean hasMenu() {
         return true;
@@ -215,33 +209,6 @@ public class EditorFragment extends BaseFragment implements IEditorFragmentView,
 
 
 
-    private void shareCopyText() {
-        SystemUtils.copyToClipBoard(getActivity(), mContent.getText().toString());
-    }
-
-    private void shareText() {
-        Intent shareIntent = new Intent();
-        shareIntent.setAction(Intent.ACTION_SEND);
-        shareIntent.putExtra(Intent.EXTRA_TEXT, mContent.getText().toString());
-        shareIntent.setType("text/plain");
-
-        BottomSheet.Builder builder = new BottomSheet.Builder(getActivity(), R.style.AppTheme);
-        builder.setIntent(getActivity(), shareIntent);
-        BottomSheet bottomSheet = builder.create();
-        bottomSheet.show();
-    }
-
-    private void shareMD() {
-        Intent shareIntent = new Intent(Intent.ACTION_SEND);
-        shareIntent.putExtra(Intent.EXTRA_STREAM, Uri.fromFile(mPresenter.getMDFile()));
-        shareIntent.setType("*/*");
-
-//        startActivity(Intent.createChooser(share,"Share Image"));
-        BottomSheet.Builder builder = new BottomSheet.Builder(getActivity());
-        builder.setIntent(getActivity(), shareIntent);
-        BottomSheet bottomSheet = builder.create();
-        bottomSheet.show();
-    }
 
     @Override
     public void onReadSuccess(@NonNull String name, @NonNull String content) {

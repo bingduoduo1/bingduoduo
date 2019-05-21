@@ -1,5 +1,3 @@
-
-
 package com.bingduoduo.editor.entity;
 
 import java.util.Date;
