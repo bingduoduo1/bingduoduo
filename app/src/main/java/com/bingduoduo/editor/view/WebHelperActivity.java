@@ -51,7 +51,8 @@ public class WebHelperActivity extends BaseToolbarActivity {
         webSettings.setLoadsImagesAutomatically(true); // 支持自动加载图片
         webSettings.setDefaultTextEncodingName("utf-8");// 设置编码格式
 
-        webView.loadUrl("https://github.com/bingduoduo1/bingduoduo/blob/master/README.md");
+        //webView.loadUrl("https://github.com/bingduoduo1/bingduoduo/blob/master/README.md");
+        webView.loadUrl("https://github.com/bingduoduo1/bingduoduo/blob/master/%5B%E5%86%B0%E5%A4%9A%E5%A4%9A%5D%20%E4%BD%BF%E7%94%A8%E8%AF%B4%E6%98%8E.md");
         // webView.loadUrl("file:///android_asset/helper.html");
         webView.setWebViewClient(new WebViewClient(){
             @Override
