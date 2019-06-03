@@ -9,17 +9,22 @@ public class LearningRate extends PytorchTrainArgument {
     private final String mName = "LearningRate";
     private double mInitLr;
 
-    public void PytorchTrainArgument() {
-        PytorchTrainArgument(0.01);
+    public LearningRate(double initLr) {
+        mInitLr = initLr;
+    }
+    public LearningRate() {
+        this(0.01);
     }
 
-    public void PytorchTrainArgument(double initLr) {
-        mInitLr = initLr;
+
+    @Override
+    public String getArgumentName() {
+        return mName;
     }
 
     @Override
     public String getDefaultValue() {
-        return "positive double value is OK";
+        return "positive double value is OK(default 0.01)\n";
     }
 
     @Override
@@ -29,9 +34,13 @@ public class LearningRate extends PytorchTrainArgument {
         } catch (GlobalException e) {
             throw new GlobalException("LR check before update fail!---"+e.getMessage());
         }
-
-        double temp_value = Double.parseDouble(value);
-        if (temp_value == Double.NaN || !this.initLrCheck(temp_value)) {
+        Double temp_value;
+        try {
+            temp_value = Double.parseDouble(value);
+        } catch(NumberFormatException e){
+            throw new GlobalException("Update value fail!---invalid input:" + value + "\n");
+        }
+        if (!this.initLrCheck(temp_value)) {
             throw new GlobalException("Update value fail!---invalid input:" + value + "\n");
         }
         mInitLr = temp_value;
