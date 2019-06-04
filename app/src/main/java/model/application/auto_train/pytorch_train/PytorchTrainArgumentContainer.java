@@ -11,6 +11,7 @@ import java.util.Set;
 import model.application.auto_train.base_interface.ArgumentContainerInterface;
 import model.application.auto_train.pytorch_train.train_argument.BatchSize;
 import model.application.auto_train.pytorch_train.train_argument.LearningRate;
+import model.application.auto_train.pytorch_train.train_argument.OptimAlgorithm;
 import model.config.GlobalException;
 
 public class PytorchTrainArgumentContainer implements ArgumentContainerInterface {
@@ -19,7 +20,7 @@ public class PytorchTrainArgumentContainer implements ArgumentContainerInterface
     private static ArrayList<String> trainArgumentKey = new ArrayList<String>(){{
         add("learning_rate");
         add("batch_size");
-        //add("optim_algorithm");
+        add("optim_algorithm");
     }};
     private HashMap<String, PytorchTrainArgument> mConfigMap;
     public void PytorchTrainArgumentContainer(String outputFilePath) {
@@ -31,6 +32,7 @@ public class PytorchTrainArgumentContainer implements ArgumentContainerInterface
         // TODO: load config from file
         mConfigMap.put("learning_rate", new LearningRate());
         mConfigMap.put("batch_size", new BatchSize());
+        mConfigMap.put("optim_algorithm", new OptimAlgorithm());
     }
 
     @Override
