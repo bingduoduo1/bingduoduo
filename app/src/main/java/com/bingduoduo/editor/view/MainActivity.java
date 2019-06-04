@@ -30,7 +30,7 @@ import com.termux.app.TermuxActivity;
  */
 public class MainActivity extends BaseDrawerLayoutActivity {
     private BaseFragment mCurrentFragment;
-    private int currentMenuId;
+//    private int currentMenuId;
 
 
     @Override
