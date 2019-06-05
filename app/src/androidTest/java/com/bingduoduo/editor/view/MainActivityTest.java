@@ -21,6 +21,10 @@ public class MainActivityTest {
     @Test
     public void testSwitch()
     {
+//        onView(withId(R.id.menu2)).check(matches(isDisplayed()));
         onView(withId(R.id.menu2)).check(matches(isDisplayed()));
+//        onView(withId(R.id.))
+
+
     }
 }

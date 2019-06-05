@@ -56,6 +56,7 @@ public class OptimAlgorithm extends PytorchTrainArgument {
         if (!Algorithm.keyCheck(key)) {
             throw new GlobalException("Update optim algorithm fail!---invalid input:" + key + "\n");
         }
+        mActualAlgorithm = Algorithm.getValueOf(key);
     }
 
     @Override
