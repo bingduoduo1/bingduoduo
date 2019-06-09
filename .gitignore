@@ -94,3 +94,4 @@ fastlane/readme.md
 .swp
 ehthumbs.db
 Thumbs.db
+gradle/wrapper/gradle-wrapper.properties
