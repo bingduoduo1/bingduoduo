@@ -412,7 +412,7 @@ public class FolderManagerFragment extends BaseRefreshFragment implements IFolde
     public void createFolder() {
 
 
-        //显示重命名对话框
+        // 显示重命名对话框
         View rootView = LayoutInflater.from(mContext).inflate(R.layout.view_common_input_view, null);
 
         AlertDialog mInputDialog = new AlertDialog.Builder(mContext)
