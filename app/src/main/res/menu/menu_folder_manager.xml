@@ -3,10 +3,18 @@
       xmlns:tools="http://schemas.android.com/tools"
       tools:context=".MainActivity">
     <item
+        android:id="@+id/action_create_folder"
+        android:icon="@drawable/ic_action_create_folder"
+        android:orderInCategory="4"
+        app:showAsAction="always"
+        android:title="@string/create_folder"/>
+
+    <item
         android:id="@+id/action_search"
-        android:orderInCategory="80"
+        android:orderInCategory="3"
         android:title="@string/action_search"
         android:icon="@drawable/ic_search"
         app:actionViewClass="androidx.appcompat.widget.SearchView"
         app:showAsAction="ifRoom|collapseActionView"/>
+
 </menu>
