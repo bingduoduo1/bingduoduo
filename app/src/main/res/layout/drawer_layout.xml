@@ -143,7 +143,7 @@
                 android:id="@+id/menu_fab_voice"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:src="@android:drawable/ic_btn_speak_now"
+                android:src="@drawable/ic_voice"
                 fab:fab_colorNormal="@color/colorPrimaryLight"
                 fab:fab_colorPressed="@color/divider_light"
                 fab:fab_label="Menu item 1"
@@ -153,10 +153,19 @@
                 android:id="@+id/menu_fab_switch"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:src="@drawable/ic_action_preview"
+                android:src="@drawable/ic_switch"
                 fab:fab_colorNormal="@color/colorPrimaryLight"
                 fab:fab_colorPressed="@color/divider_light"
                 fab:fab_label="Menu item 2"
+                fab:fab_size="normal" />
+            <com.github.clans.fab.FloatingActionButton
+                android:id="@+id/menu_fab_auto_train"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/auto_train_em_gray"
+                fab:fab_colorNormal="@color/colorPrimaryLight"
+                fab:fab_colorPressed="@color/divider_light"
+                fab:fab_label="Menu item 3"
                 fab:fab_size="normal" />
 
         </com.github.clans.fab.FloatingActionMenu>

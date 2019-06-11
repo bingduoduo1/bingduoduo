@@ -26,7 +26,7 @@
     <color name="colorPrimary">#000000</color>
     <color name="colorPrimary66">#000000</color>
     <color name="colorPrimaryTransparent">#000000</color>
-    <color name="colorPrimaryDark">#000000</color>
+    <color name="colorPrimaryDark">#321C54</color>
     <color name="colorPrimaryDarkReal">#a3a1b4</color>
     <color name="colorPrimaryLight">#D8DCDD</color>
 
@@ -34,7 +34,7 @@
     <color name="colorAccent">#727272</color>
     <color name="colorPrimaryText">#212121</color>
     <color name="colorSecondaryText">#727272</color>
-    <color name="colorDivider">#B6B6B6</color>
+    <color name="colorDivider">#A1A1A1</color>
 
     <color name="colorDialogMessage">#8a000000</color>
 
@@ -53,7 +53,7 @@
     <color name="pink">#FFC0CB</color>
     <color name="orange">#FFA500</color>
 
-    <color name="background">#E1E1E1</color>
+    <color name="background">#A1A1A1</color>
 
 
     <color name="c_7c7c7c">#7c7c7c</color>

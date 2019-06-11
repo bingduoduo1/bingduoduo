@@ -50,6 +50,7 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -171,7 +172,8 @@ public final class TermuxActivity extends AppCompatActivity implements ServiceCo
 
     //冰多多
     //private GestureDetector mGestureDetector;
-    SpeechRecognitionIat mRecognition;
+    private SpeechRecognitionIat mRecognition;
+    private boolean mOnAutoTrain = false;
     Handler han = new Handler() {
 
         @Override
@@ -441,14 +443,17 @@ public final class TermuxActivity extends AppCompatActivity implements ServiceCo
         //Button btn_voice = (Button) findViewById(R.id.btn_voice);
 
         FloatingActionButton fab_switch = (FloatingActionButton) findViewById(R.id.menu_fab_switch);
+        FloatingActionButton fab_auto_train = (FloatingActionButton)findViewById(R.id.menu_fab_auto_train);
 
         btn_voice.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
+                ImageButton img = (ImageButton)v;
                 switch (event.getAction()) {
                     case MotionEvent.ACTION_DOWN: {
                         //mReconition.cancelRecognize();
                         Log.d(TAG, "upup31312 : "+System.currentTimeMillis());
+                        img.setImageDrawable(getResources().getDrawable(R.drawable.ic_voice2));
                         mRecognition.startRecognize();
                         break;
                         // 开始识别
@@ -458,11 +463,11 @@ public final class TermuxActivity extends AppCompatActivity implements ServiceCo
                         break;
                     }
                     case MotionEvent.ACTION_UP: {
-                            //String ret = mReconition.getAction();
-                       Message message = new Message();
-                       message.what=0;
-                       han.sendMessageDelayed(message,800);
-                       break;
+                        img.setImageDrawable(getResources().getDrawable(R.drawable.ic_voice));
+                        Message message = new Message();
+                        message.what=0;
+                        han.sendMessageDelayed(message,800);
+                        break;
                     }
                     default:
                         break;
@@ -478,7 +483,24 @@ public final class TermuxActivity extends AppCompatActivity implements ServiceCo
                 startActivity(intent);
             }
         });
-        Log.d(TAG, "onCreate: " + getFilesDir()+"---------------------------");
+
+        fab_auto_train.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View v){
+                ImageButton img = (ImageButton)v;
+                if(mOnAutoTrain) {
+                    mOnAutoTrain = false;
+                    img.setImageDrawable(getResources().getDrawable(R.drawable.auto_train_em_gray));
+                }
+                else{
+                    mOnAutoTrain = true;
+                    img.setImageDrawable(getResources().getDrawable(R.drawable.auto_train_gray));
+                }
+
+            }
+        });
+
+        //Log.d(TAG, "onCreate: " + getFilesDir()+"---------------------------");
 
         // Create an object of our Custom Gesture Detector Class
         //CustomGestureDetector customGestureDetector = new CustomGestureDetector();

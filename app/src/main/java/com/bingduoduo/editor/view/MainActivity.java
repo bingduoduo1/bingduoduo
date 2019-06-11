@@ -48,8 +48,8 @@ public class MainActivity extends BaseDrawerLayoutActivity {
 
         this.requestPermissions();
         // 默认设置为日间模式
-        AppCompatDelegate.setDefaultNightMode(
-            AppCompatDelegate.MODE_NIGHT_NO);
+        //AppCompatDelegate.setDefaultNightMode(
+        //    AppCompatDelegate.MODE_NIGHT_NO);
 
         // 在 FolderMangaerFragment 用
         // @OnClick(R.id.menu2_fab_switch)//default is R.id.fab
@@ -146,9 +146,9 @@ public class MainActivity extends BaseDrawerLayoutActivity {
                     Log.d("Night mode", "onOptionsItemSelected: asdfasdf");
                     System.out.println("in Ngiht Switch");
                     int currentNightMode = getResources().getConfiguration().uiMode & Configuration.UI_MODE_NIGHT_MASK;
-                    getDelegate().setLocalNightMode( AppCompatDelegate.MODE_NIGHT_YES );
-                    //getDelegate().setLocalNightMode(currentNightMode == Configuration.UI_MODE_NIGHT_NO
-                    //    ? AppCompatDelegate.MODE_NIGHT_YES : AppCompatDelegate.MODE_NIGHT_NO);
+                    //getDelegate().setLocalNightMode( AppCompatDelegate.MODE_NIGHT_YES );
+                    getDelegate().setLocalNightMode(currentNightMode == Configuration.UI_MODE_NIGHT_NO
+                        ? AppCompatDelegate.MODE_NIGHT_YES : AppCompatDelegate.MODE_NIGHT_NO);
                     // 同样需要调用recreate方法使之生效
 
 
@@ -163,9 +163,9 @@ public class MainActivity extends BaseDrawerLayoutActivity {
                 }else {
                     //Toast.makeText(MainActivity.this, "ininini", Toast.LENGTH_SHORT).show();
                     int currentNightMode = getResources().getConfiguration().uiMode & Configuration.UI_MODE_NIGHT_MASK;
-                    getDelegate().setLocalNightMode( AppCompatDelegate.MODE_NIGHT_NO);
-                    //getDelegate().setLocalNightMode(currentNightMode == Configuration.UI_MODE_NIGHT_NO
-                    //    ? AppCompatDelegate.MODE_NIGHT_YES : AppCompatDelegate.MODE_NIGHT_NO);
+                    //getDelegate().setLocalNightMode( AppCompatDelegate.MODE_NIGHT_NO);
+                    getDelegate().setLocalNightMode(currentNightMode == Configuration.UI_MODE_NIGHT_NO
+                        ? AppCompatDelegate.MODE_NIGHT_YES : AppCompatDelegate.MODE_NIGHT_NO);
                     // 同样需要调用recreate方法使之生效
                     recreate();
                     //Todo
