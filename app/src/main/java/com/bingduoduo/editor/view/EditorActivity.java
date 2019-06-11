@@ -186,11 +186,11 @@ public class EditorActivity extends BaseToolbarActivity implements IEditorActivi
                         message.what=0;
                         han.sendMessageDelayed(message, 800);
 
-                        float upRawX = event.getRawX();
-                        float upRawY = event.getRawY();
+                        //float upRawX = event.getRawX();
+                        //float upRawY = event.getRawY();
 
-                        float upDX = upRawX - downRawX;
-                        float upDY = upRawY - downRawY;
+                        //float upDX = upRawX - downRawX;
+                        //float upDY = upRawY - downRawY;
 
 
                         break;

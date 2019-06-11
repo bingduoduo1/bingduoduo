@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<menu xmlns:android="http://schemas.android.com/apk/res/android">
+<menu xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:android="http://schemas.android.com/apk/res/android">
 
     <item android:title="其他">
         <menu>
@@ -12,6 +13,11 @@
                 android:id="@+id/menu_about"
                 android:icon="@drawable/ic_information"
                 android:title="@string/about"/>
+            <item
+                android:id="@+id/app_bar_switch"
+                android:title="夜间模式"
+                app:actionLayout="@layout/switch_item"
+                app:showAsAction="always" />
         </menu>
     </item>
 
