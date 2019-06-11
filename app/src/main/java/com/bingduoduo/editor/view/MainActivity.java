@@ -4,10 +4,13 @@ package com.bingduoduo.editor.view;
 import android.Manifest;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.content.res.Configuration;
 import android.os.Build;
 import android.os.Bundle;
 import androidx.annotation.IdRes;
 import androidx.annotation.LongDef;
+import androidx.appcompat.app.AppCompatDelegate;
+import androidx.appcompat.widget.SwitchCompat;
 import androidx.core.app.ActivityCompat;
 import androidx.core.view.GravityCompat;
 
@@ -17,6 +20,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
+import android.widget.Button;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.termux.R;
@@ -38,6 +42,10 @@ public class MainActivity extends BaseDrawerLayoutActivity {
         super.onCreate(savedInstanceState);
 
         this.requestPermissions();
+        // 默认设置为日间模式
+        AppCompatDelegate.setDefaultNightMode(
+            AppCompatDelegate.MODE_NIGHT_NO);
+
         // 在 FolderMangaerFragment 用
         // @OnClick(R.id.menu2_fab_switch)//default is R.id.fab
         // 代替了这个fab
@@ -133,6 +141,30 @@ public class MainActivity extends BaseDrawerLayoutActivity {
             case R.id.menu_about:
                 AboutActivity.startAboutActivity(this);
                 return true;
+            case R.id.night_pattern_switch:
+                SwitchCompat speedSwitch = (SwitchCompat) findViewById(R.id.night_pattern_switch);
+                speedSwitch.setOnCheckedChangeListener((buttonView, isChecked) -> {
+                    if (isChecked) {
+                        System.out.println("in Ngiht Switch");
+                        int currentNightMode = getResources().getConfiguration().uiMode & Configuration.UI_MODE_NIGHT_MASK;
+
+                        getDelegate().setLocalNightMode(currentNightMode == Configuration.UI_MODE_NIGHT_NO
+                            ? AppCompatDelegate.MODE_NIGHT_YES : AppCompatDelegate.MODE_NIGHT_NO);
+                        // 同样需要调用recreate方法使之生效
+                        recreate();
+                    } else {
+                        int currentNightMode = getResources().getConfiguration().uiMode & Configuration.UI_MODE_NIGHT_MASK;
+
+                        getDelegate().setLocalNightMode(currentNightMode == Configuration.UI_MODE_NIGHT_NO
+                            ? AppCompatDelegate.MODE_NIGHT_NO : AppCompatDelegate.MODE_NIGHT_YES);
+                        // 同样需要调用recreate方法使之生效
+                        recreate();
+
+                    }
+                });
+
+
+
         }
         return super.onOptionsItemSelected(item);
     }

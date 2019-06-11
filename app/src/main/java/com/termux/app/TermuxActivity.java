@@ -84,6 +84,8 @@ import java.util.regex.Pattern;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.app.AppCompatDelegate;
 import androidx.core.app.ActivityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.viewpager.widget.PagerAdapter;
@@ -113,7 +115,7 @@ import static android.content.ContentValues.TAG;
  * important!
  * 这个活动控制terminal 模拟器
  */
-public final class TermuxActivity extends Activity implements ServiceConnection {
+public final class TermuxActivity extends AppCompatActivity implements ServiceConnection {
 
 
     //长按视图弹出上下文菜单
@@ -302,6 +304,10 @@ public final class TermuxActivity extends Activity implements ServiceConnection 
         mTerminalView.requestFocus();
 
 
+
+        // 默认设置为日间模式
+        AppCompatDelegate.setDefaultNightMode(
+            AppCompatDelegate.MODE_NIGHT_NO);
 
         //禁用输入法
         //getWindow().setFlags(WindowManager.LayoutParams.FLAG_ALT_FOCUSABLE_IM,

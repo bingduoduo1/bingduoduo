@@ -23,10 +23,10 @@
         <color name="colorPrimaryDarkReal">#4D342B</color>
         <color name="colorPrimaryLight">#CFD8DC</color>
         <-->
-    <color name="colorPrimary">#5f5f5f</color>
-    <color name="colorPrimary66">#858282</color>
-    <color name="colorPrimaryTransparent">#757272</color>
-    <color name="colorPrimaryDark">#afa9a9</color>
+    <color name="colorPrimary">#000000</color>
+    <color name="colorPrimary66">#000000</color>
+    <color name="colorPrimaryTransparent">#000000</color>
+    <color name="colorPrimaryDark">#000000</color>
     <color name="colorPrimaryDarkReal">#a3a1b4</color>
     <color name="colorPrimaryLight">#D8DCDD</color>
 
