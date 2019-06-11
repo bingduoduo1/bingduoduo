@@ -14,7 +14,8 @@
                 android:icon="@drawable/ic_information"
                 android:title="@string/about"/>
             <item
-                android:id="@+id/app_bar_switch"
+                android:id="@+id/night_patternr_switch"
+                android:icon="@drawable/ic_night_mode"
                 android:title="夜间模式"
                 app:actionLayout="@layout/switch_item"
                 app:showAsAction="always" />

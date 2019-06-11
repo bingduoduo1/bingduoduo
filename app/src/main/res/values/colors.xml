@@ -31,7 +31,7 @@
     <color name="colorPrimaryLight">#D8DCDD</color>
 
     <!--一般用于colorPrimary为背景的文字颜色-->
-    <color name="colorAccent">#795548</color>
+    <color name="colorAccent">#727272</color>
     <color name="colorPrimaryText">#212121</color>
     <color name="colorSecondaryText">#727272</color>
     <color name="colorDivider">#B6B6B6</color>
