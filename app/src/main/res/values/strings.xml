@@ -67,14 +67,14 @@
     <string name="navigation_drawer_close">Close navigation drawer</string>
 
     <string name="Description">Description</string>
-    <string name="MainFileManagerNoPost">没有文章</string>
-    <string name="MainFileManagerCreateHint">您可以点击右下角按钮创建新的文章</string>
-    <string name="action_create_file">创建文章</string>
+    <string name="MainFileManagerNoPost">没有文件</string>
+    <string name="MainFileManagerCreateHint">您可以点击右下角按钮创建新的文件</string>
+    <string name="action_create_file">创建文件</string>
     <string name="create_folder">新建文件夹</string>
     <string name="file">文章</string>
     <string name="sure">确定</string>
     <string name="action_cancel">取消</string>
-    <string name="action_search">搜索文章</string>
+    <string name="action_search">搜索文件</string>
     <string name="please_enter">请输入</string>
     <string name="xxxx" translatable="false">xxxx</string>
 

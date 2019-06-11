@@ -210,7 +210,7 @@ public class DataManager {
         if ((file1.isDirectory && file2.isDirectory) || (!file1.isDirectory && !file2.isDirectory)) {
             return file1.name.compareTo(file2.name);
         }
-        // 如果是文件和文件夹，则文件拍在后面
+        // 如果是文件和文件夹，则文件排在后面
         if (file1.isDirectory && !file2.isDirectory) {
             return -1;
         } else {

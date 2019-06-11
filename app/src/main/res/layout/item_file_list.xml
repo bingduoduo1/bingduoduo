@@ -12,7 +12,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerVertical="true"
-        android:layout_marginLeft="@dimen/space_8"
+        android:layout_marginLeft="@dimen/space_6"
 
         android:src="@drawable/ic_file"/>
 
