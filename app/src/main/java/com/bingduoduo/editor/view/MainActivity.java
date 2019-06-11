@@ -2,6 +2,7 @@
 package com.bingduoduo.editor.view;
 
 import android.Manifest;
+//import android.content.Intent;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.res.Configuration;
@@ -13,6 +14,7 @@ import androidx.appcompat.app.AppCompatDelegate;
 import androidx.appcompat.widget.SwitchCompat;
 import androidx.core.app.ActivityCompat;
 import androidx.core.view.GravityCompat;
+import androidx.core.view.MenuItemCompat;
 
 import android.util.Log;
 import android.view.GestureDetector;
@@ -21,12 +23,15 @@ import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
+import android.widget.CompoundButton;
+import android.widget.Switch;
+import android.widget.Toast;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.termux.R;
 import com.bingduoduo.editor.base.BaseDrawerLayoutActivity;
 import com.bingduoduo.editor.base.BaseFragment;
-import com.bingduoduo.editor.utils.Toast;
+//import com.bingduoduo.editor.utils.Toast;
 import com.termux.app.TermuxActivity;
 
 /**
@@ -129,6 +134,100 @@ public class MainActivity extends BaseDrawerLayoutActivity {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
+
+        Switch switcher = (Switch) findViewById(R.id.switcher);
+        //switcher.setChecked(true);
+        switcher.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                //Toast.makeText(MainActivity.this, isChecked?"Yes":"No", Toast.LENGTH_SHORT).show();
+                if (isChecked){
+                    Toast.makeText(MainActivity.this, isChecked?"Yes":"No", Toast.LENGTH_SHORT).show();
+                    Log.d("Night mode", "onOptionsItemSelected: asdfasdf");
+                    System.out.println("in Ngiht Switch");
+                    int currentNightMode = getResources().getConfiguration().uiMode & Configuration.UI_MODE_NIGHT_MASK;
+                    getDelegate().setLocalNightMode( AppCompatDelegate.MODE_NIGHT_YES );
+                    //getDelegate().setLocalNightMode(currentNightMode == Configuration.UI_MODE_NIGHT_NO
+                    //    ? AppCompatDelegate.MODE_NIGHT_YES : AppCompatDelegate.MODE_NIGHT_NO);
+                    // 同样需要调用recreate方法使之生效
+
+
+                    //Intent intent = new Intent(MainActivity.this, MainActivity.class);
+                    //startActivity(intent);
+                    //startActivity(new Intent( this, MainActivity.class));
+                    //overridePendingTransition(0, 0);
+                    //finish();
+
+                    recreate();
+                    //Todo
+                }else {
+                    //Toast.makeText(MainActivity.this, "ininini", Toast.LENGTH_SHORT).show();
+                    int currentNightMode = getResources().getConfiguration().uiMode & Configuration.UI_MODE_NIGHT_MASK;
+                    getDelegate().setLocalNightMode( AppCompatDelegate.MODE_NIGHT_NO);
+                    //getDelegate().setLocalNightMode(currentNightMode == Configuration.UI_MODE_NIGHT_NO
+                    //    ? AppCompatDelegate.MODE_NIGHT_YES : AppCompatDelegate.MODE_NIGHT_NO);
+                    // 同样需要调用recreate方法使之生效
+                    recreate();
+                    //Todo
+                }
+            }
+        });
+
+
+        /*
+        switcher.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                //Snackbar.make(v, (switcher.isChecked()) ? "is checked!!!" : "not checked!!!", Snackbar.LENGTH_SHORT).setAction("Action", null).show();
+                if (switcher.isChecked()) {
+                    Toast.makeText(MainActivity.this, "ininini", Toast.LENGTH_SHORT).show();
+                    Log.d("Night mode", "onOptionsItemSelected: asdfasdf");
+                    System.out.println("in Ngiht Switch");
+                    int currentNightMode = getResources().getConfiguration().uiMode & Configuration.UI_MODE_NIGHT_MASK;
+
+                    getDelegate().setLocalNightMode(currentNightMode == Configuration.UI_MODE_NIGHT_NO
+                        ? AppCompatDelegate.MODE_NIGHT_YES : AppCompatDelegate.MODE_NIGHT_NO);
+                    // 同样需要调用recreate方法使之生效
+                    recreate();
+                } else {
+                    Toast.makeText(MainActivity.this, "ininini", Toast.LENGTH_SHORT).show();
+                    int currentNightMode = getResources().getConfiguration().uiMode & Configuration.UI_MODE_NIGHT_MASK;
+
+                    getDelegate().setLocalNightMode(currentNightMode == Configuration.UI_MODE_NIGHT_NO
+                        ? AppCompatDelegate.MODE_NIGHT_NO : AppCompatDelegate.MODE_NIGHT_YES);
+                    // 同样需要调用recreate方法使之生效
+                    recreate();
+
+                }
+            }
+        });
+        */
+
+
+
+        /*
+        SwitchCompat speedSwitch = (SwitchCompat) findViewById(R.id.night_pattern_switch);
+        speedSwitch.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            if (isChecked) {
+                Log.d("Night mode", "onOptionsItemSelected: asdfasdf");
+                System.out.println("in Ngiht Switch");
+                int currentNightMode = getResources().getConfiguration().uiMode & Configuration.UI_MODE_NIGHT_MASK;
+
+                getDelegate().setLocalNightMode(currentNightMode == Configuration.UI_MODE_NIGHT_NO
+                    ? AppCompatDelegate.MODE_NIGHT_YES : AppCompatDelegate.MODE_NIGHT_NO);
+                // 同样需要调用recreate方法使之生效
+                recreate();
+            } else {
+                int currentNightMode = getResources().getConfiguration().uiMode & Configuration.UI_MODE_NIGHT_MASK;
+
+                getDelegate().setLocalNightMode(currentNightMode == Configuration.UI_MODE_NIGHT_NO
+                    ? AppCompatDelegate.MODE_NIGHT_NO : AppCompatDelegate.MODE_NIGHT_YES);
+                // 同样需要调用recreate方法使之生效
+                recreate();
+
+            }
+        });*/
         return super.onCreateOptionsMenu(menu);
     }
 
@@ -142,26 +241,9 @@ public class MainActivity extends BaseDrawerLayoutActivity {
                 AboutActivity.startAboutActivity(this);
                 return true;
             case R.id.night_pattern_switch:
-                SwitchCompat speedSwitch = (SwitchCompat) findViewById(R.id.night_pattern_switch);
-                speedSwitch.setOnCheckedChangeListener((buttonView, isChecked) -> {
-                    if (isChecked) {
-                        System.out.println("in Ngiht Switch");
-                        int currentNightMode = getResources().getConfiguration().uiMode & Configuration.UI_MODE_NIGHT_MASK;
+                android.widget.Toast.makeText(this, "ininin", Toast.LENGTH_SHORT).show();
 
-                        getDelegate().setLocalNightMode(currentNightMode == Configuration.UI_MODE_NIGHT_NO
-                            ? AppCompatDelegate.MODE_NIGHT_YES : AppCompatDelegate.MODE_NIGHT_NO);
-                        // 同样需要调用recreate方法使之生效
-                        recreate();
-                    } else {
-                        int currentNightMode = getResources().getConfiguration().uiMode & Configuration.UI_MODE_NIGHT_MASK;
-
-                        getDelegate().setLocalNightMode(currentNightMode == Configuration.UI_MODE_NIGHT_NO
-                            ? AppCompatDelegate.MODE_NIGHT_NO : AppCompatDelegate.MODE_NIGHT_YES);
-                        // 同样需要调用recreate方法使之生效
-                        recreate();
-
-                    }
-                });
+                Log.d("night mode", "onOptionsItemSelected: asdfasdfasdf");
 
 
 
@@ -186,7 +268,8 @@ public class MainActivity extends BaseDrawerLayoutActivity {
             finish();
         } else {// 提示用户退出
             customTime = System.currentTimeMillis();
-            Toast.showShort(mContext, "再按一次退出软件");
+            Toast.makeText(mContext,"再按一次退出软件",Toast.LENGTH_SHORT).show();
+            //Toast.showShort(mContext, "再按一次退出软件");
         }
     }
 
