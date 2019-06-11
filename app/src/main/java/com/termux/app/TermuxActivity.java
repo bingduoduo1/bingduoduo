@@ -89,7 +89,6 @@ import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.viewpager.widget.PagerAdapter;
 import androidx.viewpager.widget.ViewPager;
 
-
 import android.view.View.OnClickListener;
 
 
@@ -114,7 +113,7 @@ import static android.content.ContentValues.TAG;
  * important!
  * 这个活动控制terminal 模拟器
  */
-public final class TermuxActivity extends Activity implements ServiceConnection  {
+public final class TermuxActivity extends Activity implements ServiceConnection {
 
 
     //长按视图弹出上下文菜单
@@ -169,7 +168,7 @@ public final class TermuxActivity extends Activity implements ServiceConnection 
 
 
     //冰多多
-    private GestureDetector mGestureDetector;
+    //private GestureDetector mGestureDetector;
     SpeechRecognitionIat mRecognition;
     Handler han = new Handler() {
 
@@ -239,8 +238,8 @@ public final class TermuxActivity extends Activity implements ServiceConnection 
 
     void checkForFontAndColors() {
         try {
-            @SuppressLint("SdCardPath") File fontFile = new File("/data/data/com.termux/files/home/.termux/font.ttf");//defalut is "/data/data/com.termux/files/home/.termux/font.ttf");
-            @SuppressLint("SdCardPath") File colorsFile = new File("/data/data/com.termux/files/home/.termux/colors.properties");//default is /data/data/com.termux/files/home/.termux/colors.properties");
+            @SuppressLint("SdCardPath") File fontFile = new File("/data/data/com.bingduoduo/files/home/.termux/font.ttf");//defalut is "/data/data/com.termux/files/home/.termux/font.ttf");
+            @SuppressLint("SdCardPath") File colorsFile = new File("/data/data/com.bingduoduo/files/home/.termux/colors.properties");//default is /data/data/com.termux/files/home/.termux/colors.properties");
 
             final Properties props = new Properties();
             if (colorsFile.isFile()) {
@@ -457,13 +456,12 @@ public final class TermuxActivity extends Activity implements ServiceConnection 
                        Message message = new Message();
                        message.what=0;
                        han.sendMessageDelayed(message,800);
-                            //松开事件发生后执行代码的区域
-                            break;
+                       break;
                     }
                     default:
                         break;
                 }
-                return true;
+                return false;//设置成false的话, btn对象自己的onEvent方法就能够被调用,触感也就有了
             }
         });
 
@@ -477,19 +475,20 @@ public final class TermuxActivity extends Activity implements ServiceConnection 
         Log.d(TAG, "onCreate: " + getFilesDir()+"---------------------------");
 
         // Create an object of our Custom Gesture Detector Class
-        CustomGestureDetector customGestureDetector = new CustomGestureDetector();
+        //CustomGestureDetector customGestureDetector = new CustomGestureDetector();
         // Create a GestureDetector
-        mGestureDetector = new GestureDetector(this, customGestureDetector);
+        //mGestureDetector = new GestureDetector(this, customGestureDetector);
         // Attach listeners that'll be called for double-tap and related gestures
     }
     //end onCreate
 
     @Override
     public boolean onTouchEvent(MotionEvent event) {
-        mGestureDetector.onTouchEvent(event);
+        //mGestureDetector.onTouchEvent(event);
         return super.onTouchEvent(event);
     }
 
+    //bingduoduo custom gesture detector, useless tmp
     class CustomGestureDetector implements GestureDetector.OnGestureListener {
         @Override
         public boolean onDown(MotionEvent e) {
