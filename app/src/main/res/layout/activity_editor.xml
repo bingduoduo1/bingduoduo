@@ -40,7 +40,7 @@
                 android:id="@+id/pager"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:background="@color/white"
+                android:background="@color/colorDivider"
                 tools:layout_conversion_absoluteHeight="675dp"
                 tools:layout_conversion_absoluteWidth="411dp"
                 tools:layout_editor_absoluteX="0dp"

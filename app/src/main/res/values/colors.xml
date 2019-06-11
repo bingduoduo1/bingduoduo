@@ -23,18 +23,18 @@
     <color name="colorPrimaryDarkReal">#4D342B</color>
     <color name="colorPrimaryLight">#CFD8DC</color>
     <-->
-    <color name="colorPrimary">#5f5f5f</color>
-    <color name="colorPrimary66">#858282</color>
-    <color name="colorPrimaryTransparent">#757272</color>
-    <color name="colorPrimaryDark">#afa9a9</color>
-    <color name="colorPrimaryDarkReal">#a3a1b4</color>
+    <color name="colorPrimary">#000000</color>
+    <color name="colorPrimary66">#000000</color>
+    <color name="colorPrimaryTransparent">#000000</color>
+    <color name="colorPrimaryDark">#000000</color>
+    <color name="colorPrimaryDarkReal">#000000</color>
     <color name="colorPrimaryLight">#D8DCDD</color>
 
     <!--一般用于colorPrimary为背景的文字颜色-->
     <color name="colorAccent">#727272</color>
     <color name="colorPrimaryText">#212121</color>
     <color name="colorSecondaryText">#727272</color>
-    <color name="colorDivider">#B6B6B6</color>
+    <color name="colorDivider">#666666</color>
 
     <color name="colorDialogMessage">#8a000000</color>
 
@@ -53,12 +53,12 @@
     <color name="pink">#FFC0CB</color>
     <color name="orange">#FFA500</color>
 
-    <color name="background">#E1E1E1</color>
+    <color name="background">#B6B6B6</color>
 
 
     <color name="c_7c7c7c">#7c7c7c</color>
     <color name="c_595959">#595959</color>
-    <color name="c_e1e1e1">#e1e1e1</color>
+    <color name="c_e1e1e1">#B6B6B6</color>
 
 
 </resources>
