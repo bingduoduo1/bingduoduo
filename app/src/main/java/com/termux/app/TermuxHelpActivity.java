@@ -12,6 +12,8 @@ import android.webkit.WebViewClient;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 
+import androidx.appcompat.app.AppCompatActivity;
+
 /** Basic embedded browser for viewing help pages. */
 
 /**
@@ -19,7 +21,7 @@ import android.widget.RelativeLayout;
  * 嵌入的浏览器用来浏览帮助页面
  * 但我并没有找到帮助页面
  */
-public final class TermuxHelpActivity extends Activity {
+public final class TermuxHelpActivity extends AppCompatActivity {
 
     WebView mWebView;
 
