@@ -13,15 +13,7 @@ public abstract class ServerTool implements ServerCommunicationInterface {
     protected void setTempFileName(String name) {
         mTempFileName = name;
     }
-    @Override
-    public void sendMessageByPath(String localPath, String serverPath) {
 
-    }
-
-    @Override
-    public void receiveMessageByPath(String localPath, String serverPath) {
-
-    }
 
     @Override
     public void sendMessage(String info, String serverPath) {
@@ -54,7 +46,7 @@ public abstract class ServerTool implements ServerCommunicationInterface {
                 if (temp == null) {
                     break;
                 } else {
-                    buffer.append(temp);
+                    buffer.append(temp+"\n");
                 }
             }
             info = buffer.toString();
