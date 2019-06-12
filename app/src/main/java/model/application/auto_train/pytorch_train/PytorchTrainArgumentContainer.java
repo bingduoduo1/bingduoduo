@@ -37,8 +37,9 @@ public class PytorchTrainArgumentContainer implements ArgumentContainerInterface
     }
 
     @Override
-    public boolean isValid() {
+    public boolean isValid(String errContent) {
         if (!configKeyCheck()) {
+            errContent = "key check error";
             return false;
         }
         for(PytorchTrainArgument tmp: mConfigMap.values()) {
@@ -46,6 +47,7 @@ public class PytorchTrainArgumentContainer implements ArgumentContainerInterface
                 tmp.validationCheck();
             } catch (GlobalException e) {
                 System.err.println(e.getMessage());
+                errContent = e.getMessage();
                 return false;
             }
         }

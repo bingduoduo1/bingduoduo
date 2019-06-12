@@ -98,6 +98,8 @@ import android.view.View.OnClickListener;
 import mehdi.sakout.fancybuttons.FancyButton;
 import model.application.auto_train.base_interface.ArgumentContainerInterface;
 import model.application.auto_train.pytorch_train.PytorchTrainArgumentContainer;
+import model.application.auto_train.wrapper.BaseWarpperInterface;
+import model.application.auto_train.wrapper.PytorchTrainWrapper;
 
 import static android.content.ContentValues.TAG;
 
@@ -193,8 +195,7 @@ public final class TermuxActivity extends AppCompatActivity implements ServiceCo
     };
     int mBellSoundId;
     private SpeechRecognitionIat mRecognition;
-    private String mPytorchTrainConfigFilePath = "pytorch_train_config.yaml";
-    private ArgumentContainerInterface mPytorchTrainContainer = new PytorchTrainArgumentContainer(mPytorchTrainConfigFilePath);
+    private BaseWarpperInterface mAutoTrainWrapper = PytorchTrainWrapper.createWrapper();
     private SpeechCallMode mSpeechMode = SpeechCallMode.NORMAL;
     private Handler han = new Handler() {
 

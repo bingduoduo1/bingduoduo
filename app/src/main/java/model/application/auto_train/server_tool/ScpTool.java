@@ -25,7 +25,6 @@ public class ScpTool extends ServerTool {
     @Override
     public void sendMessageByPath(String localPath, String serverPath) {
         String shell_cmd = "sshpass -p xxx scp " + localPath + " nyz@10.136.47.63:" + serverPath + "\n";
-        System.out.println(shell_cmd);
         this.scpExec(shell_cmd);
     }
 
