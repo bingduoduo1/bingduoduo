@@ -45,6 +45,8 @@ public class PytorchDictionary implements BaseDictionaryInterface {
                 new InputAction(ActionType.INPUT, ExecutePlaceType.TRAIN_CONFIG, "RMSprop"));
             mDictionary.put(new CustomWord("show", NatureLanguageType.ENGLISH),
                 new CommandAction(ActionType.COMMAND, ExecutePlaceType.TRAIN_CONFIG, "show"));
+            mDictionary.put(new CustomWord("展示", NatureLanguageType.CHINESE),
+                new CommandAction(ActionType.COMMAND, ExecutePlaceType.TRAIN_CONFIG, "show"));
             mDictionary.put(new CustomWord("check", NatureLanguageType.ENGLISH),
                 new CommandAction(ActionType.COMMAND, ExecutePlaceType.TRAIN_CONFIG, "check"));
             mDictionary.put(new CustomWord("send", NatureLanguageType.ENGLISH),

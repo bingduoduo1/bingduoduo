@@ -61,7 +61,7 @@ public class OptimAlgorithm extends PytorchTrainArgument {
 
     @Override
     public String toString() {
-        return String.format(Locale.ENGLISH,"init_lr: %s\n", Algorithm.toString(mActualAlgorithm));
+        return String.format(Locale.ENGLISH,"optimization Algorithm: %s\n", Algorithm.toString(mActualAlgorithm));
     }
 
     @Override
@@ -73,7 +73,7 @@ public class OptimAlgorithm extends PytorchTrainArgument {
 
     @Override
     public String getDefaultValue() {
-        return "default optim algorithm is " + Algorithm.toString(Algorithm.SGD_momentum);
+        return "[default optim algorithm is " + Algorithm.toString(Algorithm.SGD_momentum) + "]\n";
     }
 
     @Override

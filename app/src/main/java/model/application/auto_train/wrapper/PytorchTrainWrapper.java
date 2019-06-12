@@ -1,20 +1,25 @@
 package model.application.auto_train.wrapper;
 
+import android.util.Log;
+
 import model.application.auto_train.base_interface.ArgumentContainerInterface;
 import model.application.auto_train.pytorch_train.PytorchTrainArgumentContainer;
 import model.application.auto_train.server_tool.ScpTool;
 import model.config.GlobalException;
 
 public class PytorchTrainWrapper implements BaseWarpperInterface, ArgumentContainerInterface {
+    private static final String TAG = PytorchTrainWrapper.class.getName();
     private static PytorchTrainWrapper mWrapper = new PytorchTrainWrapper();
     private PytorchTrainArgumentContainer mContainer;
     private ScpTool mScpTool;
-    private final String mOutputConfigFilePath = "pytorch_train.yaml";
+    private final String mBasePath = "/data/data/com.bingduoduo/files/home/";
+    private final String mOutputConfigFilePath = mBasePath + "pytorch_train.yaml";
     private final String mServerConfigPath = "/Users/nyz/StudioProjects/bingdoduo/config.txt";
-    private final String mLocalInfoPath = "info.txt";
+    private final String mLocalInfoPath = mBasePath + "info.txt";
     private final String mServerInfoPath = "/Users/nyz/StudioProjects/bingdoduo/info.txt";
     private PytorchTrainWrapper() {
         mContainer = new PytorchTrainArgumentContainer(mOutputConfigFilePath);
+        mContainer.saveObject2File();
         mScpTool = ScpTool.createScpTool();
     }
 
@@ -49,13 +54,14 @@ public class PytorchTrainWrapper implements BaseWarpperInterface, ArgumentContai
 
     @Override
     public String getShowConfigInfo() {
+        Log.d(TAG, "nyzs ");
         return "cat " + mOutputConfigFilePath + "\n";
     }
 
     @Override
     public String checkConfig() {
         String content = null;
-        if (mContainer.isValid(content)) {
+        if (!mContainer.isValid(content)) {
             return "echo [check config fail: " + content + "]\n";
         } else {
             return "echo [check config success]\n";

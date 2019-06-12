@@ -4,6 +4,7 @@ package model.dictionary.application;
 import model.dictionary.exception.DictionaryException;
 import model.dictionary.exception.NotImplementedError;
 import model.dictionary.model.BaseAction;
+import model.dictionary.model.CommandAction;
 import model.dictionary.model.InputAction;
 
 public class GlobalDictionary implements LookUpInterface {
@@ -31,6 +32,9 @@ public class GlobalDictionary implements LookUpInterface {
         if (actionRef != null) {
             if (actionRef instanceof InputAction) {
                 action.append(((InputAction) actionRef).getContent());
+                return;
+            } else if (actionRef instanceof CommandAction) {
+                action.append(((CommandAction) actionRef).getContent());
                 return;
             } else {
                 throw new DictionaryException("invalid instance class name: " + actionRef.getClass().getSimpleName());
@@ -63,7 +67,7 @@ public class GlobalDictionary implements LookUpInterface {
                 throw new DictionaryException("invalid instance class name: " + actionRef.getClass().getSimpleName());
             }
         } else {
-            throw new DictionaryException("Action Ref is Null!");
+            throw new DictionaryException("Action Ref is Null! word: " + word + "\n");
         }
     }
 

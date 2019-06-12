@@ -11,7 +11,7 @@ public abstract class CommandActionHelper extends GlobalHelper {
         add("show");
         add("check");
         add("send");
-        add("receiver");
+        add("receive");
     }};
     public static boolean commandActionContentCheck(String content) {
         return (mCommandList.contains(content) ||
