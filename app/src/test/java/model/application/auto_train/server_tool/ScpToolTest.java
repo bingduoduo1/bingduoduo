@@ -14,7 +14,7 @@ public class ScpToolTest {
     public void createScpTool() {
 //        ScpTool expectedScpTool = new ScpTool();
         expectedScpTool = ScpTool.createScpTool();
-        assertTrue(expectedScpTool.mTempFileName.equals("scp_temp_file.txt"));
+        assertTrue(expectedScpTool.getTempFileName().equals("scp_temp_file.txt"));
         assertNull(expectedScpTool.getExecRecord());
     }
 
