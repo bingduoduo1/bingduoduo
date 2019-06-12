@@ -53,6 +53,17 @@ public class PytorchTrainWrapper implements BaseWarpperInterface, ArgumentContai
     }
 
     @Override
+    public String update(String key, String value) {
+        try {
+            this.updateValue(key, value);
+            mContainer.saveObject2File();
+            return "update " + key + "OK\n";
+        } catch (GlobalException e) {
+            return "update fail!---" + e.getMessage();
+        }
+    }
+
+    @Override
     public String getShowConfigInfo() {
         return "cat " + mOutputConfigFilePath + "\n";
     }

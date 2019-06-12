@@ -285,9 +285,14 @@ public class SpeechRecognitionIat extends Activity implements SpeechRecognitionI
         try {
             Log.d(LOG_TAG, "nyz ook up word"+mParserResult.toString());
             mLookUpHandle.exactLookUpWord(mParserResult.toString().toLowerCase(), ret);
-        } catch (DictionaryException e){
-            e.printStackTrace();
-            Log.e(LOG_TAG, "nyz not found"+mParserResult.toString());
+        } catch (DictionaryException e1){
+            try {
+                mLookUpHandle.fuzzyLookUpWord(mParserResult.toString(), ret);
+            } catch (DictionaryException e2) {
+                e1.printStackTrace();
+                e2.printStackTrace();
+                Log.e(LOG_TAG, "nyz not found"+mParserResult.toString());
+            }
         }
         mParserResult.setLength(0);
 

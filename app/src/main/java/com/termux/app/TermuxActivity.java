@@ -1117,6 +1117,8 @@ public final class TermuxActivity extends AppCompatActivity implements ServiceCo
 
     private class HandlerAutoTrain extends Handler {
         private boolean initFlag = true;
+        private final String mKeyOptim = "optim";
+        private final String mKeyLr = "learning_rate";
         @Override
         public void handleMessage(Message msg) {
             Log.d(TAG, "get action handle message");
@@ -1166,8 +1168,31 @@ public final class TermuxActivity extends AppCompatActivity implements ServiceCo
                         ts.write(actionContent);
                         break;
                     }
-                    default:
-                        ts.write(mret.toString());
+                    default: {
+                        String content = mret.toString();
+                        //Log.d(TAG, "modify:default"+content);
+                        if (content.startsWith(mKeyOptim)) {
+                            int loc = content.indexOf("=");
+                            String value = content.substring(loc+1);
+                            if (value.equals("invalid")) {
+
+                            } else {
+                                String result = mAutoTrainWrapper.update("optim_algorithm", value);
+                                Log.d(TAG, "modify1:"+result);
+                            }
+                        } else if (content.startsWith(mKeyLr)) {
+                            int loc = content.indexOf("=");
+                            String value = content.substring(loc+1);
+                            if (value.equals("invalid")) {
+
+                            } else {
+                                String result = mAutoTrainWrapper.update("learning_rate", value);
+                                Log.d(TAG, "modify2:"+result);
+                            }
+                        } else {
+                            ts.write(mret.toString());
+                        }
+                    }
 
                 }
                 mret.setLength(0);

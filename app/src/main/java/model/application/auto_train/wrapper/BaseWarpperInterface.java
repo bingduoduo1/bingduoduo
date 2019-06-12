@@ -8,4 +8,5 @@ public interface BaseWarpperInterface {
     String getSendConfigCmd();
     String receiveConfig();
     String getReceiveConfigCmd();
+    String update(String key, String value);
 }
