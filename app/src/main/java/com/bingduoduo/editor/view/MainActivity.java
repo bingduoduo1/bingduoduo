@@ -27,7 +27,7 @@ import android.widget.CompoundButton;
 import android.widget.Switch;
 import android.widget.Toast;
 
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.github.clans.fab.FloatingActionButton;
 import com.termux.R;
 import com.bingduoduo.editor.base.BaseDrawerLayoutActivity;
 import com.bingduoduo.editor.base.BaseFragment;
@@ -40,31 +40,33 @@ import com.termux.app.TermuxActivity;
 public class MainActivity extends BaseDrawerLayoutActivity {
     private BaseFragment mCurrentFragment;
     private int currentMenuId;
+    private boolean isNightMode = false;
+    private MenuItem mSwitchItem;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        if(savedInstanceState != null) {
+            isNightMode = savedInstanceState.getBoolean("isNightMode");
+            String tmp = savedInstanceState.getString("isNightModeString");
 
+            Log.d("MainActivity", "onCreate: "+(isNightMode?"Night":"Day") + "String:"+tmp);
+            if(isNightMode){
+                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
+
+            }else{
+                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
+            }
+
+        }
         this.requestPermissions();
-        // 默认设置为日间模式
-        //AppCompatDelegate.setDefaultNightMode(
-        //    AppCompatDelegate.MODE_NIGHT_NO);
-
-        // 在 FolderMangaerFragment 用
-        // @OnClick(R.id.menu2_fab_switch)//default is R.id.fab
-        // 代替了这个fab
-        //FloatingActionButton fab_switch = (FloatingActionButton)findViewById(R.id.switch_btn_editor);
-        //fab_switch.setOnClickListener(new View.OnClickListener(){
-        //    @Override
-        //    public void onClick(View v){
-        //        Intent intent = new Intent(MainActivity.this, TermuxActivity.class);
-        //        startActivity(intent);
-        //    }
-        //});
     }
 
 
+    public boolean getIsNightMode(){
+        return isNightMode;
+    }
 
     private void requestPermissions(){
         try {
@@ -135,35 +137,33 @@ public class MainActivity extends BaseDrawerLayoutActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
 
+        Log.d("MainActivity", "onCreateOptionsMenu: =================");
+        //getMenuInflater().inflate(R.menu.menu_main_drawer, menu);
+        //mSwitchItem = menu.findItem(R.id.night_pattern_switch);
+        //Switch switcher= (Switch) mSwitchItem.getActionView().findViewById(R.id.switcher);
+        Toast.makeText(this, isNightMode?"Night":"Day",Toast.LENGTH_SHORT).show();
         Switch switcher = (Switch) findViewById(R.id.switcher);
-        //switcher.setChecked(true);
+        switcher.setChecked(isNightMode);
         switcher.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 //Toast.makeText(MainActivity.this, isChecked?"Yes":"No", Toast.LENGTH_SHORT).show();
                 if (isChecked){
-                    Toast.makeText(MainActivity.this, isChecked?"Yes":"No", Toast.LENGTH_SHORT).show();
-                    Log.d("Night mode", "onOptionsItemSelected: asdfasdf");
+                    isNightMode = true;
+                    Toast.makeText(MainActivity.this, isNightMode?"Yes":"No", Toast.LENGTH_SHORT).show();
+                    Log.d("MainActivity", "onOptionsItemSelected: isChecked True");
                     System.out.println("in Ngiht Switch");
                     int currentNightMode = getResources().getConfiguration().uiMode & Configuration.UI_MODE_NIGHT_MASK;
-                    //getDelegate().setLocalNightMode( AppCompatDelegate.MODE_NIGHT_YES );
                     getDelegate().setLocalNightMode(currentNightMode == Configuration.UI_MODE_NIGHT_NO
                         ? AppCompatDelegate.MODE_NIGHT_YES : AppCompatDelegate.MODE_NIGHT_NO);
                     // 同样需要调用recreate方法使之生效
-
-
-                    //Intent intent = new Intent(MainActivity.this, MainActivity.class);
-                    //startActivity(intent);
-                    //startActivity(new Intent( this, MainActivity.class));
-                    //overridePendingTransition(0, 0);
-                    //finish();
-
                     recreate();
                     //Todo
                 }else {
+                    isNightMode = false;
                     //Toast.makeText(MainActivity.this, "ininini", Toast.LENGTH_SHORT).show();
+                    Log.d("MainActivity", "onOptionsItemSelected: isChecked false");
                     int currentNightMode = getResources().getConfiguration().uiMode & Configuration.UI_MODE_NIGHT_MASK;
-                    //getDelegate().setLocalNightMode( AppCompatDelegate.MODE_NIGHT_NO);
                     getDelegate().setLocalNightMode(currentNightMode == Configuration.UI_MODE_NIGHT_NO
                         ? AppCompatDelegate.MODE_NIGHT_YES : AppCompatDelegate.MODE_NIGHT_NO);
                     // 同样需要调用recreate方法使之生效
@@ -173,61 +173,6 @@ public class MainActivity extends BaseDrawerLayoutActivity {
             }
         });
 
-
-        /*
-        switcher.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-                //Snackbar.make(v, (switcher.isChecked()) ? "is checked!!!" : "not checked!!!", Snackbar.LENGTH_SHORT).setAction("Action", null).show();
-                if (switcher.isChecked()) {
-                    Toast.makeText(MainActivity.this, "ininini", Toast.LENGTH_SHORT).show();
-                    Log.d("Night mode", "onOptionsItemSelected: asdfasdf");
-                    System.out.println("in Ngiht Switch");
-                    int currentNightMode = getResources().getConfiguration().uiMode & Configuration.UI_MODE_NIGHT_MASK;
-
-                    getDelegate().setLocalNightMode(currentNightMode == Configuration.UI_MODE_NIGHT_NO
-                        ? AppCompatDelegate.MODE_NIGHT_YES : AppCompatDelegate.MODE_NIGHT_NO);
-                    // 同样需要调用recreate方法使之生效
-                    recreate();
-                } else {
-                    Toast.makeText(MainActivity.this, "ininini", Toast.LENGTH_SHORT).show();
-                    int currentNightMode = getResources().getConfiguration().uiMode & Configuration.UI_MODE_NIGHT_MASK;
-
-                    getDelegate().setLocalNightMode(currentNightMode == Configuration.UI_MODE_NIGHT_NO
-                        ? AppCompatDelegate.MODE_NIGHT_NO : AppCompatDelegate.MODE_NIGHT_YES);
-                    // 同样需要调用recreate方法使之生效
-                    recreate();
-
-                }
-            }
-        });
-        */
-
-
-
-        /*
-        SwitchCompat speedSwitch = (SwitchCompat) findViewById(R.id.night_pattern_switch);
-        speedSwitch.setOnCheckedChangeListener((buttonView, isChecked) -> {
-            if (isChecked) {
-                Log.d("Night mode", "onOptionsItemSelected: asdfasdf");
-                System.out.println("in Ngiht Switch");
-                int currentNightMode = getResources().getConfiguration().uiMode & Configuration.UI_MODE_NIGHT_MASK;
-
-                getDelegate().setLocalNightMode(currentNightMode == Configuration.UI_MODE_NIGHT_NO
-                    ? AppCompatDelegate.MODE_NIGHT_YES : AppCompatDelegate.MODE_NIGHT_NO);
-                // 同样需要调用recreate方法使之生效
-                recreate();
-            } else {
-                int currentNightMode = getResources().getConfiguration().uiMode & Configuration.UI_MODE_NIGHT_MASK;
-
-                getDelegate().setLocalNightMode(currentNightMode == Configuration.UI_MODE_NIGHT_NO
-                    ? AppCompatDelegate.MODE_NIGHT_NO : AppCompatDelegate.MODE_NIGHT_YES);
-                // 同样需要调用recreate方法使之生效
-                recreate();
-
-            }
-        });*/
         return super.onCreateOptionsMenu(menu);
     }
 
@@ -241,12 +186,7 @@ public class MainActivity extends BaseDrawerLayoutActivity {
                 AboutActivity.startAboutActivity(this);
                 return true;
             case R.id.night_pattern_switch:
-                android.widget.Toast.makeText(this, "ininin", Toast.LENGTH_SHORT).show();
-
-                Log.d("night mode", "onOptionsItemSelected: asdfasdfasdf");
-
-
-
+                return true;
         }
         return super.onOptionsItemSelected(item);
     }
@@ -273,9 +213,46 @@ public class MainActivity extends BaseDrawerLayoutActivity {
         }
     }
 
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        //保存销毁之前的数据
+        outState.putBoolean("isNightMode",isNightMode);
+        outState.putString("isNightModeString",isNightMode?"Night":"Day");
+        Toast.makeText(this, isNightMode?"Night":"Day", Toast.LENGTH_SHORT).show();
+        Log.d("MainActivity", "onSaveInstanceState: " +  (isNightMode?"Night":"Day"));
+    }
+    @Override
+    protected void onRestoreInstanceState(Bundle savedInstanceState) {
+        super.onRestoreInstanceState(savedInstanceState);
+        //恢复数据
+        isNightMode = savedInstanceState.getBoolean("isNightMode");
+
+        //Switch switcher= (Switch) mSwitchItem.getActionView().findViewById(R.id.switcher);
+        //switcher.setChecked(isNightMode);
+        //Menu menu = (Menu)findViewById(R.menu.menu_main_drawer);
+        //MenuItem switchItem = menu.findItem(R.id.action_open_close_nfc);
+        //mSwitch = (Switch) switchItem.getActionView().findViewById(R.id.switchForActionBar);
 
 
+        //Switch switcher = (Switch) findViewById(R.id.switcher);
+        //switcher.setChecked(isNightMode);
 
+        Toast.makeText(this, isNightMode?"onRestore Night":"on restore Day", Toast.LENGTH_SHORT).show();
+        Log.d("MainActivity", "onRestoreInstanceState: " +  (isNightMode?"Night":"Day"));
+        //Switch switcher = (Switch)findViewById(R.id.switcher);
+        //Toast.makeText(this,"get savedInsanceState",Toast.LENGTH_SHORT).show();
+        //isNightMode = savedInstanceState.getBoolean("isNightMode");
+        Log.d("MainActivity", "onCreate: "+(isNightMode?"Night":"Day"));
+        //if(isNightMode){
+        //    AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
+        //    switcher.setChecked(true);
+
+        //}else{
+        //    AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
+        //    switcher.setChecked(false);
+        //}
+    }
 
 
 }

@@ -94,7 +94,7 @@
             android:layout_alignParentBottom="true"
             android:layout_marginEnd="55dp"
             android:layout_marginBottom="168dp"
-            android:src="@android:drawable/ic_btn_speak_now"
+            android:src="@drawable/ic_voice"
             app:backgroundTint="@color/divider_light"
             app:layout_anchorGravity="end|center"
             fab:fab_colorNormal="@color/colorPrimaryLight"

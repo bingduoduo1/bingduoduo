@@ -172,6 +172,7 @@ public final class TermuxActivity extends AppCompatActivity implements ServiceCo
 
     //冰多多
     //private GestureDetector mGestureDetector;
+    private boolean mIsNightMode = false;
     private SpeechRecognitionIat mRecognition;
     private boolean mOnAutoTrain = false;
     Handler han = new Handler() {
@@ -421,24 +422,14 @@ public final class TermuxActivity extends AppCompatActivity implements ServiceCo
 
 
 
-        // todo main
+        // todo main 冰多多
+        Intent intent = getIntent();
+        mIsNightMode = intent.getBooleanExtra("isNightMode", false);
+        //Toast.makeText(this,mIsNightMode?"get night":"get day", Toast.LENGTH_LONG).show();
+        Log.d(TAG, "onCreate: "+ (mIsNightMode?"getNight":"getDay"));
         SpeechUtility.createUtility(this, "appid=5c9cc920");//appid需要和sdk的id相匹配
         this.requestPermissions();
-        //if(null == mRecognizer){
-        //    Log.e("TermuxActivity", "onCreate:  Null!!!");
-        //}
-        //mRecognizer.setParameter(SpeechConstant.ENGINE_TYPE, mEngineType);
-
-        //this.initSpeechRecognizer();
-        //this.SetParam();
-        //mAsr = SpeechRecognizer.createRecognizer(TermuxActivity.this, mInitListener);
-        //mCloudGrammar = FucUtil.readFile(this,"grammar_sample.abnf","utf-8");
-
-
-        //mSharedPreferences = getSharedPreferences(getPackageName(),	MODE_PRIVATE);
-
         mRecognition = new SpeechRecognitionIat( TermuxActivity.this,"userwords");
-
         FloatingActionButton btn_voice = (FloatingActionButton)findViewById(R.id.menu_fab_voice);
         //Button btn_voice = (Button) findViewById(R.id.btn_voice);
 
@@ -480,6 +471,7 @@ public final class TermuxActivity extends AppCompatActivity implements ServiceCo
             @Override
             public void onClick(View v){
                 Intent intent = new Intent(TermuxActivity.this, MainActivity.class);
+                //intent.putExtra("isNightMode",mIsNightMode);
                 startActivity(intent);
             }
         });
@@ -840,7 +832,7 @@ public final class TermuxActivity extends AppCompatActivity implements ServiceCo
         mTerminalView.onScreenUpdated();// 可以在onStart中添加一些需要监听的动作
         if(mTerminalView!=null && getCurrentTermSession()!=null){// 没有用
             TerminalSession ss = getCurrentTermSession();
-            Toast.makeText(this, "hello", Toast.LENGTH_SHORT).show();
+            //Toast.makeText(this, "hello", Toast.LENGTH_SHORT).show();
         }
 
     }
