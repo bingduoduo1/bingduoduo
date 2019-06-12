@@ -23,6 +23,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.sql.SQLOutput;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -106,8 +107,11 @@ final class TermuxInstaller {
                     final List<Pair<String, String>> symlinks = new ArrayList<>(50);
 
                     final URL zipUrl = determineZipUrl();
+
                     InputStream bootInput = activity.getResources().openRawResource(R.raw.bootstrapaarch64);
                     try (ZipInputStream zipInput = new ZipInputStream(bootInput)) {
+
+
                     //try (ZipInputStream zipInput = new ZipInputStream(zipUrl.openStream())) {
                         ZipEntry zipEntry;
                         while ((zipEntry = zipInput.getNextEntry()) != null) {
@@ -183,10 +187,12 @@ final class TermuxInstaller {
                     activity.runOnUiThread(() -> {
                         try {
                             progress.dismiss();
+
                         } catch (RuntimeException e) {
                             // Activity already dismissed - ignore.
                         }
                     });
+
                 }
             }
         }.start();
@@ -202,7 +208,7 @@ final class TermuxInstaller {
     /** Get bootstrap zip url for this systems cpu architecture. */
     private static URL determineZipUrl() throws MalformedURLException {
         String archName = determineTermuxArchName();
-        return new URL("https://github.com/bingduoduo1/public_doc/raw/master/bootstraps/aarch64/bootstrap-aarch64.zip");
+        return new URL("https://github.com/bingduoduo1/public_doc/raw/master/bootstraps/aarch64/bootstrapaarch64.zip");
     }
 
     private static String determineTermuxArchName() {

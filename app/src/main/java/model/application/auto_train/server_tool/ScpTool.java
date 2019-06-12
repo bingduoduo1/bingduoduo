@@ -33,12 +33,12 @@ public class ScpTool extends ServerTool {
     }
 
     public String getSendCmd(String localPath, String serverPath) {
-        String shell_cmd = "sshpass -p \"nyz980314#\" scp " + localPath + " nyz@10.136.47.63:" + serverPath + "\n";
+        String shell_cmd = "sshpass -p xxx scp " + localPath + " nyz@10.136.47.63:" + serverPath + "\n";
         return shell_cmd;
     }
 
     public String getReceiveCmd(String localPath, String serverPath) {
-        String shell_cmd = "sshpass -p \"nyz980314#\" scp " + " nyz@10.136.47.63:" + serverPath + " " + localPath + "\n";
+        String shell_cmd = "sshpass -p xxx scp " + " nyz@10.136.47.63:" + serverPath + " " + localPath + "\n";
         return shell_cmd;
     }
 
