@@ -90,12 +90,14 @@ public class PytorchTrainArgumentContainer implements ArgumentContainerInterface
         File output_file = new File(mOutputFilePath);
         FileWriter writer = null;
         try {
-            output_file.createNewFile();
+            boolean ret = output_file.createNewFile();
+            Log.d(TAG, "create file:" + ret);
             writer = new FileWriter(output_file);
             writer.write(buffer.toString());
             writer.flush();
             writer.close();
         } catch (IOException e){
+            Log.d(TAG, "create file error");
             e.printStackTrace();
         }
     }

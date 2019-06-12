@@ -51,6 +51,8 @@ public class PytorchDictionary implements BaseDictionaryInterface {
                 new CommandAction(ActionType.COMMAND, ExecutePlaceType.TRAIN_CONFIG, "check"));
             mDictionary.put(new CustomWord("send", NatureLanguageType.ENGLISH),
                 new CommandAction(ActionType.COMMAND, ExecutePlaceType.TRAIN_CONFIG, "send"));
+            mDictionary.put(new CustomWord("发送", NatureLanguageType.CHINESE),
+                new CommandAction(ActionType.COMMAND, ExecutePlaceType.TRAIN_CONFIG, "send"));
             mDictionary.put(new CustomWord("receive", NatureLanguageType.ENGLISH),
                 new CommandAction(ActionType.COMMAND, ExecutePlaceType.TRAIN_CONFIG, "receive"));
         } catch (DictionaryException e) {

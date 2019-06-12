@@ -1114,10 +1114,15 @@ public final class TermuxActivity extends AppCompatActivity implements ServiceCo
     }
 
     private class HandlerAutoTrain extends Handler {
+        private boolean initFlag = true;
         @Override
         public void handleMessage(Message msg) {
             Log.d(TAG, "get action handle message");
             mret.append(mRecognition.getAction());
+            if (initFlag) {
+                mAutoTrainWrapper.init();
+                initFlag = false;
+            }
             Log.d(TAG, "get action handle message:" +mret.toString());
             mRecognition.stopRecognize();
             doAction();
@@ -1142,18 +1147,20 @@ public final class TermuxActivity extends AppCompatActivity implements ServiceCo
                         break;
                     }
                     case "check": {
-                        Log.d(TAG, "check in");
                         actionContent = mAutoTrainWrapper.checkConfig();
+                        //ts.write("apt-get update\n");
+                        //ts.write("apt install openssh\nY\nY\n\n");
+                        //ts.write(("apt install sshpass\nY\nY\n"));
                         ts.write(actionContent);
                         break;
                     }
                     case "send": {
-                        mAutoTrainWrapper.sendConfig();
-                        ts.write("send config");
+                        String cmd = mAutoTrainWrapper.getSendConfigCmd();
+                        ts.write(cmd);
                         break;
                     }
                     case "receive": {
-                        actionContent = mAutoTrainWrapper.receiveConfig();
+                        actionContent = mAutoTrainWrapper.getReceiveConfigCmd();
                         ts.write(actionContent);
                         break;
                     }
