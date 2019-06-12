@@ -7,6 +7,7 @@ import model.dictionary.exception.NotImplementedError;
 import model.dictionary.model.ActionType;
 import model.dictionary.model.BaseAction;
 import model.dictionary.model.BaseWord;
+import model.dictionary.model.CommandAction;
 import model.dictionary.model.CustomWord;
 import model.dictionary.model.ExecutePlaceType;
 import model.dictionary.model.InputAction;
@@ -42,6 +43,14 @@ public class PytorchDictionary implements BaseDictionaryInterface {
                 new InputAction(ActionType.INPUT, ExecutePlaceType.TRAIN_CONFIG, "Adam"));
             mDictionary.put(new CustomWord("RMS", NatureLanguageType.ENGLISH),
                 new InputAction(ActionType.INPUT, ExecutePlaceType.TRAIN_CONFIG, "RMSprop"));
+            mDictionary.put(new CustomWord("show", NatureLanguageType.ENGLISH),
+                new CommandAction(ActionType.COMMAND, ExecutePlaceType.TRAIN_CONFIG, "show"));
+            mDictionary.put(new CustomWord("check", NatureLanguageType.ENGLISH),
+                new CommandAction(ActionType.COMMAND, ExecutePlaceType.TRAIN_CONFIG, "check"));
+            mDictionary.put(new CustomWord("send", NatureLanguageType.ENGLISH),
+                new CommandAction(ActionType.COMMAND, ExecutePlaceType.TRAIN_CONFIG, "send"));
+            mDictionary.put(new CustomWord("receive", NatureLanguageType.ENGLISH),
+                new CommandAction(ActionType.COMMAND, ExecutePlaceType.TRAIN_CONFIG, "receive"));
         } catch (DictionaryException e) {
             e.printStackTrace();
         }
