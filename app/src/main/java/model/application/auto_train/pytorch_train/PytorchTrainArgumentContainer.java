@@ -13,9 +13,10 @@ import model.application.auto_train.pytorch_train.train_argument.BatchSize;
 import model.application.auto_train.pytorch_train.train_argument.LearningRate;
 import model.application.auto_train.pytorch_train.train_argument.OptimAlgorithm;
 import model.config.GlobalException;
+import model.dictionary.application.PytorchDictionary;
 
 public class PytorchTrainArgumentContainer implements ArgumentContainerInterface {
-    private static final String defaultTemplateFilePath = "config_pytorch_train.yaml";
+    private static final String defaultTemplateFilePath = "default_config_pytorch_train.yaml";
     private String mOutputFilePath;
     private static ArrayList<String> trainArgumentKey = new ArrayList<String>(){{
         add("learning_rate");
@@ -23,11 +24,11 @@ public class PytorchTrainArgumentContainer implements ArgumentContainerInterface
         add("optim_algorithm");
     }};
     private HashMap<String, PytorchTrainArgument> mConfigMap;
-    public void PytorchTrainArgumentContainer(String outputFilePath) {
-        PytorchTrainArgumentContainer(defaultTemplateFilePath, outputFilePath);
+    public PytorchTrainArgumentContainer(String outputFilePath) {
+        this(defaultTemplateFilePath, outputFilePath);
     }
 
-    public void PytorchTrainArgumentContainer(String templateFilePath, String outputFilePath) {
+    public PytorchTrainArgumentContainer(String templateFilePath, String outputFilePath) {
         mOutputFilePath = outputFilePath;
         // TODO: load config from file
         mConfigMap.put("learning_rate", new LearningRate());
