@@ -23,7 +23,7 @@ public class PytorchTrainArgumentContainer implements ArgumentContainerInterface
         add("batch_size");
         add("optim_algorithm");
     }};
-    private HashMap<String, PytorchTrainArgument> mConfigMap;
+    private HashMap<String, PytorchTrainArgument> mConfigMap = new HashMap<String, PytorchTrainArgument>();
     public PytorchTrainArgumentContainer(String outputFilePath) {
         this(defaultTemplateFilePath, outputFilePath);
     }
