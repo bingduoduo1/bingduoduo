@@ -85,4 +85,17 @@ public class PytorchTrainArgumentContainer implements ArgumentContainerInterface
         out.flush();
         out.close();
     }
+
+    @Override
+    public void updateValue(String key, String value) throws GlobalException {
+        if (mConfigMap.containsKey(key)) {
+            try {
+                mConfigMap.get(key).updateValue(value);
+            } catch (GlobalException e) {
+                throw e;
+            }
+        } else {
+            throw new GlobalException("invalid pytorch train argument");
+        }
+    }
 }
