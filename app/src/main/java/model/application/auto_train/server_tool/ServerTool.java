@@ -9,7 +9,7 @@ import java.io.IOException;
 import model.application.auto_train.base_interface.ServerCommunicationInterface;
 
 public abstract class ServerTool implements ServerCommunicationInterface {
-    private String mTempFileName;
+    public String mTempFileName;
     protected void setTempFileName(String name) {
         mTempFileName = name;
     }
