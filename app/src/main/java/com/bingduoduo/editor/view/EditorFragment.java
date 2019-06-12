@@ -212,7 +212,7 @@ public class EditorFragment extends BaseFragment implements IEditorFragmentView,
 
     @Override
     public void onReadSuccess(@NonNull String name, @NonNull String content) {
-        mPerformNameEdit.setDefaultText(name.substring(0, name.lastIndexOf(".")));
+        mPerformNameEdit.setDefaultText(name);
         mPerformEdit.setDefaultText(content);
         if (content.length() > 0) {
         }
