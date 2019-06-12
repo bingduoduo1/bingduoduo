@@ -1116,21 +1116,47 @@ public final class TermuxActivity extends AppCompatActivity implements ServiceCo
     private class HandlerAutoTrain extends Handler {
         @Override
         public void handleMessage(Message msg) {
+            Log.d(TAG, "get action handle message");
             mret.append(mRecognition.getAction());
+            Log.d(TAG, "get action handle message:" +mret.toString());
             mRecognition.stopRecognize();
             doAction();
         }
 
         private void doAction() {
+            Log.d(TAG, "do action auto train in");
             TerminalSession ts = getCurrentTermSession();
             if (mret.length() == 0) {
                 ts.write("\n");
             } else {
-
+                String actionContent;
+                Log.d(TAG, "mret str"+mret.toString());
                 switch (mret.toString()) {
+
                     case "backspace":
                         ts.writeCodePoint(false, 127);
                         break;
+                    case "show": {
+                        actionContent = mAutoTrainWrapper.getShowConfigInfo();
+                        ts.write(actionContent);
+                        break;
+                    }
+                    case "check": {
+                        Log.d(TAG, "check in");
+                        actionContent = mAutoTrainWrapper.checkConfig();
+                        ts.write(actionContent);
+                        break;
+                    }
+                    case "send": {
+                        mAutoTrainWrapper.sendConfig();
+                        ts.write("send config");
+                        break;
+                    }
+                    case "receive": {
+                        actionContent = mAutoTrainWrapper.receiveConfig();
+                        ts.write(actionContent);
+                        break;
+                    }
                     default:
                         ts.write(mret.toString());
 

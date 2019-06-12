@@ -62,7 +62,7 @@ public class GlobalDictionary implements LookUpInterface {
             } else {
                 throw new DictionaryException("invalid instance class name: " + actionRef.getClass().getSimpleName());
             }
-        }else{
+        } else {
             throw new DictionaryException("Action Ref is Null!");
         }
     }
