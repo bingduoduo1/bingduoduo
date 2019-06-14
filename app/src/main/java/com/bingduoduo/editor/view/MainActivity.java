@@ -39,20 +39,15 @@ import com.termux.app.TermuxActivity;
  */
 public class MainActivity extends BaseDrawerLayoutActivity {
     private BaseFragment mCurrentFragment;
-<<<<<<< HEAD
-//    private int currentMenuId;
-=======
     private int currentMenuId;
     private boolean isNightMode = false;
     private MenuItem mSwitchItem;
->>>>>>> zpj
+
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-<<<<<<< HEAD
-=======
         if(savedInstanceState != null) {
             isNightMode = savedInstanceState.getBoolean("isNightMode");
             String tmp = savedInstanceState.getString("isNightModeString");
@@ -66,7 +61,6 @@ public class MainActivity extends BaseDrawerLayoutActivity {
             }
 
         }
->>>>>>> zpj
         this.requestPermissions();
     }
 
