@@ -142,7 +142,7 @@ public class MainActivity extends BaseDrawerLayoutActivity {
         //getMenuInflater().inflate(R.menu.menu_main_drawer, menu);
         //mSwitchItem = menu.findItem(R.id.night_pattern_switch);
         //Switch switcher= (Switch) mSwitchItem.getActionView().findViewById(R.id.switcher);
-        Toast.makeText(this, isNightMode?"Night":"Day",Toast.LENGTH_SHORT).show();
+        //Toast.makeText(this, isNightMode?"Night":"Day",Toast.LENGTH_SHORT).show();
         Switch switcher = (Switch) findViewById(R.id.switcher);
         switcher.setChecked(isNightMode);
         switcher.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
@@ -151,7 +151,7 @@ public class MainActivity extends BaseDrawerLayoutActivity {
                 //Toast.makeText(MainActivity.this, isChecked?"Yes":"No", Toast.LENGTH_SHORT).show();
                 if (isChecked){
                     isNightMode = true;
-                    Toast.makeText(MainActivity.this, isNightMode?"Yes":"No", Toast.LENGTH_SHORT).show();
+                    //Toast.makeText(MainActivity.this, isNightMode?"Yes":"No", Toast.LENGTH_SHORT).show();
                     Log.d("MainActivity", "onOptionsItemSelected: isChecked True");
                     System.out.println("in Ngiht Switch");
                     int currentNightMode = getResources().getConfiguration().uiMode & Configuration.UI_MODE_NIGHT_MASK;
@@ -220,7 +220,7 @@ public class MainActivity extends BaseDrawerLayoutActivity {
         //保存销毁之前的数据
         outState.putBoolean("isNightMode",isNightMode);
         outState.putString("isNightModeString",isNightMode?"Night":"Day");
-        Toast.makeText(this, isNightMode?"Night":"Day", Toast.LENGTH_SHORT).show();
+        //Toast.makeText(this, isNightMode?"Night":"Day", Toast.LENGTH_SHORT).show();
         Log.d("MainActivity", "onSaveInstanceState: " +  (isNightMode?"Night":"Day"));
     }
     @Override
@@ -239,7 +239,7 @@ public class MainActivity extends BaseDrawerLayoutActivity {
         //Switch switcher = (Switch) findViewById(R.id.switcher);
         //switcher.setChecked(isNightMode);
 
-        Toast.makeText(this, isNightMode?"onRestore Night":"on restore Day", Toast.LENGTH_SHORT).show();
+        //Toast.makeText(this, isNightMode?"onRestore Night":"on restore Day", Toast.LENGTH_SHORT).show();
         Log.d("MainActivity", "onRestoreInstanceState: " +  (isNightMode?"Night":"Day"));
         //Switch switcher = (Switch)findViewById(R.id.switcher);
         //Toast.makeText(this,"get savedInsanceState",Toast.LENGTH_SHORT).show();
