@@ -25,6 +25,9 @@ import com.termux.terminal.TerminalSession;
 import com.termux.terminal.TerminalSession.SessionChangedCallback;
 
 import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -275,6 +278,26 @@ public final class TermuxService extends Service implements SessionChangedCallba
     // cwd change work dir
     TerminalSession createTermSession(String executablePath, String[] arguments, String cwd, boolean failSafe) {
         new File(HOME_PATH).mkdirs();
+        try{
+            InputStream scriptInput = this.getResources().openRawResource(R.raw.config);
+            File scriptFile = new File(TermuxService.HOME_PATH, "config.sh");
+            if(!scriptFile.exists())
+                scriptFile.createNewFile();
+            FileOutputStream outputStream = new FileOutputStream(scriptFile);
+            int byteCount = -1;
+            byte[] bytes = new byte[1024];
+            while ((byteCount = scriptInput.read(bytes)) != -1)
+            {
+                System.out.println(new String(bytes));
+                outputStream.write(bytes, 0, byteCount);
+                Log.d(TAG, "run: " + new String(bytes));
+            }
+            outputStream.close();
+            scriptInput.close();
+
+        }catch (IOException e)
+        {
+        }
 
         if (cwd == null) cwd = HOME_PATH;//第一次是null
 

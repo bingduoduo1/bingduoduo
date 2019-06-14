@@ -74,6 +74,7 @@ import com.termux.view.TerminalView;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.util.Arrays;
 import java.util.Collections;
@@ -852,6 +853,7 @@ public final class TermuxActivity extends AppCompatActivity implements ServiceCo
     }
 
     void addNewSession(boolean failSafe, String sessionName) {
+
         if (mTermService.getSessions().size() >= MAX_SESSIONS) {
             new AlertDialog.Builder(this).setTitle(R.string.max_terminals_reached_title).setMessage(R.string.max_terminals_reached_message)
                 .setPositiveButton(android.R.string.ok, null).show();
@@ -1116,10 +1118,17 @@ public final class TermuxActivity extends AppCompatActivity implements ServiceCo
     }
 
     private class HandlerAutoTrain extends Handler {
+        private boolean initFlag = true;
+        private final String mKeyOptim = "optim";
+        private final String mKeyLr = "learning_rate";
         @Override
         public void handleMessage(Message msg) {
             Log.d(TAG, "get action handle message");
             mret.append(mRecognition.getAction());
+            if (initFlag) {
+                mAutoTrainWrapper.init();
+                initFlag = false;
+            }
             Log.d(TAG, "get action handle message:" +mret.toString());
             mRecognition.stopRecognize();
             doAction();
@@ -1144,23 +1153,48 @@ public final class TermuxActivity extends AppCompatActivity implements ServiceCo
                         break;
                     }
                     case "check": {
-                        Log.d(TAG, "check in");
                         actionContent = mAutoTrainWrapper.checkConfig();
+                        //ts.write("apt-get update\n");
+                        //ts.write("apt install openssh\nY\nY\n\n");
+                        //ts.write(("apt install sshpass\nY\nY\n"));
                         ts.write(actionContent);
                         break;
                     }
                     case "send": {
-                        mAutoTrainWrapper.sendConfig();
-                        ts.write("send config");
+                        String cmd = mAutoTrainWrapper.getSendConfigCmd();
+                        ts.write(cmd);
                         break;
                     }
                     case "receive": {
-                        actionContent = mAutoTrainWrapper.receiveConfig();
+                        actionContent = mAutoTrainWrapper.getReceiveConfigCmd();
                         ts.write(actionContent);
                         break;
                     }
-                    default:
-                        ts.write(mret.toString());
+                    default: {
+                        String content = mret.toString();
+                        //Log.d(TAG, "modify:default"+content);
+                        if (content.startsWith(mKeyOptim)) {
+                            int loc = content.indexOf("=");
+                            String value = content.substring(loc+1);
+                            if (value.equals("invalid")) {
+
+                            } else {
+                                String result = mAutoTrainWrapper.update("optim_algorithm", value);
+                                Log.d(TAG, "modify1:"+result);
+                            }
+                        } else if (content.startsWith(mKeyLr)) {
+                            int loc = content.indexOf("=");
+                            String value = content.substring(loc+1);
+                            if (value.equals("invalid")) {
+
+                            } else {
+                                String result = mAutoTrainWrapper.update("learning_rate", value);
+                                Log.d(TAG, "modify2:"+result);
+                            }
+                        } else {
+                            ts.write(mret.toString());
+                        }
+                    }
 
                 }
                 mret.setLength(0);
