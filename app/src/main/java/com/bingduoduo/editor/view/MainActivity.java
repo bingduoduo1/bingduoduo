@@ -30,13 +30,12 @@ import com.termux.app.TermuxActivity;
  */
 public class MainActivity extends BaseDrawerLayoutActivity {
     private BaseFragment mCurrentFragment;
-    private int currentMenuId;
+//    private int currentMenuId;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
         this.requestPermissions();
         // 在 FolderMangaerFragment 用
         // @OnClick(R.id.menu2_fab_switch)//default is R.id.fab

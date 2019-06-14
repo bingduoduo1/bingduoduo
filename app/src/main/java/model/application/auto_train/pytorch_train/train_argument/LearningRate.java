@@ -9,17 +9,35 @@ public class LearningRate extends PytorchTrainArgument {
     private final String mName = "LearningRate";
     private double mInitLr;
 
+<<<<<<< HEAD
     public void PytorchTrainArgument() {
         PytorchTrainArgument(0.01);
     }
 
     public void PytorchTrainArgument(double initLr) {
         mInitLr = initLr;
+=======
+    public LearningRate(double initLr) {
+        mInitLr = initLr;
+    }
+    public LearningRate() {
+        this(0.01);
+    }
+
+
+    @Override
+    public String getArgumentName() {
+        return mName;
+>>>>>>> 81701ad9582e3750e7eafac969a973bccf8452cf
     }
 
     @Override
     public String getDefaultValue() {
+<<<<<<< HEAD
         return "positive double value is OK";
+=======
+        return "positive double value is OK(default 0.01)\n";
+>>>>>>> 81701ad9582e3750e7eafac969a973bccf8452cf
     }
 
     @Override
@@ -29,9 +47,19 @@ public class LearningRate extends PytorchTrainArgument {
         } catch (GlobalException e) {
             throw new GlobalException("LR check before update fail!---"+e.getMessage());
         }
+<<<<<<< HEAD
 
         double temp_value = Double.parseDouble(value);
         if (temp_value == Double.NaN || !this.initLrCheck(temp_value)) {
+=======
+        Double temp_value;
+        try {
+            temp_value = Double.parseDouble(value);
+        } catch(NumberFormatException e){
+            throw new GlobalException("Update value fail!---invalid input:" + value + "\n");
+        }
+        if (!this.initLrCheck(temp_value)) {
+>>>>>>> 81701ad9582e3750e7eafac969a973bccf8452cf
             throw new GlobalException("Update value fail!---invalid input:" + value + "\n");
         }
         mInitLr = temp_value;

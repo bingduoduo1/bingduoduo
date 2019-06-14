@@ -27,6 +27,9 @@ android {
             shrinkResources false
             //proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
+        debug {
+            testCoverageEnabled true
+        }
     }
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
@@ -45,11 +48,11 @@ android {
     testOptions {
         unitTests.returnDefaultValues = true
     }
+    buildToolsVersion = '28.0.3'
 }
 
 dependencies {
     implementation fileTree(include: ['*.jar'], dir: 'libs')
-    api 'androidx.appcompat:appcompat:1.0.0'
     implementation 'com.google.android.material:material:1.0.0-beta01'
     implementation 'androidx.appcompat:appcompat:1.0.0-beta01'
     testImplementation 'junit:junit:4.12'
@@ -59,21 +62,18 @@ dependencies {
     androidTestImplementation 'androidx.annotation:annotation:1.0.0-beta01'
     androidTestImplementation 'androidx.test:runner:1.1.0-alpha4'
     androidTestImplementation 'androidx.test:rules:1.1.0-alpha4'
+//    androidTestImplementation 'com.android.support.test:runner:1.0.2'
+    androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0'
 
 
 
-    /*bingduoduo.editor dependencies */
-    implementation 'androidx.appcompat:appcompat:1.0.0-beta01'
-    implementation 'androidx.legacy:legacy-support-v4:1.0.0-beta01'
-    implementation 'androidx.recyclerview:recyclerview:1.0.0-beta01'
+    /* bingduoduo.editor dependencies */
+    implementation 'androidx.legacy:legacy-support-v4:1.0.0'
+    implementation 'androidx.recyclerview:recyclerview:1.0.0'
     implementation 'com.github.bumptech.glide:glide:3.7.0'
     implementation 'io.reactivex:rxandroid:1.1.0'
     implementation 'io.reactivex:rxjava:1.1.0'
     implementation 'com.jakewharton:butterknife:7.0.1'
-    // Debug提供内存监测
-    //debugImplementation 'com.squareup.leakcanary:leakcanary-android:1.3'
-    //releaseImplementation 'com.squareup.leakcanary:leakcanary-android-no-op:1.3'
-    //devImplementation 'com.squareup.leakcanary:leakcanary-android:1.3'
 
     implementation 'com.daimajia.numberprogressbar:library:1.2@aar'
     implementation 'com.kaopiz:kprogresshud:1.0.5'

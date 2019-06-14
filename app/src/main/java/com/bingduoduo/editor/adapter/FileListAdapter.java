@@ -93,7 +93,7 @@ public class FileListAdapter extends RecyclerView.Adapter<FileListAdapter.FileVi
         holder.name.setText(bean.name);
         holder.fileTime.setText(UnitsUtils.friendlyTime(bean.lastTime));
 
-        //图标
+        // 图标
         if (bean.isDirectory) {
             holder.fileSize.setText("文件夹");
             holder.fileIcon.setImageResource(R.drawable.ic_folder);
@@ -102,14 +102,14 @@ public class FileListAdapter extends RecyclerView.Adapter<FileListAdapter.FileVi
             holder.fileIcon.setImageResource(R.drawable.ic_file);
         }
 
-        //分割线
+        // 分割线
         if (position == 0 && holder.divider.getVisibility() == View.VISIBLE) {
             holder.divider.setVisibility(View.GONE);
         } else if (position != 0 && holder.divider.getVisibility() == View.GONE) {
             holder.divider.setVisibility(View.VISIBLE);
         }
 
-        //选择模式 颜色设置
+        // 选择模式 颜色设置
         if (bean.isSelect) {//选择了
             if (colorFilter == null)
                 colorFilter = new PorterDuffColorFilter(colorPrimary, PorterDuff.Mode.SRC_IN);

@@ -92,13 +92,10 @@ public class DataManager {
     public Observable<List<FileBean>> getFileListData(File currentFolder, String key) {
         File[] files = null;
         if (Check.isEmpty(key))// 默认，文件夹和文件
-            files = currentFolder
-                    .listFiles(file -> file.isDirectory() ||
-                            file.getName().endsWith(".py"));
+            files = currentFolder.listFiles();
         else // 搜索
             files = currentFolder
-                    .listFiles(file -> file.getName().contains(key) &&
-                            (file.isDirectory() || file.getName().endsWith(".py")));
+                    .listFiles(file -> file.getName().contains(key));
 
 
         if (files == null)
@@ -134,7 +131,7 @@ public class DataManager {
                     if (bean == null) throw new IllegalStateException("复制失败了");
                     else return bean;
                 })
-                .map(bean -> {//新路径改变
+                .map(bean -> {// 新路径改变
                     if (targetPath.endsWith(File.separator)) {
                         bean.absPath = targetPath + bean.name;
                     } else {
@@ -156,7 +153,7 @@ public class DataManager {
                     if (bean == null) throw new IllegalStateException("剪切失败了");
                     else return bean;
                 })
-                .map(bean -> {//新路径改变
+                .map(bean -> {// 新路径改变
                     if (target.endsWith(File.separator)) {
                         bean.absPath = target + bean.name;
                     } else {
@@ -206,16 +203,15 @@ public class DataManager {
      * @return the int
      */
     private int fileSort(FileBean file1, FileBean file2) {
-        // 大体按照时间排序
+        // 按照文件名称排序
         if ((file1.isDirectory && file2.isDirectory) || (!file1.isDirectory && !file2.isDirectory)) {
             return file1.name.compareTo(file2.name);
-//            return -1 * file1.lastTime.compareTo(file2.lastTime);
         }
-        // 如果是文件和文件夹，则文件拍在前面
+        // 如果是文件和文件夹，则文件排在后面
         if (file1.isDirectory && !file2.isDirectory) {
-            return 1;
-        } else {
             return -1;
+        } else {
+            return 1;
         }
     }
 

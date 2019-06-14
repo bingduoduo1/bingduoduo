@@ -5,9 +5,19 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.HashMap;
+<<<<<<< HEAD
 
 import model.application.auto_train.base_interface.ArgumentContainerInterface;
 import model.application.auto_train.pytorch_train.train_argument.LearningRate;
+=======
+import java.util.HashSet;
+import java.util.Set;
+
+import model.application.auto_train.base_interface.ArgumentContainerInterface;
+import model.application.auto_train.pytorch_train.train_argument.BatchSize;
+import model.application.auto_train.pytorch_train.train_argument.LearningRate;
+import model.application.auto_train.pytorch_train.train_argument.OptimAlgorithm;
+>>>>>>> 81701ad9582e3750e7eafac969a973bccf8452cf
 import model.config.GlobalException;
 
 public class PytorchTrainArgumentContainer implements ArgumentContainerInterface {
@@ -27,10 +37,21 @@ public class PytorchTrainArgumentContainer implements ArgumentContainerInterface
         mOutputFilePath = outputFilePath;
         // TODO: load config from file
         mConfigMap.put("learning_rate", new LearningRate());
+<<<<<<< HEAD
+=======
+        mConfigMap.put("batch_size", new BatchSize());
+        mConfigMap.put("optim_algorithm", new OptimAlgorithm());
+>>>>>>> 81701ad9582e3750e7eafac969a973bccf8452cf
     }
 
     @Override
     public boolean isValid() {
+<<<<<<< HEAD
+=======
+        if (!configKeyCheck()) {
+            return false;
+        }
+>>>>>>> 81701ad9582e3750e7eafac969a973bccf8452cf
         for(PytorchTrainArgument tmp: mConfigMap.values()) {
             try {
                 tmp.validationCheck();
@@ -41,6 +62,17 @@ public class PytorchTrainArgumentContainer implements ArgumentContainerInterface
         }
         return true;
     }
+<<<<<<< HEAD
+=======
+    private boolean configKeyCheck() {
+        Set actualSet = mConfigMap.keySet();
+        Set expectSet = new HashSet<String>(trainArgumentKey);
+        int originSize = actualSet.size();
+        actualSet.addAll(expectSet);
+        int checkSize = actualSet.size();
+        return originSize == checkSize;
+    }
+>>>>>>> 81701ad9582e3750e7eafac969a973bccf8452cf
 
     @Override
     public int getSize() {

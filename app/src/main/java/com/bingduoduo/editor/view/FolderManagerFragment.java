@@ -412,7 +412,7 @@ public class FolderManagerFragment extends BaseRefreshFragment implements IFolde
     public void createFolder() {
 
 
-        //显示重命名对话框
+        // 显示重命名对话框
         View rootView = LayoutInflater.from(mContext).inflate(R.layout.view_common_input_view, null);
 
         AlertDialog mInputDialog = new AlertDialog.Builder(mContext)
@@ -562,10 +562,6 @@ public class FolderManagerFragment extends BaseRefreshFragment implements IFolde
         textInputLayout.setHint("请输入" + (selectBean.isDirectory ? "文件夹名" : "文件名"));
         rootView.findViewById(R.id.sure).setOnClickListener(v -> {
             String result = text.getText().toString().trim();
-            if (!selectBean.isDirectory && !result.endsWith(".py")) {
-                textInputLayout.setError("文件后缀名必须为：.py");
-                return;
-            }
             if (Check.isEmpty(result)) {
                 textInputLayout.setError("不能为空");
                 return;
