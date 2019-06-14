@@ -50,6 +50,7 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -73,6 +74,7 @@ import com.termux.view.TerminalView;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.util.Arrays;
 import java.util.Collections;
@@ -84,6 +86,8 @@ import java.util.regex.Pattern;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.app.AppCompatDelegate;
 import androidx.core.app.ActivityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.viewpager.widget.PagerAdapter;
@@ -93,6 +97,10 @@ import android.view.View.OnClickListener;
 
 
 import mehdi.sakout.fancybuttons.FancyButton;
+import model.application.auto_train.base_interface.ArgumentContainerInterface;
+import model.application.auto_train.pytorch_train.PytorchTrainArgumentContainer;
+import model.application.auto_train.wrapper.BaseWarpperInterface;
+import model.application.auto_train.wrapper.PytorchTrainWrapper;
 
 import static android.content.ContentValues.TAG;
 
@@ -113,7 +121,7 @@ import static android.content.ContentValues.TAG;
  * important!
  * 这个活动控制terminal 模拟器
  */
-public final class TermuxActivity extends Activity implements ServiceConnection {
+public final class TermuxActivity extends AppCompatActivity implements ServiceConnection {
 
 
     //长按视图弹出上下文菜单
@@ -132,15 +140,17 @@ public final class TermuxActivity extends Activity implements ServiceConnection 
 
     private static final String RELOAD_STYLE_ACTION = "com.termux.app.reload_style";// reload style action
 
-    private static StringBuffer mret= new StringBuffer();
-    /** The main view of the activity showing the terminal. Initialized in onCreate(). */
+    private static StringBuffer mret = new StringBuffer();
+    final SoundPool mBellSoundPool = new SoundPool.Builder().setMaxStreams(1).setAudioAttributes(
+        new AudioAttributes.Builder().setContentType(AudioAttributes.CONTENT_TYPE_SONIFICATION)
+            .setUsage(AudioAttributes.USAGE_ASSISTANCE_SONIFICATION).build()).build();
+    /**
+     * The main view of the activity showing the terminal. Initialized in onCreate().
+     */
     @SuppressWarnings("NullableProblems")
     @NonNull
     TerminalView mTerminalView;
-
     ExtraKeysView mExtraKeysView;
-
-    TermuxPreferences mSettings;
 
 
     /**
@@ -148,52 +158,70 @@ public final class TermuxActivity extends Activity implements ServiceConnection 
      * {@link #bindService(Intent, ServiceConnection, int)}, and obtained and stored in
      * {@link #onServiceConnected(ComponentName, IBinder)}.
      */
+    TermuxPreferences mSettings;
     /**
      * 连接Termux Service。
      */
     TermuxService mTermService;
-
-    /** Initialized in {@link #onServiceConnected(ComponentName, IBinder)}. */
+    /**
+     * Initialized in {@link #onServiceConnected(ComponentName, IBinder)}.
+     */
     ArrayAdapter<TerminalSession> mListViewAdapter;
-
-    /** The last toast shown, used cancel current toast before showing new in {@link #showToast(String, boolean)}. */
+    /**
+     * The last toast shown, used cancel current toast before showing new in {@link #showToast(String, boolean)}.
+     */
     Toast mLastToast;
-
     /**
      * If between onResume() and onStop(). Note that only one session is in the foreground of the terminal view at the
      * time, so if the session causing a change is not in the foreground it should probably be treated as background.
      */
     boolean mIsVisible;
-
-
-
-    //冰多多
-    //private GestureDetector mGestureDetector;
-    SpeechRecognitionIat mRecognition;
-    Handler han = new Handler() {
+    private final BroadcastReceiver mBroadcastReceiever = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            if (mIsVisible) { // 如果在前台可视
+                String whatToReload = intent.getStringExtra(RELOAD_STYLE_ACTION);
+                if ("storage".equals(whatToReload)) {
+                    if (ensureStoragePermissionGranted())
+                        TermuxInstaller.setupStorageSymlinks(TermuxActivity.this);
+                    return;
+                }
+                checkForFontAndColors();
+                mSettings.reloadFromProperties(TermuxActivity.this);//加载配置属性
+                if (mExtraKeysView != null) {
+                    mExtraKeysView.reload(mSettings.mExtraKeys, ExtraKeysView.defaultCharDisplay);
+                }
+            }
+        }
+    };
+    int mBellSoundId;
+    private SpeechRecognitionIat mRecognition;
+    private BaseWarpperInterface mAutoTrainWrapper = PytorchTrainWrapper.createWrapper();
+    private SpeechCallMode mSpeechMode = SpeechCallMode.NORMAL;
+    private Handler han = new Handler() {
 
         @Override
         public void handleMessage(Message msg) {
 
             mret.append(mRecognition.getAction());
+            Log.d(TAG, "handleMessage: "+ mret);
             doAction();
             mRecognition.stopRecognize();
 
         }
 
 
-
         private void doAction() {
             TerminalSession ts = getCurrentTermSession();
-            if(mret.length()==0){
+            if (mret.length() == 0) {
                 //pass 无Action
                 // or \n?
                 ts.write("\n");
-            }else{
+            } else {
 
-                switch(mret.toString()){
+                switch (mret.toString()) {
                     case "backspace":// 参考 TermuxView:row:682
-                        ts.writeCodePoint(false,127);
+                        ts.writeCodePoint(false, 127);
                         break;
                     default:
                         ts.write(mret.toString());
@@ -208,33 +236,24 @@ public final class TermuxActivity extends Activity implements ServiceConnection 
 
 
     //冰多多
+    private Handler handle_auto_train = new HandlerAutoTrain();
 
-
-
-    final SoundPool mBellSoundPool = new SoundPool.Builder().setMaxStreams(1).setAudioAttributes(
-        new AudioAttributes.Builder().setContentType(AudioAttributes.CONTENT_TYPE_SONIFICATION)
-            .setUsage(AudioAttributes.USAGE_ASSISTANCE_SONIFICATION).build()).build();
-    int mBellSoundId;
-
-    private final BroadcastReceiver mBroadcastReceiever = new BroadcastReceiver() {
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            if (mIsVisible) { // 如果在前台可视
-                String whatToReload = intent.getStringExtra(RELOAD_STYLE_ACTION);
-                if ("storage".equals(whatToReload)) {
-                    if (ensureStoragePermissionGranted())
-                        TermuxInstaller.setupStorageSymlinks(TermuxActivity.this);
-                    return;
-                }
-                checkForFontAndColors();
-                mSettings.reloadFromProperties(TermuxActivity.this);//加载配置属性
-
-                if (mExtraKeysView != null) {
-                    mExtraKeysView.reload(mSettings.mExtraKeys, ExtraKeysView.defaultCharDisplay);
-                }
-            }
+    static LinkedHashSet<CharSequence> extractUrls(String text) {
+        // Pattern for recognizing a URL, based off RFC 3986
+        // http://stackoverflow.com/questions/5713558/detect-and-extract-url-from-a-string
+        final Pattern urlPattern = Pattern.compile(
+            "(?:^|[\\W])((ht|f)tp(s?)://|www\\.)" + "(([\\w\\-]+\\.)+?([\\w\\-.~]+/?)*" + "[\\p{Alnum}.,%_=?&#\\-+()\\[\\]*$~@!:/{};']*)",
+            Pattern.CASE_INSENSITIVE | Pattern.MULTILINE | Pattern.DOTALL);
+        LinkedHashSet<CharSequence> urlSet = new LinkedHashSet<>();
+        Matcher matcher = urlPattern.matcher(text);
+        while (matcher.find()) {
+            int matchStart = matcher.start(1);
+            int matchEnd = matcher.end();
+            String url = text.substring(matchStart, matchEnd);
+            urlSet.add(url);
         }
-    };
+        return urlSet;
+    }
 
     void checkForFontAndColors() {
         try {
@@ -269,7 +288,9 @@ public final class TermuxActivity extends Activity implements ServiceConnection 
         }
     }
 
-    /** For processes to access shared internal storage (/sdcard) we need this permission. */
+    /**
+     * For processes to access shared internal storage (/sdcard) we need this permission.
+     */
     @TargetApi(Build.VERSION_CODES.M)
     public boolean ensureStoragePermissionGranted() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
@@ -284,8 +305,6 @@ public final class TermuxActivity extends Activity implements ServiceConnection 
             return true;
         }
     }
-
-
 
     @Override
     public void onCreate(Bundle bundle) {//todo
@@ -302,6 +321,9 @@ public final class TermuxActivity extends Activity implements ServiceConnection 
         mTerminalView.requestFocus();
 
 
+        // 默认设置为日间模式
+        AppCompatDelegate.setDefaultNightMode(
+            AppCompatDelegate.MODE_NIGHT_NO);
 
         //禁用输入法
         //getWindow().setFlags(WindowManager.LayoutParams.FLAG_ALT_FOCUSABLE_IM,
@@ -412,7 +434,6 @@ public final class TermuxActivity extends Activity implements ServiceConnection 
         mBellSoundId = mBellSoundPool.load(this, R.raw.bell, 1);
 
 
-
         // todo main
         SpeechUtility.createUtility(this, "appid=5c9cc920");//appid需要和sdk的id相匹配
         this.requestPermissions();
@@ -429,50 +450,103 @@ public final class TermuxActivity extends Activity implements ServiceConnection 
 
         //mSharedPreferences = getSharedPreferences(getPackageName(),	MODE_PRIVATE);
 
-        mRecognition = new SpeechRecognitionIat( TermuxActivity.this,"userwords");
+        mRecognition = new SpeechRecognitionIat(TermuxActivity.this, "userwords");
 
-        FloatingActionButton btn_voice = (FloatingActionButton)findViewById(R.id.menu_fab_voice);
+        FloatingActionButton btn_voice = findViewById(R.id.menu_fab_voice);
         //Button btn_voice = (Button) findViewById(R.id.btn_voice);
 
-        FloatingActionButton fab_switch = (FloatingActionButton) findViewById(R.id.menu_fab_switch);
+        FloatingActionButton fab_switch = findViewById(R.id.menu_fab_switch);
+        FloatingActionButton fab_auto_train = findViewById(R.id.menu_fab_auto_train);
+
 
         btn_voice.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
-                switch (event.getAction()) {
-                    case MotionEvent.ACTION_DOWN: {
-                        //mReconition.cancelRecognize();
-                        Log.d(TAG, "upup31312 : "+System.currentTimeMillis());
-                        mRecognition.startRecognize();
-                        break;
-                        // 开始识别
+                ImageButton img = (ImageButton) v;
+                switch (mSpeechMode) {
+                    case NORMAL: {
+                        Log.d(TAG, "onTouch: normal mode");
+                        switch (event.getAction()) {
+                            case MotionEvent.ACTION_DOWN: {
+                                //mReconition.cancelRecognize();
+                                Log.d(TAG, "upup31312 : " + System.currentTimeMillis());
+                                img.setImageDrawable(getResources().getDrawable(R.drawable.ic_voice2));
+                                mRecognition.startRecognize();
+                                break;
+                                // 开始识别
+                            }
+                            case MotionEvent.ACTION_MOVE: {
+                                //移动事件发生后执行代码的区域
+                                break;
+                            }
+                            case MotionEvent.ACTION_UP: {
+                                img.setImageDrawable(getResources().getDrawable(R.drawable.ic_voice));
+                                Message message = new Message();
+                                message.what = 0;
+                                han.sendMessageDelayed(message, 800);
+                                break;
+                            }
+                            default:
+                                break;
+                        }
+                        return false;//设置成false的话, btn对象自己的onEvent方法就能够被调用,触感也就有了
                     }
-                    case MotionEvent.ACTION_MOVE: {
-                        //移动事件发生后执行代码的区域
-                        break;
+                    case AUTO_TRAIN: {
+                        switch (event.getAction()) {
+                            case MotionEvent.ACTION_DOWN: {
+                                img.setImageDrawable(getResources().getDrawable(R.drawable.ic_voice2));
+                                mRecognition.startRecognize();
+                                break;
+                            }
+                            case MotionEvent.ACTION_MOVE: {
+                                //移动事件发生后执行代码的区域
+                                break;
+                            }
+                            case MotionEvent.ACTION_UP: {
+                                img.setImageDrawable(getResources().getDrawable(R.drawable.ic_voice));
+                                Message message = new Message();
+                                message.what = 0;
+                                handle_auto_train.sendMessageDelayed(message, 800);
+                                break;
+                            }
+                            default:
+                                break;
+                        }
+                        return false;
                     }
-                    case MotionEvent.ACTION_UP: {
-                            //String ret = mReconition.getAction();
-                       Message message = new Message();
-                       message.what=0;
-                       han.sendMessageDelayed(message,800);
-                       break;
+                    default: {
+                        Log.e(TAG, "WTF ");
+                        return false;
                     }
-                    default:
-                        break;
                 }
-                return false;//设置成false的话, btn对象自己的onEvent方法就能够被调用,触感也就有了
             }
         });
 
-        fab_switch.setOnClickListener(new View.OnClickListener(){
+        fab_switch.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View v){
+            public void onClick(View v) {
                 Intent intent = new Intent(TermuxActivity.this, MainActivity.class);
+                //intent.putExtra("isNightMode",mIsNightMode);
                 startActivity(intent);
             }
         });
-        Log.d(TAG, "onCreate: " + getFilesDir()+"---------------------------");
+
+        fab_auto_train.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                ImageButton img = (ImageButton) v;
+                if (mSpeechMode == SpeechCallMode.AUTO_TRAIN) {
+                    mSpeechMode = SpeechCallMode.NORMAL;
+                    img.setImageDrawable(getResources().getDrawable(R.drawable.auto_train_em_gray));
+                } else {
+                    mSpeechMode = SpeechCallMode.AUTO_TRAIN;
+                    img.setImageDrawable(getResources().getDrawable(R.drawable.auto_train_gray));
+                }
+
+            }
+        });
+
+        //Log.d(TAG, "onCreate: " + getFilesDir()+"---------------------------");
 
         // Create an object of our Custom Gesture Detector Class
         //CustomGestureDetector customGestureDetector = new CustomGestureDetector();
@@ -480,110 +554,37 @@ public final class TermuxActivity extends Activity implements ServiceConnection 
         //mGestureDetector = new GestureDetector(this, customGestureDetector);
         // Attach listeners that'll be called for double-tap and related gestures
     }
-    //end onCreate
 
     @Override
     public boolean onTouchEvent(MotionEvent event) {
         //mGestureDetector.onTouchEvent(event);
         return super.onTouchEvent(event);
     }
+    //end onCreate
 
-    //bingduoduo custom gesture detector, useless tmp
-    class CustomGestureDetector implements GestureDetector.OnGestureListener {
-        @Override
-        public boolean onDown(MotionEvent e) {
-            Log.d(TAG, "onDown");
-           // mGestureText.setText("onDown");
-            return true;
-        }
-
-        @Override
-        public void onShowPress(MotionEvent e) {
-            Log.d(TAG, "onShowPress");
-           // mGestureText.setText("onShowPress");
-        }
-
-        @Override
-        public boolean onSingleTapUp(MotionEvent e) {
-            Log.d(TAG, "onSingleTapUp");
-           // mGestureText.setText("onSingleTapUp");
-            return true;
-        }
-
-        @Override
-        public boolean onScroll(MotionEvent e1, MotionEvent e2, float distanceX, float distanceY) {
-            Log.d(TAG, "onScroll");
-            //mGestureText.setText("onScroll");
-            return true;
-        }
-
-        @Override
-        public void onLongPress(MotionEvent e) {
-           // mGestureText.setText("onLongPress");
-            Log.d(TAG, "onLongPress");
-        }
-
-        @Override
-        public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX, float velocityY) {
-           // mGestureText.setText("onFling");
-            //判断竖直方向移动的大小
-            Log.d(TAG, "onFling:迅速滑动，并松开");
-            if(Math.abs(e1.getRawY() - e2.getRawY())>100){
-                //Toast.makeText(getApplicationContext(), "动作不合法", 0).show();
-                return true;
-            }
-            if(Math.abs(velocityX)<150){
-                //Toast.makeText(getApplicationContext(), "移动的太慢", 0).show();
-                return true;
-            }
-
-            if((e1.getRawX() - e2.getRawX()) >200){// 表示 向右滑动表示下一页
-                //显示下一页
-                Log.d("MainActivity", "onFling: 右$$$$$$$$$$$$$$$$$$$");
-                Intent intent = new Intent(TermuxActivity.this, MainActivity.class);
-                startActivity(intent);
-                return true;
-            }
-
-            if((e2.getRawX() - e1.getRawX()) >200){  //向左滑动 表示 上一页
-                //显示上一页
-                Log.d("MainActivity", "onFling: 左$$$$$$$$$$$$$$$$$$$");
-                return true;//消费掉当前事件  不让当前事件继续向下传递
-            }
-            return true;
-        }
-    }
-
-
-
-    private void requestPermissions(){
+    private void requestPermissions() {
         try {
             if (Build.VERSION.SDK_INT >= 21) {
                 int permission = ActivityCompat.checkSelfPermission(this,
                     Manifest.permission.WRITE_EXTERNAL_STORAGE);
-                if(permission!= PackageManager.PERMISSION_GRANTED) {
-                    ActivityCompat.requestPermissions(this,new String[]
+                if (permission != PackageManager.PERMISSION_GRANTED) {
+                    ActivityCompat.requestPermissions(this, new String[]
                         {Manifest.permission.WRITE_EXTERNAL_STORAGE,
-                            Manifest.permission.LOCATION_HARDWARE,Manifest.permission.READ_PHONE_STATE,
-                            Manifest.permission.WRITE_SETTINGS,Manifest.permission.READ_EXTERNAL_STORAGE,
-                            Manifest.permission.RECORD_AUDIO,Manifest.permission.READ_CONTACTS},0x0010);
+                            Manifest.permission.LOCATION_HARDWARE, Manifest.permission.READ_PHONE_STATE,
+                            Manifest.permission.WRITE_SETTINGS, Manifest.permission.READ_EXTERNAL_STORAGE,
+                            Manifest.permission.RECORD_AUDIO, Manifest.permission.READ_CONTACTS}, 0x0010);
                 }
 
-                if(permission != PackageManager.PERMISSION_GRANTED) {
-                    ActivityCompat.requestPermissions(this,new String[] {
+                if (permission != PackageManager.PERMISSION_GRANTED) {
+                    ActivityCompat.requestPermissions(this, new String[]{
                         Manifest.permission.ACCESS_COARSE_LOCATION,
-                        Manifest.permission.ACCESS_FINE_LOCATION},0x0010);
+                        Manifest.permission.ACCESS_FINE_LOCATION}, 0x0010);
                 }
             }
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
-
-
-
-
-
 
     void toggleShowExtraKeys() {
         final ViewPager viewPager = findViewById(R.id.viewpager);
@@ -595,9 +596,6 @@ public final class TermuxActivity extends Activity implements ServiceConnection 
         }
     }
 
-    /**
-     * 重写ServiceConnecction接口的方法onServiceConnected, onCreate中绑定服务后会启动这个回调方法
-     */
     /**
      * Part of the {@link ServiceConnection} interface. The service is bound with
      * {@link #bindService(Intent, ServiceConnection, int)} in {@link #onCreate(Bundle)} which will cause a call to this
@@ -764,7 +762,6 @@ public final class TermuxActivity extends Activity implements ServiceConnection 
         }
     }//end onServiceConnected
 
-
     public void switchToSession(boolean forward) {
         TerminalSession currentSession = getCurrentTermSession();
         int index = mTermService.getSessions().indexOf(currentSession);
@@ -775,6 +772,10 @@ public final class TermuxActivity extends Activity implements ServiceConnection 
         }
         switchToSession(mTermService.getSessions().get(index));
     }
+
+    /**
+     * 重写ServiceConnecction接口的方法onServiceConnected, onCreate中绑定服务后会启动这个回调方法
+     */
 
     @SuppressLint("InflateParams")
     void renameSession(final TerminalSession sessionToRename) {
@@ -810,9 +811,9 @@ public final class TermuxActivity extends Activity implements ServiceConnection 
         // The current terminal session may have changed while being away, force
         // a refresh of the displayed terminal:
         mTerminalView.onScreenUpdated();// 可以在onStart中添加一些需要监听的动作
-        if(mTerminalView!=null && getCurrentTermSession()!=null){// 没有用
+        if (mTerminalView != null && getCurrentTermSession() != null) {// 没有用
             TerminalSession ss = getCurrentTermSession();
-            Toast.makeText(this, "hello", Toast.LENGTH_SHORT).show();
+            //Toast.makeText(this, "hello", Toast.LENGTH_SHORT).show();
         }
 
     }
@@ -852,15 +853,16 @@ public final class TermuxActivity extends Activity implements ServiceConnection 
     }
 
     void addNewSession(boolean failSafe, String sessionName) {
+
         if (mTermService.getSessions().size() >= MAX_SESSIONS) {
             new AlertDialog.Builder(this).setTitle(R.string.max_terminals_reached_title).setMessage(R.string.max_terminals_reached_message)
                 .setPositiveButton(android.R.string.ok, null).show();
         } else {
             String executablePath = (failSafe ? "/system/bin/sh" : null);
-            Log.d(TAG, "addNewSession: " + (executablePath==null?"null":executablePath) + "*********************************");
+            Log.d(TAG, "addNewSession: " + (executablePath == null ? "null" : executablePath) + "*********************************");
             TerminalSession newSession = mTermService.createTermSession(executablePath, null, null, failSafe);
             if (sessionName != null) {
-                Log.d(TAG, "addNewSession: name:"+sessionName+"*****************************");
+                Log.d(TAG, "addNewSession: name:" + sessionName + "*****************************");
                 newSession.mSessionName = sessionName;
             }
             switchToSession(newSession);
@@ -868,7 +870,9 @@ public final class TermuxActivity extends Activity implements ServiceConnection 
         }
     }
 
-    /** Try switching to session and note about it, but do nothing if already displaying the session. */
+    /**
+     * Try switching to session and note about it, but do nothing if already displaying the session.
+     */
     void switchToSession(TerminalSession session) {
         if (mTerminalView.attachSession(session)) {
             noteSessionInfo();
@@ -916,28 +920,13 @@ public final class TermuxActivity extends Activity implements ServiceConnection 
         menu.add(Menu.NONE, CONTEXTMENU_HELP_ID, Menu.NONE, R.string.help);
     }
 
-    /** Hook system menu to show context menu instead. */
+    /**
+     * Hook system menu to show context menu instead.
+     */
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         mTerminalView.showContextMenu();
         return false;
-    }
-
-    static LinkedHashSet<CharSequence> extractUrls(String text) {
-        // Pattern for recognizing a URL, based off RFC 3986
-        // http://stackoverflow.com/questions/5713558/detect-and-extract-url-from-a-string
-        final Pattern urlPattern = Pattern.compile(
-            "(?:^|[\\W])((ht|f)tp(s?)://|www\\.)" + "(([\\w\\-]+\\.)+?([\\w\\-.~]+/?)*" + "[\\p{Alnum}.,%_=?&#\\-+()\\[\\]*$~@!:/{};']*)",
-            Pattern.CASE_INSENSITIVE | Pattern.MULTILINE | Pattern.DOTALL);
-        LinkedHashSet<CharSequence> urlSet = new LinkedHashSet<>();
-        Matcher matcher = urlPattern.matcher(text);
-        while (matcher.find()) {
-            int matchStart = matcher.start(1);
-            int matchEnd = matcher.end();
-            String url = text.substring(matchStart, matchEnd);
-            urlSet.add(url);
-        }
-        return urlSet;
     }
 
     void showUrlSelection() {
@@ -1034,7 +1023,7 @@ public final class TermuxActivity extends Activity implements ServiceConnection 
                 startActivity(new Intent(this, TermuxHelpActivity.class));
                 return true;
             case CONTEXTMENU_TOGGLE_KEEP_SCREEN_ON: {
-                if(mTerminalView.getKeepScreenOn()) {
+                if (mTerminalView.getKeepScreenOn()) {
                     mTerminalView.setKeepScreenOn(false);
                     mSettings.setScreenAlwaysOn(this, false);
                 } else {
@@ -1049,7 +1038,7 @@ public final class TermuxActivity extends Activity implements ServiceConnection 
     }
 
     @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String permissions[], @NonNull int[] grantResults) {
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         if (requestCode == REQUESTCODE_PERMISSION_STORAGE && grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
             TermuxInstaller.setupStorageSymlinks(this);
         }
@@ -1069,7 +1058,9 @@ public final class TermuxActivity extends Activity implements ServiceConnection 
             getCurrentTermSession().getEmulator().paste(paste.toString());
     }
 
-    /** The current session as stored or the last one if that does not exist. */
+    /**
+     * The current session as stored or the last one if that does not exist.
+     */
     public TerminalSession getStoredCurrentSessionOrLast() {
         TerminalSession stored = TermuxPreferences.getCurrentSession(this);
         if (stored != null) return stored;
@@ -1077,7 +1068,9 @@ public final class TermuxActivity extends Activity implements ServiceConnection 
         return sessions.isEmpty() ? null : sessions.get(sessions.size() - 1);
     }
 
-    /** Show a toast and dismiss the last one if still visible. */
+    /**
+     * Show a toast and dismiss the last one if still visible.
+     */
     void showToast(String text, boolean longDuration) {
         if (mLastToast != null) mLastToast.cancel();
         mLastToast = Toast.makeText(TermuxActivity.this, text, longDuration ? Toast.LENGTH_LONG : Toast.LENGTH_SHORT);
@@ -1114,6 +1107,166 @@ public final class TermuxActivity extends Activity implements ServiceConnection 
 
                 termuxTmpDir.mkdirs();
             }
+        }
+    }
+
+    //冰多多
+    //private GestureDetector mGestureDetector;
+    private enum SpeechCallMode {
+        NORMAL,
+        AUTO_TRAIN
+    }
+
+    private class HandlerAutoTrain extends Handler {
+        private boolean initFlag = true;
+        private final String mKeyOptim = "optim";
+        private final String mKeyLr = "learning_rate";
+        @Override
+        public void handleMessage(Message msg) {
+            Log.d(TAG, "get action handle message");
+            mret.append(mRecognition.getAction());
+            if (initFlag) {
+                mAutoTrainWrapper.init();
+                initFlag = false;
+            }
+            Log.d(TAG, "get action handle message:" +mret.toString());
+            mRecognition.stopRecognize();
+            doAction();
+        }
+
+        private void doAction() {
+            Log.d(TAG, "do action auto train in");
+            TerminalSession ts = getCurrentTermSession();
+            if (mret.length() == 0) {
+                ts.write("\n");
+            } else {
+                String actionContent;
+                Log.d(TAG, "mret str"+mret.toString());
+                switch (mret.toString()) {
+
+                    case "backspace":
+                        ts.writeCodePoint(false, 127);
+                        break;
+                    case "show": {
+                        actionContent = mAutoTrainWrapper.getShowConfigInfo();
+                        ts.write(actionContent);
+                        break;
+                    }
+                    case "check": {
+                        actionContent = mAutoTrainWrapper.checkConfig();
+                        //ts.write("apt-get update\n");
+                        //ts.write("apt install openssh\nY\nY\n\n");
+                        //ts.write(("apt install sshpass\nY\nY\n"));
+                        ts.write(actionContent);
+                        break;
+                    }
+                    case "send": {
+                        String cmd = mAutoTrainWrapper.getSendConfigCmd();
+                        ts.write(cmd);
+                        break;
+                    }
+                    case "receive": {
+                        actionContent = mAutoTrainWrapper.getReceiveConfigCmd();
+                        ts.write(actionContent);
+                        break;
+                    }
+                    default: {
+                        String content = mret.toString();
+                        //Log.d(TAG, "modify:default"+content);
+                        if (content.startsWith(mKeyOptim)) {
+                            int loc = content.indexOf("=");
+                            String value = content.substring(loc+1);
+                            if (value.equals("invalid")) {
+
+                            } else {
+                                String result = mAutoTrainWrapper.update("optim_algorithm", value);
+                                Log.d(TAG, "modify1:"+result);
+                            }
+                        } else if (content.startsWith(mKeyLr)) {
+                            int loc = content.indexOf("=");
+                            String value = content.substring(loc+1);
+                            if (value.equals("invalid")) {
+
+                            } else {
+                                String result = mAutoTrainWrapper.update("learning_rate", value);
+                                Log.d(TAG, "modify2:"+result);
+                            }
+                        } else {
+                            ts.write(mret.toString());
+                        }
+                    }
+
+                }
+                mret.setLength(0);
+                mRecognition.stopRecognize();
+                mTerminalView.onScreenUpdated();
+            }
+        }
+    }
+
+    //bingduoduo custom gesture detector, useless tmp
+    class CustomGestureDetector implements GestureDetector.OnGestureListener {
+        @Override
+        public boolean onDown(MotionEvent e) {
+            Log.d(TAG, "onDown");
+            // mGestureText.setText("onDown");
+            return true;
+        }
+
+        @Override
+        public void onShowPress(MotionEvent e) {
+            Log.d(TAG, "onShowPress");
+            // mGestureText.setText("onShowPress");
+        }
+
+        @Override
+        public boolean onSingleTapUp(MotionEvent e) {
+            Log.d(TAG, "onSingleTapUp");
+            // mGestureText.setText("onSingleTapUp");
+            return true;
+        }
+
+        @Override
+        public boolean onScroll(MotionEvent e1, MotionEvent e2, float distanceX, float distanceY) {
+            Log.d(TAG, "onScroll");
+            //mGestureText.setText("onScroll");
+            return true;
+        }
+
+        @Override
+        public void onLongPress(MotionEvent e) {
+            // mGestureText.setText("onLongPress");
+            Log.d(TAG, "onLongPress");
+        }
+
+        @Override
+        public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX, float velocityY) {
+            // mGestureText.setText("onFling");
+            //判断竖直方向移动的大小
+            Log.d(TAG, "onFling:迅速滑动，并松开");
+            if (Math.abs(e1.getRawY() - e2.getRawY()) > 100) {
+                //Toast.makeText(getApplicationContext(), "动作不合法", 0).show();
+                return true;
+            }
+            if (Math.abs(velocityX) < 150) {
+                //Toast.makeText(getApplicationContext(), "移动的太慢", 0).show();
+                return true;
+            }
+
+            if ((e1.getRawX() - e2.getRawX()) > 200) {// 表示 向右滑动表示下一页
+                //显示下一页
+                Log.d("MainActivity", "onFling: 右$$$$$$$$$$$$$$$$$$$");
+                Intent intent = new Intent(TermuxActivity.this, MainActivity.class);
+                startActivity(intent);
+                return true;
+            }
+
+            if ((e2.getRawX() - e1.getRawX()) > 200) {  //向左滑动 表示 上一页
+                //显示上一页
+                Log.d("MainActivity", "onFling: 左$$$$$$$$$$$$$$$$$$$");
+                return true;//消费掉当前事件  不让当前事件继续向下传递
+            }
+            return true;
         }
     }
 }

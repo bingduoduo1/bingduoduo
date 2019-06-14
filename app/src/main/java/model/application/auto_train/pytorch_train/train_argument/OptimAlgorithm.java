@@ -1,5 +1,10 @@
 package model.application.auto_train.pytorch_train.train_argument;
 
+<<<<<<< HEAD
+=======
+import android.util.Log;
+
+>>>>>>> zpj
 import model.application.auto_train.pytorch_train.PytorchTrainArgument;
 import model.config.GlobalException;
 
@@ -7,6 +12,10 @@ import java.util.HashMap;
 import java.util.Locale;
 
 public class OptimAlgorithm extends PytorchTrainArgument {
+<<<<<<< HEAD
+=======
+    private static final String TAG = OptimAlgorithm.class.getName();
+>>>>>>> zpj
     private final String mName = "OptimAlgorithm";
     private enum Algorithm {
         SGD,
@@ -14,12 +23,22 @@ public class OptimAlgorithm extends PytorchTrainArgument {
         RMSprop,
         Adam;
         private static HashMap<String, Algorithm> mAlgorithmMap = new HashMap<String, Algorithm>() {{
+<<<<<<< HEAD
             put("SGD", SGD);
             put("SGD_momentum", SGD_momentum);
             put("RMSprop", RMSprop);
             put("Adam", Adam);
         }};
         static boolean keyCheck(String key) {
+=======
+            put("sgd", SGD);
+            put("sgd_momentum", SGD_momentum);
+            put("rmsprop", RMSprop);
+            put("adam", Adam);
+        }};
+        static boolean keyCheck(String key) {
+            Log.d(TAG, "optim3:"+key);
+>>>>>>> zpj
             return mAlgorithmMap.containsKey(key);
         }
 
@@ -43,7 +62,11 @@ public class OptimAlgorithm extends PytorchTrainArgument {
     }
 
     public OptimAlgorithm () {
+<<<<<<< HEAD
         this("SGD_momentum");
+=======
+        this("sgd_momentum");
+>>>>>>> zpj
     }
 
     @Override
@@ -61,7 +84,11 @@ public class OptimAlgorithm extends PytorchTrainArgument {
 
     @Override
     public String toString() {
+<<<<<<< HEAD
         return String.format(Locale.ENGLISH,"init_lr: %s\n", Algorithm.toString(mActualAlgorithm));
+=======
+        return String.format(Locale.ENGLISH,"optimization Algorithm: %s\n", Algorithm.toString(mActualAlgorithm));
+>>>>>>> zpj
     }
 
     @Override
@@ -73,7 +100,11 @@ public class OptimAlgorithm extends PytorchTrainArgument {
 
     @Override
     public String getDefaultValue() {
+<<<<<<< HEAD
         return "default optim algorithm is " + Algorithm.toString(Algorithm.SGD_momentum);
+=======
+        return "[default optim algorithm is " + Algorithm.toString(Algorithm.SGD_momentum) + "]\n";
+>>>>>>> zpj
     }
 
     @Override

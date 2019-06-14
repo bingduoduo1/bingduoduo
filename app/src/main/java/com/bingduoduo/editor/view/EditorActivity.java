@@ -29,6 +29,7 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.Button;
 import android.util.Log;
+import android.widget.ImageButton;
 
 import com.github.clans.fab.FloatingActionButton;
 import com.termux.R;
@@ -137,10 +138,12 @@ public class EditorActivity extends BaseToolbarActivity implements IEditorActivi
                 float downRawX=0, downRawY=0;
                 float dX=0, dY=0;
 
+                ImageButton img = (ImageButton)v;
                 switch (event.getAction()) {
                     case MotionEvent.ACTION_DOWN: {
                         // 按住事件发生后执行代码的区域
                         // mReconition.cancelRecognize();
+                        img.setImageDrawable(getResources().getDrawable(R.drawable.ic_voice2));
                         Log.d(TAG, "upup31312 : "+System.currentTimeMillis());
                         mReconition.startRecognize();
                         // han.sendEmptyMessageDelayed(0,1000);
@@ -180,18 +183,14 @@ public class EditorActivity extends BaseToolbarActivity implements IEditorActivi
                     }
                     case MotionEvent.ACTION_UP: {
                         // 松开事件发生后执行代码的区域
-//                        String ret = mReconition.getAction();
-//                        Log.d(TAG, "return_message:"+ret);
+                        img.setImageDrawable(getResources().getDrawable(R.drawable.ic_voice));
                         Message message = new Message();
                         message.what=0;
                         han.sendMessageDelayed(message, 800);
-
                         //float upRawX = event.getRawX();
                         //float upRawY = event.getRawY();
-
                         //float upDX = upRawX - downRawX;
                         //float upDY = upRawY - downRawY;
-
 
                         break;
                     }

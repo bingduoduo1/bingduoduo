@@ -46,7 +46,7 @@
         android:roundIcon="@drawable/logo_round"
         android:label="@string/application_name"
         android:supportsRtl="true"
-        android:theme="@style/AppTheme.NoActionBar"
+        android:theme="@style/Theme.AppCompat.DayNight.NoActionBar"
         android:usesCleartextTraffic="true"
         tools:replace="android:label">
 
