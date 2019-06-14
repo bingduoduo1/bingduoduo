@@ -1,5 +1,7 @@
 package model.dictionary.application;
 
+import android.util.Log;
+
 import java.util.HashMap;
 
 import model.dictionary.exception.DictionaryException;
@@ -12,6 +14,8 @@ import model.dictionary.model.CustomWord;
 import model.dictionary.model.ExecutePlaceType;
 import model.dictionary.model.InputAction;
 import model.dictionary.model.NatureLanguageType;
+
+import static androidx.constraintlayout.widget.Constraints.TAG;
 
 public class PytorchDictionary implements BaseDictionaryInterface {
     private HashMap<BaseWord, BaseAction> mDictionary;
@@ -52,6 +56,7 @@ public class PytorchDictionary implements BaseDictionaryInterface {
             mDictionary.put(new CustomWord("receive", NatureLanguageType.ENGLISH),
                 new CommandAction(ActionType.COMMAND, ExecutePlaceType.TRAIN_CONFIG, "receive"));
         } catch (DictionaryException e) {
+            Log.d(TAG, "initDictionary: Errrrorrororororrororororrororororo");
             e.printStackTrace();
         }
     }

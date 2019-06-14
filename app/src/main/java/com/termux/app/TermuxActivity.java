@@ -203,6 +203,7 @@ public final class TermuxActivity extends AppCompatActivity implements ServiceCo
         public void handleMessage(Message msg) {
 
             mret.append(mRecognition.getAction());
+            Log.d(TAG, "handleMessage: "+ mret);
             doAction();
             mRecognition.stopRecognize();
 
@@ -463,6 +464,7 @@ public final class TermuxActivity extends AppCompatActivity implements ServiceCo
                 ImageButton img = (ImageButton) v;
                 switch (mSpeechMode) {
                     case NORMAL: {
+                        Log.d(TAG, "onTouch: normal mode");
                         switch (event.getAction()) {
                             case MotionEvent.ACTION_DOWN: {
                                 //mReconition.cancelRecognize();

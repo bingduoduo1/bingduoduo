@@ -167,7 +167,7 @@ public class SpeechRecognitionIat extends Activity implements SpeechRecognitionI
 
                 Log.d(TAG, "Onresult: end : "+System.currentTimeMillis());
                 if (islast) {
-                        Log.d(LOG_TAG, "last result" + mParserResult+"-------------------------");
+                        Log.d(LOG_TAG, "last result:" + mParserResult+"-------------------------");
                     mRecognitionDone=true;
                         //Log.d(LOG_TAG, "action"+getAction());
 
@@ -286,7 +286,7 @@ public class SpeechRecognitionIat extends Activity implements SpeechRecognitionI
             mLookUpHandle.exactLookUpWord(mParserResult.toString().toLowerCase(), ret);
         } catch (DictionaryException e){
             e.printStackTrace();
-            Log.e(LOG_TAG, "not found"+mParserResult.toString());
+            Log.e(LOG_TAG, "not found: "+mParserResult.toString());
         }
         mParserResult.setLength(0);
 
