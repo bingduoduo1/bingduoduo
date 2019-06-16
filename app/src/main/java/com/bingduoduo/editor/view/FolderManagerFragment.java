@@ -28,8 +28,11 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.Switch;
 
+import com.bingduoduo.editor.utils.Toast;
 import com.github.clans.fab.FloatingActionButton;
+import com.google.android.material.navigation.NavigationView;
 import com.termux.R;
 import com.bingduoduo.editor.adapter.FileListAdapter;
 import com.bingduoduo.editor.adapter.OnItemClickLitener;
@@ -400,7 +403,16 @@ public class FolderManagerFragment extends BaseRefreshFragment implements IFolde
 
     @OnClick(R.id.menu2_fab_switch)//default is R.id.fab
     public void OnClick(View view){
+        //NavigationView navigation = (NavigationView) getActivity().findViewById(R.id.id_navigation_view);
+
+        //Menu menu = navigation.getMenu();
+       // Switch nightSwitcher=(Switch) menu.findItem(R.id.night_pattern_switch);
+
+        Switch nightSwitcher = (Switch)getActivity().findViewById(R.id.switcher);
+        boolean isNgiht = nightSwitcher.isChecked();
+        //Toast.show(mContext,isNgiht?"night":"day", Toast.LENGTH_SHORT);
         Intent intent  = new Intent(mContext, TermuxActivity.class);
+        intent.putExtra("isNightMode",isNgiht);
         startActivity(intent);
     }
 

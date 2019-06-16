@@ -29,6 +29,7 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.Button;
 import android.util.Log;
+import android.widget.ImageButton;
 
 import com.github.clans.fab.FloatingActionButton;
 import com.termux.R;
@@ -134,35 +135,69 @@ public class EditorActivity extends BaseToolbarActivity implements IEditorActivi
         btn_voice.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
+                float downRawX=0, downRawY=0;
+                float dX=0, dY=0;
+
+                ImageButton img = (ImageButton)v;
                 switch (event.getAction()) {
                     case MotionEvent.ACTION_DOWN: {
                         // 按住事件发生后执行代码的区域
                         // mReconition.cancelRecognize();
+                        img.setImageDrawable(getResources().getDrawable(R.drawable.ic_voice2));
                         Log.d(TAG, "upup31312 : "+System.currentTimeMillis());
                         mReconition.startRecognize();
                         // han.sendEmptyMessageDelayed(0,1000);
+
+                        downRawX = event.getRawX();
+                        downRawY = event.getRawY();
+                        dX = v.getX() - downRawX;
+                        dY = v.getY() - downRawY;
 
                         break;
                         // 开始识别
                     }
                     case MotionEvent.ACTION_MOVE: {
                         // 移动事件发生后执行代码的区域
+                        int viewWidth = v.getWidth();
+                        int viewHeight = v.getHeight();
+
+                        View viewParent = (View)v.getParent();
+                        int parentWidth = viewParent.getWidth();
+                        int parentHeight = viewParent.getHeight();
+
+                        float newX = event.getRawX() + dX;
+                        newX = Math.max(0, newX);                                 // Don't allow the FAB past the left hand side of the parent
+                        newX = Math.min(parentWidth - viewWidth, newX);           // Don't allow the FAB past the right hand side of the parent
+
+                        float newY = event.getRawY() + dY;
+                        newY = Math.max(0, newY);                                 // Don't allow the FAB past the top of the parent
+                        newY = Math.min(parentHeight - viewHeight, newY);         // Don't allow the FAB past the bottom of the parent
+
+                        v.animate()
+                            .x(newX)
+                            .y(newY)
+                            .setDuration(0)
+                            .start();
+
                         break;
                     }
                     case MotionEvent.ACTION_UP: {
                         // 松开事件发生后执行代码的区域
-//                        String ret = mReconition.getAction();
-//                        Log.d(TAG, "return_message:"+ret);
+                        img.setImageDrawable(getResources().getDrawable(R.drawable.ic_voice));
                         Message message = new Message();
                         message.what=0;
                         han.sendMessageDelayed(message, 800);
+                        //float upRawX = event.getRawX();
+                        //float upRawY = event.getRawY();
+                        //float upDX = upRawX - downRawX;
+                        //float upDY = upRawY - downRawY;
 
                         break;
                     }
                     default:
                         break;
                 }
-                return true;
+                return false;// 设置成false,使得btn的onEvent方法能够被调用
             }
         });
     }

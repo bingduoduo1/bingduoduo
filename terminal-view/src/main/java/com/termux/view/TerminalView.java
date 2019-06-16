@@ -164,6 +164,7 @@ public final class TerminalView extends View {
                 if (!mScroller.isFinished()) return true;
 
                 Log.d(TAG, "onFling: +++++++++++++++++++++++++++");
+                //Intent intent = new Intent(getContext(), MainActivity.class);
 
                 final boolean mouseTrackingAtStartOfFling = mEmulator.isMouseTrackingActive();
                 float SCALE = 0.25f;

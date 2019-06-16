@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<resources>
+    <!-- 画面背景色 -->
+    <drawable name="layout_backgroud">#000000</drawable>
+
+    <!-- 分割线背景色 -->
+    <drawable name="line_background">#161823</drawable>
+
+    <color name="white">#FFFFFF</color>
+
+    <!-- 控件按下时显示的颜色 -->
+    <color name="list_backgroud_color">#2fb3cb</color>
+    <color name="title_color">#0f8ec5</color>
+    <color name="content_color">#737373</color>
+
+
+    <!-->
+        <color name="colorPrimary">#795548</color>
+        <color name="colorPrimary66">#66795548</color>
+        <color name="colorPrimaryTransparent">#99795548</color>
+        <color name="colorPrimaryDark">#795548</color>
+        <color name="colorPrimaryDarkReal">#4D342B</color>
+        <color name="colorPrimaryLight">#CFD8DC</color>
+        <-->
+    <color name="colorPrimary">#000000</color>
+    <color name="colorPrimary66">#000000</color>
+    <color name="colorPrimaryTransparent">#000000</color>
+    <color name="colorPrimaryDark">#321C54</color>
+    <color name="colorPrimaryDarkReal">#a3a1b4</color>
+    <color name="colorPrimaryLight">#D8DCDD</color>
+
+    <!--一般用于colorPrimary为背景的文字颜色-->
+    <color name="colorAccent">#727272</color>
+    <color name="colorPrimaryText">#212121</color>
+    <color name="colorSecondaryText">#727272</color>
+    <color name="colorDivider">#A1A1A1</color>
+
+    <color name="colorDialogMessage">#8a000000</color>
+
+    <!-- 常用颜色值 -->
+    <color name="white40">#40FFFFFF</color>
+    <color name="white125">#88FFFFFF</color>
+    <color name="black">#000000</color>
+    <color name="black_de">#DE000000</color>
+    <color name="gray">#808080</color>
+    <color name="red">#FF0000</color>
+    <color name="gold">#FFD700</color>
+    <color name="yellow">#FFFF00</color>
+    <color name="green">#008000</color>
+    <color name="blue">#0000FF</color>
+    <color name="purple">#800080</color>
+    <color name="pink">#FFC0CB</color>
+    <color name="orange">#FFA500</color>
+
+    <color name="background">#A1A1A1</color>
+
+
+    <color name="c_7c7c7c">#7c7c7c</color>
+    <color name="c_595959">#595959</color>
+    <color name="c_e1e1e1">#e1e1e1</color>
+
+
+</resources>

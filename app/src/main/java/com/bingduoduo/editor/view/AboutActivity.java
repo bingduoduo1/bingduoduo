@@ -36,7 +36,7 @@ public class AboutActivity extends BaseToolbarActivity {
 
     @Override
     public void onCreateAfter(Bundle savedInstanceState) {
-        version.setText(String.format(getString(R.string.version_string), "0.0.1"));
+        version.setText(String.format(getString(R.string.version_string), "0.0.2"));
         String fromAssets = SystemUtils.getAssertString(mContext.getApplicationContext(), "description.txt");
         description.setText(R.string.app_name);
     }

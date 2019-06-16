@@ -44,7 +44,7 @@ public class BatchSize extends PytorchTrainArgument {
 
     @Override
     public String getDefaultValue() {
-        return "positive int value is ok(default 1).\n";
+        return "[positive int value is ok(default 1).]\n";
     }
 
     @Override
@@ -59,6 +59,6 @@ public class BatchSize extends PytorchTrainArgument {
 
     @Override
     public String toString() {
-        return String.format(Locale.ENGLISH,"init_lr: %d\n", mBatchSize);
+        return String.format(Locale.ENGLISH,"batch size: %d\n", mBatchSize);
     }
 }

@@ -3,5 +3,6 @@ package model.dictionary.model;
 public enum ExecutePlaceType {
     GENERAL,
     EDITOR,
-    SHELL
+    SHELL,
+    TRAIN_CONFIG
 }

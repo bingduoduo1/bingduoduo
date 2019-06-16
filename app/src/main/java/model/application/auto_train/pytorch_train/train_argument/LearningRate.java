@@ -24,7 +24,7 @@ public class LearningRate extends PytorchTrainArgument {
 
     @Override
     public String getDefaultValue() {
-        return "positive double value is OK(default 0.01)\n";
+        return "[positive double value is OK(default 0.01)]\n";
     }
 
     @Override

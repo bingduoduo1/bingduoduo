@@ -70,6 +70,16 @@ public abstract class InputActionHelper extends GlobalHelper{
         add("bash testgit.sh");
     }};
 
+    private static ArrayList<String> mPytorchTrainArgumentList = new ArrayList<String>() {{
+        add("learning_rate");
+        add("batch_size");
+        add("optim_algorithm");
+        add("SGD");
+        add("SGD_momentum");
+        add("RMSprop");
+        add("Adam");
+    }};
+
 
     public static boolean inputActionContentCheck(String content) {
         return (isAlpha(content) ||
@@ -77,6 +87,7 @@ public abstract class InputActionHelper extends GlobalHelper{
                 mTokenList.contains(content) ||
                 mShellKeyWordList.contains(content) ||
                 mPythonKeyWordList.contains(content) ||
-                mCombinedActionList.contains(content));
+                mCombinedActionList.contains(content)) ||
+                mPytorchTrainArgumentList.contains(content);
     }
 }

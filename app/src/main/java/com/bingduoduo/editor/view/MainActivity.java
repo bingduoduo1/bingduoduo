@@ -2,14 +2,19 @@
 package com.bingduoduo.editor.view;
 
 import android.Manifest;
+//import android.content.Intent;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.content.res.Configuration;
 import android.os.Build;
 import android.os.Bundle;
 import androidx.annotation.IdRes;
 import androidx.annotation.LongDef;
+import androidx.appcompat.app.AppCompatDelegate;
+import androidx.appcompat.widget.SwitchCompat;
 import androidx.core.app.ActivityCompat;
 import androidx.core.view.GravityCompat;
+import androidx.core.view.MenuItemCompat;
 
 import android.util.Log;
 import android.view.GestureDetector;
@@ -17,12 +22,16 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
+import android.widget.Button;
+import android.widget.CompoundButton;
+import android.widget.Switch;
+import android.widget.Toast;
 
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.github.clans.fab.FloatingActionButton;
 import com.termux.R;
 import com.bingduoduo.editor.base.BaseDrawerLayoutActivity;
 import com.bingduoduo.editor.base.BaseFragment;
-import com.bingduoduo.editor.utils.Toast;
+//import com.bingduoduo.editor.utils.Toast;
 import com.termux.app.TermuxActivity;
 
 /**
@@ -30,27 +39,35 @@ import com.termux.app.TermuxActivity;
  */
 public class MainActivity extends BaseDrawerLayoutActivity {
     private BaseFragment mCurrentFragment;
-//    private int currentMenuId;
+    private int currentMenuId;
+    private boolean isNightMode = false;
+    private MenuItem mSwitchItem;
+
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        if(savedInstanceState != null) {
+            isNightMode = savedInstanceState.getBoolean("isNightMode");
+            String tmp = savedInstanceState.getString("isNightModeString");
+
+            Log.d("MainActivity", "onCreate: "+(isNightMode?"Night":"Day") + "String:"+tmp);
+            if(isNightMode){
+                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
+
+            }else{
+                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
+            }
+
+        }
         this.requestPermissions();
-        // 在 FolderMangaerFragment 用
-        // @OnClick(R.id.menu2_fab_switch)//default is R.id.fab
-        // 代替了这个fab
-        //FloatingActionButton fab_switch = (FloatingActionButton)findViewById(R.id.switch_btn_editor);
-        //fab_switch.setOnClickListener(new View.OnClickListener(){
-        //    @Override
-        //    public void onClick(View v){
-        //        Intent intent = new Intent(MainActivity.this, TermuxActivity.class);
-        //        startActivity(intent);
-        //    }
-        //});
     }
 
 
+    public boolean getIsNightMode(){
+        return isNightMode;
+    }
 
     private void requestPermissions(){
         try {
@@ -120,6 +137,43 @@ public class MainActivity extends BaseDrawerLayoutActivity {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
+
+        Log.d("MainActivity", "onCreateOptionsMenu: =================");
+        //getMenuInflater().inflate(R.menu.menu_main_drawer, menu);
+        //mSwitchItem = menu.findItem(R.id.night_pattern_switch);
+        //Switch switcher= (Switch) mSwitchItem.getActionView().findViewById(R.id.switcher);
+        //Toast.makeText(this, isNightMode?"Night":"Day",Toast.LENGTH_SHORT).show();
+        Switch switcher = (Switch) findViewById(R.id.switcher);
+        switcher.setChecked(isNightMode);
+        switcher.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                //Toast.makeText(MainActivity.this, isChecked?"Yes":"No", Toast.LENGTH_SHORT).show();
+                if (isChecked){
+                    isNightMode = true;
+                    //Toast.makeText(MainActivity.this, isNightMode?"Yes":"No", Toast.LENGTH_SHORT).show();
+                    Log.d("MainActivity", "onOptionsItemSelected: isChecked True");
+                    System.out.println("in Ngiht Switch");
+                    int currentNightMode = getResources().getConfiguration().uiMode & Configuration.UI_MODE_NIGHT_MASK;
+                    getDelegate().setLocalNightMode(currentNightMode == Configuration.UI_MODE_NIGHT_NO
+                        ? AppCompatDelegate.MODE_NIGHT_YES : AppCompatDelegate.MODE_NIGHT_NO);
+                    // 同样需要调用recreate方法使之生效
+                    recreate();
+                    //Todo
+                }else {
+                    isNightMode = false;
+                    //Toast.makeText(MainActivity.this, "ininini", Toast.LENGTH_SHORT).show();
+                    Log.d("MainActivity", "onOptionsItemSelected: isChecked false");
+                    int currentNightMode = getResources().getConfiguration().uiMode & Configuration.UI_MODE_NIGHT_MASK;
+                    getDelegate().setLocalNightMode(currentNightMode == Configuration.UI_MODE_NIGHT_NO
+                        ? AppCompatDelegate.MODE_NIGHT_YES : AppCompatDelegate.MODE_NIGHT_NO);
+                    // 同样需要调用recreate方法使之生效
+                    recreate();
+                    //Todo
+                }
+            }
+        });
+
         return super.onCreateOptionsMenu(menu);
     }
 
@@ -131,6 +185,8 @@ public class MainActivity extends BaseDrawerLayoutActivity {
                 return true;
             case R.id.menu_about:
                 AboutActivity.startAboutActivity(this);
+                return true;
+            case R.id.night_pattern_switch:
                 return true;
         }
         return super.onOptionsItemSelected(item);
@@ -153,13 +209,51 @@ public class MainActivity extends BaseDrawerLayoutActivity {
             finish();
         } else {// 提示用户退出
             customTime = System.currentTimeMillis();
-            Toast.showShort(mContext, "再按一次退出软件");
+            Toast.makeText(mContext,"再按一次退出软件",Toast.LENGTH_SHORT).show();
+            //Toast.showShort(mContext, "再按一次退出软件");
         }
     }
 
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        //保存销毁之前的数据
+        outState.putBoolean("isNightMode",isNightMode);
+        outState.putString("isNightModeString",isNightMode?"Night":"Day");
+        //Toast.makeText(this, isNightMode?"Night":"Day", Toast.LENGTH_SHORT).show();
+        Log.d("MainActivity", "onSaveInstanceState: " +  (isNightMode?"Night":"Day"));
+    }
+    @Override
+    protected void onRestoreInstanceState(Bundle savedInstanceState) {
+        super.onRestoreInstanceState(savedInstanceState);
+        //恢复数据
+        isNightMode = savedInstanceState.getBoolean("isNightMode");
+
+        //Switch switcher= (Switch) mSwitchItem.getActionView().findViewById(R.id.switcher);
+        //switcher.setChecked(isNightMode);
+        //Menu menu = (Menu)findViewById(R.menu.menu_main_drawer);
+        //MenuItem switchItem = menu.findItem(R.id.action_open_close_nfc);
+        //mSwitch = (Switch) switchItem.getActionView().findViewById(R.id.switchForActionBar);
 
 
+        //Switch switcher = (Switch) findViewById(R.id.switcher);
+        //switcher.setChecked(isNightMode);
 
+        //Toast.makeText(this, isNightMode?"onRestore Night":"on restore Day", Toast.LENGTH_SHORT).show();
+        Log.d("MainActivity", "onRestoreInstanceState: " +  (isNightMode?"Night":"Day"));
+        //Switch switcher = (Switch)findViewById(R.id.switcher);
+        //Toast.makeText(this,"get savedInsanceState",Toast.LENGTH_SHORT).show();
+        //isNightMode = savedInstanceState.getBoolean("isNightMode");
+        Log.d("MainActivity", "onCreate: "+(isNightMode?"Night":"Day"));
+        //if(isNightMode){
+        //    AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
+        //    switcher.setChecked(true);
+
+        //}else{
+        //    AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
+        //    switcher.setChecked(false);
+        //}
+    }
 
 
 }
