@@ -24,6 +24,7 @@ import static androidx.test.espresso.matcher.ViewMatchers.isRoot;
 import static androidx.test.espresso.matcher.ViewMatchers.withContentDescription;
 import static androidx.test.espresso.matcher.ViewMatchers.withId;
 import static androidx.test.espresso.matcher.ViewMatchers.withParent;
+import static androidx.test.espresso.matcher.ViewMatchers.withText;
 import static org.hamcrest.core.AllOf.allOf;
 import static org.hamcrest.core.Is.is;
 import static org.hamcrest.core.IsNot.not;
@@ -37,36 +38,52 @@ public class MainActivityTest {
     @Test
     public void testSwitch()
     {
-        onView(withId(R.id.menu_helper)).check(matches(isDisplayed()));
-//        onView(withId(R.id.menu2)).check(matches(isDisplayed()));
-        onView(withId(R.id.menu2_fab_switch)).check(matches(isDisplayed()));
-//        onView(allOf(withParent(withId(R.id.fab_label)),isDisplayed())).perform(click());
-//        onView(withId(R.id.fab_label)).perform(click());
-        ViewInteraction floatingActionButton = onView(
-            allOf(ViewMatchers.withClassName(is("com.github.clans.fab.FloatingActionButton")),
-//                withParent(withId(R.id.menu2)),
-                withId(R.id.menu2_fab_switch)
-//                isDisplayed()
-            ));
-        floatingActionButton.perform(click());
-        SystemClock.sleep(3000);
-
-        //        onView(withId(R.id.))
+        onView(withId(R.id.menu2)).check(matches(isDisplayed()));
 //        onView(isRoot()).perform(swipeRight());
 //        onView(withId(R.id.menu_helper)).check(matches(isDisplayed()));
 //        onView(withId(android.R.id.home)).check(matches(isDisplayed()));
 //        Espresso.pressBack();
         onView(withContentDescription(containsString("navigation drawer"))).check(matches(isDisplayed()));
         onView(withContentDescription(containsString("navigation drawer"))).perform(click());
-        onView(isRoot()).perform(swipeLeft());
-        SystemClock.sleep(3000);
-        onView(withId(2131230898)).perform(longClick());
-        onView(withId(2131230898)).perform(click());
-        onView(withId(R.id.menu2)).perform(click());
-        onView(withId(R.id.menu2_fab_switch)).check(matches(isDisplayed()));
 
-        //        onView(withId(R.id.menu2_fab_switch)).perform(click());
-//        onView(withId(R.id.menu2)).check(matches(isDisplayed()));
+        onView(withText(R.string.action_helper)).check(matches(isDisplayed()));
+        onView(withText(R.string.action_helper)).perform(click());
+//        SystemClock.sleep(3000);
+//        onView(withId(R.id.menu_helper)).check(matches(isDisplayed()));
+//        onView(withId(R.id.menu_helper)).perform(click());
+//        Espresso.pressBack();
+//        onView(isRoot()).perform(swipeLeft());
+//        SystemClock.sleep(3000);
+//        onView(withId(2131230898)).perform(longClick());
+//        onView(withId(2131230898)).perform(click());
+//        onView(withId(R.id.menu2)).perform(click());
+//        onView(withId(R.id.menu2_fab_switch)).check(matches(isDisplayed()));
+//
+//        //        onView(withId(R.id.menu2_fab_switch)).perform(click());
+////        onView(withId(R.id.menu2)).check(matches(isDisplayed()));
+//
+    }
+
+    @Test
+    public void testAbout()
+    {
+        onView(withContentDescription(containsString("navigation drawer"))).perform(click());
+        onView(withText(R.string.about)).check(matches(isDisplayed()));
+        onView(withText(R.string.about)).perform(click());
+        Espresso.pressBack();
+        Espresso.pressBack();
+//        Espresso.pressBack();
+    }
+
+    @Test
+    public void testFab()
+    {
+        onView(withId(R.id.fab_label)).check(matches(isDisplayed()));
+        onView(withId(R.id.fab_label)).perform(click());
+        onView(withId(R.id.menu_helper)).check(matches(isDisplayed()));
+        onView(withId(R.id.menu2_fab_switch)).perform(click());
+
+        SystemClock.sleep(3000);
 
 
     }
