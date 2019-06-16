@@ -8,7 +8,7 @@ import static org.junit.Assert.*;
 public class ScpToolTest {
     ScpTool expectedScpTool;
     String info = "Hello,world!";
-    String localPath = "test.txt";
+    String localPath = "text.txt";
     String remotePath = "document//test.txt";
     @Before
     public void createScpTool() {
@@ -16,13 +16,13 @@ public class ScpToolTest {
         expectedScpTool = ScpTool.createScpTool();
         assertTrue(expectedScpTool.getTempFileName().equals("scp_temp_file.txt"));
         assertNull(expectedScpTool.getExecRecord());
+        System.out.println(expectedScpTool.getReceiveCmd(localPath, remotePath));
+        System.out.println(expectedScpTool.getSendCmd(localPath, remotePath));
     }
 
     @Test
     public void sendMessageByPath() {
-
         expectedScpTool.sendMessageByPath(localPath, remotePath);
-
     }
 
     @Test

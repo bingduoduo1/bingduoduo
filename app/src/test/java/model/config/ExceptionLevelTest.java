@@ -10,5 +10,7 @@ public class ExceptionLevelTest {
     public void toStringTest() {
         assertTrue("Dictionary".equals(ExceptionLevel.toString(ExceptionLevel.Dictionary)));
         assertTrue("GLOBAL".equals(ExceptionLevel.toString(ExceptionLevel.GLOBAL)));
+//        ExceptionLevel level = null;
+//        assertTrue("WTF".equals(ExceptionLevel.toString(level)));
     }
 }

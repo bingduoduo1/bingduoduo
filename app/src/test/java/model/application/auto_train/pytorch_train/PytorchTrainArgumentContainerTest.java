@@ -2,16 +2,38 @@ package model.application.auto_train.pytorch_train;
 
 import org.junit.Test;
 
+
+import model.config.GlobalException;
+
 import static org.junit.Assert.*;
 
 public class PytorchTrainArgumentContainerTest {
-
+    PytorchTrainArgumentContainer pytorchTrainArgumentContainer = new PytorchTrainArgumentContainer("test.txt");
     @Test
-    public void pytorchTrainArgumentContainer() {
+    public void updateTest(){
+        String errMsg = "";
+        pytorchTrainArgumentContainer.isValid(errMsg);
     }
 
     @Test
-    public void pytorchTrainArgumentContainer1() {
+    public void updateTest1()
+    {
+    }
+    @Test
+    public void updateTest2()
+    {
+        try {
+            pytorchTrainArgumentContainer.updateValue("speed", "1.00");
+        }catch (GlobalException e)
+        {
+            assertTrue(e instanceof GlobalException);
+        }
+        try{
+            pytorchTrainArgumentContainer.updateValue("batch_size", "0.2");
+        }catch (GlobalException e)
+        {
+            assertTrue(e instanceof GlobalException);
+        }
     }
 
     @Test
@@ -20,13 +42,16 @@ public class PytorchTrainArgumentContainerTest {
 
     @Test
     public void getSize() {
+        System.out.println(pytorchTrainArgumentContainer.getSize());
+        System.out.println(pytorchTrainArgumentContainer.getOutputFilePath());
+        pytorchTrainArgumentContainer.saveObject2File();
+    }
+    @Test
+    public void saveTest()
+    {
+        PytorchTrainArgumentContainer pytorchTrainArgumentContainer1 = new PytorchTrainArgumentContainer("testException.txt");
+        pytorchTrainArgumentContainer1.saveObject2File();
     }
 
-    @Test
-    public void getOutputFilePath() {
-    }
 
-    @Test
-    public void saveObject2File() {
-    }
 }

@@ -1,0 +1,9 @@
+******************************
+train config content:
+	batch size: 1
+[positive int value is ok(default 1).]
+	init_lr: 0.010000
+[positive double value is OK(default 0.01)]
+	optimization Algorithm: SGD_momentum
+[default optim algorithm is SGD_momentum]
+******************************
