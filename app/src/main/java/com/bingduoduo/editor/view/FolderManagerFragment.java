@@ -410,7 +410,7 @@ public class FolderManagerFragment extends BaseRefreshFragment implements IFolde
 
         Switch nightSwitcher = (Switch)getActivity().findViewById(R.id.switcher);
         boolean isNgiht = nightSwitcher.isChecked();
-        //Toast.show(mContext,isNgiht?"night":"day", Toast.LENGTH_SHORT);
+        //Toast.show(mcontext,isNgiht?"night":"day", Toast.LENGTH_SHORT);
         Intent intent  = new Intent(mContext, TermuxActivity.class);
         intent.putExtra("isNightMode",isNgiht);
         startActivity(intent);

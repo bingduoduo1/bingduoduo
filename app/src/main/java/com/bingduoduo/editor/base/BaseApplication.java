@@ -14,11 +14,18 @@ import android.view.View;
 import com.bingduoduo.editor.utils.Check;
 
 public class BaseApplication extends Application {
-    static Context context;
-    static Resources resource;
 
 
+    private static Context context;
+    private static Resources resource;
 
+    public static Context getContext() {
+        return context;
+    }
+
+    public static Resources getResource() {
+        return resource;
+    }
 
     @Override
     public void onCreate() {

@@ -1,33 +1,26 @@
 
 package com.bingduoduo.editor.view;
 
-import android.app.Activity;
 import android.content.Intent;
-import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
-import android.provider.MediaStore;
 import androidx.annotation.NonNull;
 //import android.support.design.widget.TextInputLayout;
 
 //import androidx.core.app.Fragment;
 //import androidx.core.app.FragmentManager;
 //import androidx.core.app.FragmentPagerAdapter;
-import androidx.appcompat.app.AlertDialog;
 import androidx.core.view.ViewCompat;
 //import androidx.core.view.ViewPager;
 //import android.support.v7.app.AlertDialog;
 import android.text.Editable;
 import android.view.KeyEvent;
-import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
-import android.widget.EditText;
-import android.widget.Button;
 import android.util.Log;
 import android.widget.ImageButton;
 
@@ -36,13 +29,8 @@ import com.termux.R;
 import com.bingduoduo.editor.base.BaseApplication;
 import com.bingduoduo.editor.base.BaseToolbarActivity;
 import com.bingduoduo.editor.presenter.IEditorActivityView;
-import com.bingduoduo.editor.utils.Check;
 import com.bingduoduo.editor.utils.FileUtils;
 import com.bingduoduo.editor.utils.SystemBarUtils;
-import com.bingduoduo.editor.utils.Toast;
-import com.google.android.material.textfield.TextInputLayout;
-
-import java.io.File;
 
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
@@ -50,22 +38,15 @@ import androidx.fragment.app.FragmentPagerAdapter;
 import androidx.viewpager.widget.ViewPager;
 import butterknife.Bind;
 
-import com.iflytek.cloud.ErrorCode;
-import com.iflytek.cloud.InitListener;
-import com.iflytek.cloud.SpeechConstant;
-import com.iflytek.cloud.SpeechRecognizer;
 import com.iflytek.cloud.SpeechUtility;
-import com.iflytek.speech.util.FucUtil;
 import com.iflytek.voicedemo.SpeechRecognitionIat;
-import com.termux.terminal.TerminalSession;
 
 import static android.content.ContentValues.TAG;
 
-public class EditorActivity extends BaseToolbarActivity implements IEditorActivityView, View.OnClickListener {
+public class EditorActivity extends BaseToolbarActivity
+    implements IEditorActivityView, View.OnClickListener {
     public static final String SHARED_ELEMENT_NAME = "SHARED_ELEMENT_NAME";
-//    public static final String SHARED_ELEMENT_COLOR_NAME = "SHARED_ELEMENT_COLOR_NAME";
     private static final String SCHEME_FILE = "file";
-//    private static final String SCHEME_Folder = "folder";
 
     private EditorFragment mEditorFragment;
 

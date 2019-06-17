@@ -3,26 +3,18 @@ package com.bingduoduo.editor.view;
 
 import android.Manifest;
 //import android.content.Intent;
-import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.res.Configuration;
 import android.os.Build;
 import android.os.Bundle;
 import androidx.annotation.IdRes;
-import androidx.annotation.LongDef;
 import androidx.appcompat.app.AppCompatDelegate;
-import androidx.appcompat.widget.SwitchCompat;
 import androidx.core.app.ActivityCompat;
 import androidx.core.view.GravityCompat;
-import androidx.core.view.MenuItemCompat;
 
 import android.util.Log;
-import android.view.GestureDetector;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.MotionEvent;
-import android.view.View;
-import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.Switch;
 import android.widget.Toast;
@@ -32,7 +24,7 @@ import com.termux.R;
 import com.bingduoduo.editor.base.BaseDrawerLayoutActivity;
 import com.bingduoduo.editor.base.BaseFragment;
 //import com.bingduoduo.editor.utils.Toast;
-import com.termux.app.TermuxActivity;
+
 
 /**
  * The type Main activity.
@@ -209,8 +201,8 @@ public class MainActivity extends BaseDrawerLayoutActivity {
             finish();
         } else {// 提示用户退出
             customTime = System.currentTimeMillis();
-            Toast.makeText(mContext,"再按一次退出软件",Toast.LENGTH_SHORT).show();
-            //Toast.showShort(mContext, "再按一次退出软件");
+            Toast.makeText(mcontext,"再按一次退出软件",Toast.LENGTH_SHORT).show();
+            //Toast.showShort(mcontext, "再按一次退出软件");
         }
     }
 

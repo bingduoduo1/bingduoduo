@@ -36,8 +36,13 @@ public class AboutActivity extends BaseToolbarActivity {
 
     @Override
     public void onCreateAfter(Bundle savedInstanceState) {
-        version.setText(String.format(getString(R.string.version_string), "0.0.2"));
-        String fromAssets = SystemUtils.getAssertString(mContext.getApplicationContext(), "description.txt");
+        version.setText(String
+            .format(getString(R.string.version_string), "0.0.2"));
+
+        String fromAssets = SystemUtils
+            .getAssertString(mcontext.getApplicationContext(),
+            "description.txt");
+
         description.setText(R.string.app_name);
     }
 
@@ -47,7 +52,8 @@ public class AboutActivity extends BaseToolbarActivity {
 
     @Override
     protected void initStatusBar() {
-        SystemBarUtils.tintStatusBar(this, getResources().getColor(R.color.colorPrimary));
+        SystemBarUtils.tintStatusBar(this,
+            getResources().getColor(R.color.colorPrimary));
     }
 
     @NonNull
@@ -55,6 +61,4 @@ public class AboutActivity extends BaseToolbarActivity {
     protected String getTitleString() {
         return this.getString(R.string.about);
     }
-
-
 }

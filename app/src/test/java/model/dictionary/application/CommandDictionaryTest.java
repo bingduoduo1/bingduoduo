@@ -45,6 +45,9 @@ public class CommandDictionaryTest {
         BaseWord base_word = new CustomWord("魔鬼", NatureLanguageType.CHINESE);
         action = mCommandDictionary.lookUpAction(base_word);
         assertEquals(action, null);
+        word = "测试";
+        action = mCommandDictionary.lookUpAction(word);
+        assertEquals(action, null);
     }
 
     @Test

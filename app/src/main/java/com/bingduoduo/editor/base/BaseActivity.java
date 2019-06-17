@@ -1,12 +1,9 @@
-
-
 package com.bingduoduo.editor.base;
 
 import android.content.Context;
 import android.os.Bundle;
 import androidx.appcompat.app.AppCompatActivity;
 
-import android.view.GestureDetector;
 import android.view.LayoutInflater;
 
 import com.bingduoduo.editor.utils.SystemBarUtils;
@@ -17,12 +14,24 @@ import butterknife.ButterKnife;
 /**
  * 原始Activity封装
  */
-public abstract class BaseActivity extends AppCompatActivity implements BaseViewInterface, WaitDialogInterface {
+public abstract class BaseActivity extends AppCompatActivity
+    implements BaseViewInterface, WaitDialogInterface {
 
     protected BaseApplication application;
     protected LayoutInflater inflater;
-    protected Context mContext;
+    protected Context mcontext;
 
+    public BaseApplication getBaseApplication() {
+        return application;
+    }
+
+    public LayoutInflater getInflater() {
+        return inflater;
+    }
+
+    public Context getMcontext() {
+        return mcontext;
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,6 +43,7 @@ public abstract class BaseActivity extends AppCompatActivity implements BaseView
         initStatusBar();
         onCreateAfter(savedInstanceState);
     }
+
     @Override
     protected void onStart() {
         super.onStart();
@@ -48,6 +58,7 @@ public abstract class BaseActivity extends AppCompatActivity implements BaseView
     protected void onPause() {
         super.onPause();
     }
+
     @Override
     protected void onDestroy() {
         ButterKnife.unbind(this);//解绑定
@@ -66,7 +77,7 @@ public abstract class BaseActivity extends AppCompatActivity implements BaseView
     }
 
     protected void init() {
-        mContext = getApplicationContext();
+        mcontext = getApplicationContext();
         application = (BaseApplication) getApplication();
     }
 
@@ -76,24 +87,32 @@ public abstract class BaseActivity extends AppCompatActivity implements BaseView
 
     @Override
     public void hideWaitDialog() {
-        if (mWait != null && mWait.isShowing())
-            mWait.dismiss();
+        if (mwait != null && mwait.isShowing())
+        {
+            mwait.dismiss();
+        }
     }
 
-    private KProgressHUD mWait;
+    private KProgressHUD mwait;
 
     @Override
     public KProgressHUD showWaitDialog(String message, boolean canBack) {
-        if (mWait == null)
-            mWait = KProgressHUD.create(mContext)
-                    .setStyle(KProgressHUD.Style.SPIN_INDETERMINATE)
-                    .setLabel("请稍等")
-                    .setAnimationSpeed(2)
-                    .setDimAmount(0.5f);
-        else if (mWait.isShowing()) mWait.dismiss();
-        mWait.setCancellable(canBack)
-                .setDetailsLabel(message)
-                .show();
-        return mWait;
+        if (mwait == null)
+        {
+            mwait = KProgressHUD.create(mcontext)
+                .setStyle(KProgressHUD.Style.SPIN_INDETERMINATE)
+                .setLabel("请稍等")
+                .setAnimationSpeed(2)
+                .setDimAmount(0.5f);
+        }
+        else if (mwait.isShowing())
+        {
+            mwait.dismiss();
+        }
+        mwait.setCancellable(canBack)
+            .setDetailsLabel(message)
+            .show();
+
+        return mwait;
     }
 }
