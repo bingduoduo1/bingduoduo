@@ -1,11 +1,11 @@
 
-
 package com.bingduoduo.editor.engine;
 
-import androidx.annotation.NonNull;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.widget.EditText;
+
+import androidx.annotation.NonNull;
 
 import com.bingduoduo.editor.utils.Check;
 
@@ -13,22 +13,22 @@ import com.bingduoduo.editor.utils.Check;
  * 输入监听
  */
 public class PerformInputAfter {
-
+    
     private final Editable editable;
     private boolean flag = false;
-
+    
     public static void start(@NonNull EditText editText) {
         new PerformInputAfter(editText);
     }
-
+    
     private PerformInputAfter(@NonNull EditText editText) {
         Check.CheckNull(editText, "EditText不能为空");
         editable = editText.getText();
         editText.addTextChangedListener(new Watcher());
     }
-
+    
     private class Watcher implements TextWatcher {
-
+        
         /**
          * Before text changed.
          *
@@ -39,17 +39,20 @@ public class PerformInputAfter {
          */
         @Override
         public final void beforeTextChanged(CharSequence s, int start, int count, int after) {
-            if (flag) return;
+            if (flag)
+            {
+                return;
+            }
             int end = start + count;
             if (end > start && end <= s.length()) {
                 CharSequence charSequence = s.subSequence(start, end);
                 if (charSequence.length() > 0) {
                     onSubText(s, charSequence, start);
-
+                    
                 }
             }
         }
-
+        
         /**
          * On text changed.
          *
@@ -60,7 +63,10 @@ public class PerformInputAfter {
          */
         @Override
         public final void onTextChanged(CharSequence s, int start, int before, int count) {
-            if (flag) return;
+            if (flag)
+            {
+                return;
+            }
             int end = start + count;
             if (end > start) {
                 CharSequence charSequence = s.subSequence(start, end);
@@ -69,32 +75,34 @@ public class PerformInputAfter {
                 }
             }
         }
-
+        
         @Override
         public final void afterTextChanged(Editable s) {
-            if (flag) return;
+            if (flag)
+            {
+                return;
+            }
         }
-
+        
     }
-
+    
     private void onAddText(CharSequence source, CharSequence charSequence, int start) {
         flag = true;
         if ("\n".equals(charSequence.toString())) {
-            //用户输入回车
+            // 用户输入回车
             performAddEnter(editable, source, start);
-
-
+            
         }
         flag = false;
     }
-
+    
     private void onSubText(CharSequence source, CharSequence charSequence, int start) {
         flag = true;
-        //操作代码
-
+        // 操作代码
+        
         flag = false;
     }
-
+    
     /**
      * 处理回车操作
      *
@@ -103,28 +111,30 @@ public class PerformInputAfter {
      * @param start
      */
     private void performAddEnter(Editable editable, CharSequence source, int start) {
-        //获取回车之前的字符
+        // 获取回车之前的字符
         String tempStr = source.subSequence(0, start).toString();
-        //查找最后一个回车
+        // 查找最后一个回车
         int lastEnter = tempStr.lastIndexOf(10);
         if (lastEnter > 0) {
-            //最后一个回车到输入回车之间的字符
+            // 最后一个回车到输入回车之间的字符
             tempStr = tempStr.substring(lastEnter + 1, start);
         }
-
-        String mString = tempStr.trim();
+        
+        String mstring = tempStr.trim();
         String startSpace = getStartChar(tempStr, ' ');
-
-        if (mString.startsWith("* ") && mString.length() > 2) {//* 开头
+        
+        if (mstring.startsWith("* ") && mstring.length() > 2) {
+            // * 开头
             editable.insert(start + 1, startSpace + "* ");
-        } else if (mString.startsWith("1. ") && mString.length() > 3) {//1. 开头
+        } else if (mstring.startsWith("1. ") && mstring.length() > 3) {
+            // 1. 开头
             editable.insert(start + 1, startSpace + "1. ");
-        } else if (mString.length() > 1) {
+        } else if (mstring.length() > 1) {
             editable.insert(start + 1, startSpace);
         }
-
+        
     }
-
+    
     /**
      * 获取开头的字符
      *
@@ -135,14 +145,14 @@ public class PerformInputAfter {
     private String getStartChar(String target, char startChar) {
         StringBuilder sb = new StringBuilder();
         char[] chars = target.toCharArray();
-        for (char aChar : chars) {
-            if (aChar == startChar) {
+        for (char achar : chars) {
+            if (achar == startChar) {
                 sb.append(startChar);
             } else {
                 break;
             }
         }
         return sb.toString();
-
+        
     }
 }

@@ -3,7 +3,6 @@ package com.bingduoduo.editor.view;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import androidx.annotation.NonNull;
 import android.webkit.WebView;
 import android.webkit.WebSettings;
 import android.webkit.WebViewClient;
@@ -11,17 +10,18 @@ import android.webkit.WebViewClient;
 import com.termux.R;
 import com.bingduoduo.editor.base.BaseToolbarActivity;
 import com.bingduoduo.editor.utils.SystemBarUtils;
-import com.bingduoduo.editor.utils.SystemUtils;
 
 import butterknife.Bind;
 
 public class WebHelperActivity extends BaseToolbarActivity {
     @Bind(R.id.helper_web)
     WebView webView;
+
     @Override
     public int getLayoutId() {
         return R.layout.activity_helper;
     }
+
     public static void startHelpActivity(Context context) {
         Intent intent = new Intent(context, WebHelperActivity.class);
         context.startActivity(intent);
@@ -54,7 +54,8 @@ public class WebHelperActivity extends BaseToolbarActivity {
         //webView.loadUrl("https://github.com/bingduoduo1/bingduoduo/blob/master/README.md");
         webView.loadUrl("https://github.com/bingduoduo1/bingduoduo/blob/master/%5B%E5%86%B0%E5%A4%9A%E5%A4%9A%5D%20%E4%BD%BF%E7%94%A8%E8%AF%B4%E6%98%8E.md");
         // webView.loadUrl("file:///android_asset/helper.html");
-        webView.setWebViewClient(new WebViewClient(){
+        webView.setWebViewClient(new WebViewClient()
+        {
             @Override
             public boolean shouldOverrideUrlLoading(WebView view, String url) {
                 view.loadUrl(url);

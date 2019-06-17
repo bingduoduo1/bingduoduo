@@ -27,105 +27,94 @@ import android.view.animation.Animation;
 import android.widget.TextView;
 
 public class Label extends TextView {
-
+    
     private static final Xfermode PORTER_DUFF_CLEAR = new PorterDuffXfermode(PorterDuff.Mode.CLEAR);
-
-    private int mShadowRadius;
-    private int mShadowXOffset;
-    private int mShadowYOffset;
-    private int mShadowColor;
-    private Drawable mBackgroundDrawable;
-    private boolean mShowShadow = true;
-    private int mRawWidth;
-    private int mRawHeight;
-    private int mColorNormal;
-    private int mColorPressed;
-    private int mColorRipple;
-    private int mCornerRadius;
-    private FloatingActionButton mFab;
-    private Animation mShowAnimation;
-    private Animation mHideAnimation;
-    private boolean mUsingStyle;
-    private boolean mHandleVisibilityChanges = true;
-
+    
+    private int mshadowradius;
+    private int mshadowxoffset;
+    private int mshadowyoffset;
+    private int mshadowcolor;
+    private Drawable mbackgrounddrawable;
+    private boolean mshowshadow = true;
+    private int mrawwidth;
+    private int mrawheight;
+    private int mcolornormal;
+    private int mcolorpressed;
+    private int mcolorripple;
+    private int mcornerradius;
+    private FloatingActionButton mfab;
+    private Animation mshowanimation;
+    private Animation mhideanimation;
+    private boolean musingstyle;
+    private boolean mhandlevisibilitychanges = true;
+    
     public Label(Context context) {
         super(context);
     }
-
+    
     public Label(Context context, AttributeSet attrs) {
         super(context, attrs);
     }
-
+    
     public Label(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
     }
-
+    
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         super.onMeasure(widthMeasureSpec, heightMeasureSpec);
         setMeasuredDimension(calculateMeasuredWidth(), calculateMeasuredHeight());
     }
-
+    
     private int calculateMeasuredWidth() {
-        if (mRawWidth == 0) {
-            mRawWidth = getMeasuredWidth();
+        if (mrawwidth == 0) {
+            mrawwidth = getMeasuredWidth();
         }
         return getMeasuredWidth() + calculateShadowWidth();
     }
-
+    
     private int calculateMeasuredHeight() {
-        if (mRawHeight == 0) {
-            mRawHeight = getMeasuredHeight();
+        if (mrawheight == 0) {
+            mrawheight = getMeasuredHeight();
         }
         return getMeasuredHeight() + calculateShadowHeight();
     }
-
+    
     int calculateShadowWidth() {
-        return mShowShadow ? (mShadowRadius + Math.abs(mShadowXOffset)) : 0;
+        return mshowshadow ? (mshadowradius + Math.abs(mshadowxoffset)) : 0;
     }
-
+    
     int calculateShadowHeight() {
-        return mShowShadow ? (mShadowRadius + Math.abs(mShadowYOffset)) : 0;
+        return mshowshadow ? (mshadowradius + Math.abs(mshadowyoffset)) : 0;
     }
-
+    
     void updateBackground() {
         LayerDrawable layerDrawable;
-        if (mShowShadow) {
-            layerDrawable = new LayerDrawable(new Drawable[]{
-                    new Shadow(),
-                    createFillDrawable()
-            });
-
-            int leftInset = mShadowRadius + Math.abs(mShadowXOffset);
-            int topInset = mShadowRadius + Math.abs(mShadowYOffset);
-            int rightInset = (mShadowRadius + Math.abs(mShadowXOffset));
-            int bottomInset = (mShadowRadius + Math.abs(mShadowYOffset));
-
-            layerDrawable.setLayerInset(
-                    1,
-                    leftInset,
-                    topInset,
-                    rightInset,
-                    bottomInset
-            );
+        if (mshowshadow) {
+            layerDrawable = new LayerDrawable(new Drawable[] { new Shadow(), createFillDrawable() });
+            
+            int leftInset = mshadowradius + Math.abs(mshadowxoffset);
+            int topInset = mshadowradius + Math.abs(mshadowyoffset);
+            int rightInset = (mshadowradius + Math.abs(mshadowxoffset));
+            int bottomInset = (mshadowradius + Math.abs(mshadowyoffset));
+            
+            layerDrawable.setLayerInset(1, leftInset, topInset, rightInset, bottomInset);
         } else {
-            layerDrawable = new LayerDrawable(new Drawable[]{
-                    createFillDrawable()
-            });
+            layerDrawable = new LayerDrawable(new Drawable[] { createFillDrawable() });
         }
-
+        
         setBackgroundCompat(layerDrawable);
     }
-
+    
     @TargetApi(Build.VERSION_CODES.LOLLIPOP)
     private Drawable createFillDrawable() {
         StateListDrawable drawable = new StateListDrawable();
-        drawable.addState(new int[]{android.R.attr.state_pressed}, createRectDrawable(mColorPressed));
-        drawable.addState(new int[]{}, createRectDrawable(mColorNormal));
-
+        drawable.addState(new int[] { android.R.attr.state_pressed }, createRectDrawable(mcolorpressed));
+        drawable.addState(new int[] {}, createRectDrawable(mcolornormal));
+        
         if (Util.hasLollipop()) {
-            RippleDrawable ripple = new RippleDrawable(new ColorStateList(new int[][]{{}},
-                    new int[]{mColorRipple}), drawable, null);
+            RippleDrawable ripple = new RippleDrawable(
+                    new ColorStateList(new int[][] { {} }, new int[] {mcolorripple}), drawable, null);
             setOutlineProvider(new ViewOutlineProvider() {
                 @Override
                 public void getOutline(View view, Outline outline) {
@@ -133,41 +122,30 @@ public class Label extends TextView {
                 }
             });
             setClipToOutline(true);
-            mBackgroundDrawable = ripple;
+            mbackgrounddrawable = ripple;
             return ripple;
         }
-
-        mBackgroundDrawable = drawable;
+        
+        mbackgrounddrawable = drawable;
         return drawable;
     }
-
+    
     private Drawable createRectDrawable(int color) {
-        RoundRectShape shape = new RoundRectShape(
-                new float[]{
-                        mCornerRadius,
-                        mCornerRadius,
-                        mCornerRadius,
-                        mCornerRadius,
-                        mCornerRadius,
-                        mCornerRadius,
-                        mCornerRadius,
-                        mCornerRadius
-                },
-                null,
-                null);
+        RoundRectShape shape = new RoundRectShape(new float[] {mcornerradius, mcornerradius, mcornerradius,
+            mcornerradius, mcornerradius, mcornerradius, mcornerradius, mcornerradius}, null, null);
         ShapeDrawable shapeDrawable = new ShapeDrawable(shape);
         shapeDrawable.getPaint().setColor(color);
         return shapeDrawable;
     }
-
+    
     private void setShadow(FloatingActionButton fab) {
-        mShadowColor = fab.getShadowColor();
-        mShadowRadius = fab.getShadowRadius();
-        mShadowXOffset = fab.getShadowXOffset();
-        mShadowYOffset = fab.getShadowYOffset();
-        mShowShadow = fab.hasShadow();
+        mshadowcolor = fab.getShadowColor();
+        mshadowradius = fab.getShadowRadius();
+        mshadowxoffset = fab.getShadowXOffset();
+        mshadowyoffset = fab.getShadowYOffset();
+        mshowshadow = fab.hasShadow();
     }
-
+    
     @SuppressWarnings("deprecation")
     @TargetApi(Build.VERSION_CODES.LOLLIPOP)
     private void setBackgroundCompat(Drawable drawable) {
@@ -177,198 +155,196 @@ public class Label extends TextView {
             setBackgroundDrawable(drawable);
         }
     }
-
+    
     private void playShowAnimation() {
-        if (mShowAnimation != null) {
-            mHideAnimation.cancel();
-            startAnimation(mShowAnimation);
+        if (mshowanimation != null) {
+            mhideanimation.cancel();
+            startAnimation(mshowanimation);
         }
     }
-
+    
     private void playHideAnimation() {
-        if (mHideAnimation != null) {
-            mShowAnimation.cancel();
-            startAnimation(mHideAnimation);
+        if (mhideanimation != null) {
+            mshowanimation.cancel();
+            startAnimation(mhideanimation);
         }
     }
-
+    
     @TargetApi(Build.VERSION_CODES.LOLLIPOP)
     void onActionDown() {
-        if (mUsingStyle) {
-            mBackgroundDrawable = getBackground();
+        if (musingstyle) {
+            mbackgrounddrawable = getBackground();
         }
-
-        if (mBackgroundDrawable instanceof StateListDrawable) {
-            StateListDrawable drawable = (StateListDrawable) mBackgroundDrawable;
-            drawable.setState(new int[]{android.R.attr.state_pressed});
-        } else if (Util.hasLollipop() && mBackgroundDrawable instanceof RippleDrawable) {
-            RippleDrawable ripple = (RippleDrawable) mBackgroundDrawable;
-            ripple.setState(new int[]{android.R.attr.state_enabled, android.R.attr.state_pressed});
+        
+        if (mbackgrounddrawable instanceof StateListDrawable) {
+            StateListDrawable drawable = (StateListDrawable) mbackgrounddrawable;
+            drawable.setState(new int[] { android.R.attr.state_pressed });
+        } else if (Util.hasLollipop() && mbackgrounddrawable instanceof RippleDrawable) {
+            RippleDrawable ripple = (RippleDrawable) mbackgrounddrawable;
+            ripple.setState(new int[] { android.R.attr.state_enabled, android.R.attr.state_pressed });
             ripple.setHotspot(getMeasuredWidth() / 2, getMeasuredHeight() / 2);
             ripple.setVisible(true, true);
         }
-//        setPressed(true);
+        // setPressed(true);
     }
-
+    
     @TargetApi(Build.VERSION_CODES.LOLLIPOP)
     void onActionUp() {
-        if (mUsingStyle) {
-            mBackgroundDrawable = getBackground();
+        if (musingstyle) {
+            mbackgrounddrawable = getBackground();
         }
-
-        if (mBackgroundDrawable instanceof StateListDrawable) {
-            StateListDrawable drawable = (StateListDrawable) mBackgroundDrawable;
-            drawable.setState(new int[]{});
-        } else if (Util.hasLollipop() && mBackgroundDrawable instanceof RippleDrawable) {
-            RippleDrawable ripple = (RippleDrawable) mBackgroundDrawable;
-            ripple.setState(new int[]{});
+        
+        if (mbackgrounddrawable instanceof StateListDrawable) {
+            StateListDrawable drawable = (StateListDrawable) mbackgrounddrawable;
+            drawable.setState(new int[] {});
+        } else if (Util.hasLollipop() && mbackgrounddrawable instanceof RippleDrawable) {
+            RippleDrawable ripple = (RippleDrawable) mbackgrounddrawable;
+            ripple.setState(new int[] {});
             ripple.setHotspot(getMeasuredWidth() / 2, getMeasuredHeight() / 2);
             ripple.setVisible(true, true);
         }
-//        setPressed(false);
+        // setPressed(false);
     }
-
+    
     void setFab(FloatingActionButton fab) {
-        mFab = fab;
+        mfab = fab;
         setShadow(fab);
     }
-
+    
     void setShowShadow(boolean show) {
-        mShowShadow = show;
+        mshowshadow = show;
     }
-
+    
     void setCornerRadius(int cornerRadius) {
-        mCornerRadius = cornerRadius;
+        mcornerradius = cornerRadius;
     }
-
+    
     void setColors(int colorNormal, int colorPressed, int colorRipple) {
-        mColorNormal = colorNormal;
-        mColorPressed = colorPressed;
-        mColorRipple = colorRipple;
+        mcolornormal = colorNormal;
+        mcolorpressed = colorPressed;
+        mcolorripple = colorRipple;
     }
-
+    
     void show(boolean animate) {
         if (animate) {
             playShowAnimation();
         }
         setVisibility(VISIBLE);
     }
-
+    
     void hide(boolean animate) {
         if (animate) {
             playHideAnimation();
         }
         setVisibility(INVISIBLE);
     }
-
+    
     void setShowAnimation(Animation showAnimation) {
-        mShowAnimation = showAnimation;
+        mshowanimation = showAnimation;
     }
-
+    
     void setHideAnimation(Animation hideAnimation) {
-        mHideAnimation = hideAnimation;
+        mhideanimation = hideAnimation;
     }
-
+    
     void setUsingStyle(boolean usingStyle) {
-        mUsingStyle = usingStyle;
+        musingstyle = usingStyle;
     }
-
+    
     void setHandleVisibilityChanges(boolean handle) {
-        mHandleVisibilityChanges = handle;
+        mhandlevisibilitychanges = handle;
     }
-
+    
     boolean isHandleVisibilityChanges() {
-        return mHandleVisibilityChanges;
+        return mhandlevisibilitychanges;
     }
-
+    
     @Override
     public boolean onTouchEvent(MotionEvent event) {
-        if (mFab == null || mFab.getOnClickListener() == null || !mFab.isEnabled()) {
+        if (mfab == null || mfab.getOnClickListener() == null || !mfab.isEnabled()) {
             return super.onTouchEvent(event);
         }
-
+        
         int action = event.getAction();
         switch (action) {
             case MotionEvent.ACTION_UP:
                 onActionUp();
-                mFab.onActionUp();
+                mfab.onActionUp();
                 break;
-
+            
             case MotionEvent.ACTION_CANCEL:
                 onActionUp();
-                mFab.onActionUp();
+                mfab.onActionUp();
+                break;
+            default:
                 break;
         }
-
-        mGestureDetector.onTouchEvent(event);
+        
+        detector.onTouchEvent(event);
         return super.onTouchEvent(event);
     }
-
-    GestureDetector mGestureDetector = new GestureDetector(getContext(), new GestureDetector.SimpleOnGestureListener() {
-
+    
+    GestureDetector detector = new GestureDetector(getContext(), new GestureDetector.SimpleOnGestureListener() {
+        
         @Override
         public boolean onDown(MotionEvent e) {
             onActionDown();
-            if (mFab != null) {
-                mFab.onActionDown();
+            if (mfab != null) {
+                mfab.onActionDown();
             }
             return super.onDown(e);
         }
-
+        
         @Override
         public boolean onSingleTapUp(MotionEvent e) {
             onActionUp();
-            if (mFab != null) {
-                mFab.onActionUp();
+            if (mfab != null) {
+                mfab.onActionUp();
             }
             return super.onSingleTapUp(e);
         }
     });
-
+    
     private class Shadow extends Drawable {
-
-        private Paint mPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
-        private Paint mErase = new Paint(Paint.ANTI_ALIAS_FLAG);
-
+        
+        private Paint mpaint = new Paint(Paint.ANTI_ALIAS_FLAG);
+        private Paint merase = new Paint(Paint.ANTI_ALIAS_FLAG);
+        
         private Shadow() {
             this.init();
         }
-
+        
         private void init() {
             setLayerType(LAYER_TYPE_SOFTWARE, null);
-            mPaint.setStyle(Paint.Style.FILL);
-            mPaint.setColor(mColorNormal);
-
-            mErase.setXfermode(PORTER_DUFF_CLEAR);
-
+            mpaint.setStyle(Paint.Style.FILL);
+            mpaint.setColor(mcolornormal);
+            
+            merase.setXfermode(PORTER_DUFF_CLEAR);
+            
             if (!isInEditMode()) {
-                mPaint.setShadowLayer(mShadowRadius, mShadowXOffset, mShadowYOffset, mShadowColor);
+                mpaint.setShadowLayer(mshadowradius, mshadowxoffset, mshadowyoffset, mshadowcolor);
             }
         }
-
+        
         @Override
         public void draw(Canvas canvas) {
-            RectF shadowRect = new RectF(
-                    mShadowRadius + Math.abs(mShadowXOffset),
-                    mShadowRadius + Math.abs(mShadowYOffset),
-                    mRawWidth,
-                    mRawHeight
-            );
-
-            canvas.drawRoundRect(shadowRect, mCornerRadius, mCornerRadius, mPaint);
-            canvas.drawRoundRect(shadowRect, mCornerRadius, mCornerRadius, mErase);
+            RectF shadowRect = new RectF(mshadowradius + Math.abs(mshadowxoffset),
+                    mshadowradius + Math.abs(mshadowyoffset), mrawwidth, mrawheight);
+            
+            canvas.drawRoundRect(shadowRect, mcornerradius, mcornerradius, mpaint);
+            canvas.drawRoundRect(shadowRect, mcornerradius, mcornerradius, merase);
         }
-
+        
         @Override
         public void setAlpha(int alpha) {
-
+            
         }
-
+        
         @Override
         public void setColorFilter(ColorFilter cf) {
-
+            
         }
-
+        
         @Override
         public int getOpacity() {
             return 0;

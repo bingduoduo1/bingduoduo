@@ -1,6 +1,5 @@
 package com.termux.app;
 
-import android.app.Activity;
 import android.content.ActivityNotFoundException;
 import android.content.Intent;
 import android.net.Uri;
@@ -22,29 +21,30 @@ import androidx.appcompat.app.AppCompatActivity;
  * 但我并没有找到帮助页面
  */
 public final class TermuxHelpActivity extends AppCompatActivity {
-
-    WebView mWebView;
-
+    
+    WebView mwebview;
+    
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
+        
         final RelativeLayout progressLayout = new RelativeLayout(this);
-        RelativeLayout.LayoutParams lParams = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-        lParams.addRule(RelativeLayout.CENTER_IN_PARENT);
+        RelativeLayout.LayoutParams lparams = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT,
+                ViewGroup.LayoutParams.WRAP_CONTENT);
+        lparams.addRule(RelativeLayout.CENTER_IN_PARENT);
         ProgressBar progressBar = new ProgressBar(this);
         progressBar.setIndeterminate(true);
-        progressBar.setLayoutParams(lParams);
+        progressBar.setLayoutParams(lparams);
         progressLayout.addView(progressBar);
-
-        mWebView = new WebView(this);
-        WebSettings settings = mWebView.getSettings();
+        
+        mwebview = new WebView(this);
+        WebSettings settings = mwebview.getSettings();
         settings.setCacheMode(WebSettings.LOAD_NO_CACHE);
         settings.setAppCacheEnabled(false);
         setContentView(progressLayout);
-        mWebView.clearCache(true);
-
-        mWebView.setWebViewClient(new WebViewClient() {
+        mwebview.clearCache(true);
+        
+        mwebview.setWebViewClient(new WebViewClient() {
             @Override
             public boolean shouldOverrideUrlLoading(WebView view, String url) {
                 if (url.startsWith("https://wiki.termux.com")) {
@@ -52,9 +52,10 @@ public final class TermuxHelpActivity extends AppCompatActivity {
                     setContentView(progressLayout);
                     return false;
                 }
-
+                
                 try {
-                    startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(url)).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK));
+                    startActivity(
+                            new Intent(Intent.ACTION_VIEW, Uri.parse(url)).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK));
                 } catch (ActivityNotFoundException e) {
                     // Android TV does not have a system browser.
                     setContentView(progressLayout);
@@ -62,22 +63,22 @@ public final class TermuxHelpActivity extends AppCompatActivity {
                 }
                 return true;
             }
-
+            
             @Override
             public void onPageFinished(WebView view, String url) {
-                setContentView(mWebView);
+                setContentView(mwebview);
             }
         });
-        mWebView.loadUrl("https://wiki.termux.com/wiki/Main_Page");
+        mwebview.loadUrl("https://wiki.termux.com/wiki/Main_Page");
     }
-
+    
     @Override
     public void onBackPressed() {
-        if (mWebView.canGoBack()) {
-            mWebView.goBack();
+        if (mwebview.canGoBack()) {
+            mwebview.goBack();
         } else {
             super.onBackPressed();
         }
     }
-
+    
 }

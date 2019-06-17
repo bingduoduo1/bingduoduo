@@ -139,59 +139,59 @@ public class TerminalTest extends TerminalTestCase {
 	public void testSelectGraphics() {
 		withTerminalSized(5, 5);
 		enterString("\033[31m");
-		assertEquals(mTerminal.mForeColor, 1);
+		assertEquals(mTerminal.mforecolor, 1);
 		enterString("\033[32m");
-		assertEquals(mTerminal.mForeColor, 2);
+		assertEquals(mTerminal.mforecolor, 2);
 		enterString("\033[43m");
-		assertEquals(2, mTerminal.mForeColor);
-		assertEquals(3, mTerminal.mBackColor);
+		assertEquals(2, mTerminal.mforecolor);
+		assertEquals(3, mTerminal.mbackcolor);
 
 		// SGR 0 should reset both foreground and background color.
 		enterString("\033[0m");
-		assertEquals(TextStyle.COLOR_INDEX_FOREGROUND, mTerminal.mForeColor);
-		assertEquals(TextStyle.COLOR_INDEX_BACKGROUND, mTerminal.mBackColor);
+		assertEquals(TextStyle.COLOR_INDEX_FOREGROUND, mTerminal.mforecolor);
+		assertEquals(TextStyle.COLOR_INDEX_BACKGROUND, mTerminal.mbackcolor);
 
 		// 256 colors:
 		enterString("\033[38;5;119m");
-		assertEquals(119, mTerminal.mForeColor);
-		assertEquals(TextStyle.COLOR_INDEX_BACKGROUND, mTerminal.mBackColor);
+		assertEquals(119, mTerminal.mforecolor);
+		assertEquals(TextStyle.COLOR_INDEX_BACKGROUND, mTerminal.mbackcolor);
 		enterString("\033[48;5;129m");
-		assertEquals(119, mTerminal.mForeColor);
-		assertEquals(129, mTerminal.mBackColor);
+		assertEquals(119, mTerminal.mforecolor);
+		assertEquals(129, mTerminal.mbackcolor);
 
         // Invalid parameter:
 		enterString("\033[48;8;129m");
-		assertEquals(119, mTerminal.mForeColor);
-		assertEquals(129, mTerminal.mBackColor);
+		assertEquals(119, mTerminal.mforecolor);
+		assertEquals(129, mTerminal.mbackcolor);
 
 		// Multiple parameters at once:
 		enterString("\033[38;5;178;48;5;179;m");
-		assertEquals(178, mTerminal.mForeColor);
-		assertEquals(179, mTerminal.mBackColor);
+		assertEquals(178, mTerminal.mforecolor);
+		assertEquals(179, mTerminal.mbackcolor);
 
         // 24 bit colors:
         enterString(("\033[0m")); // Reset fg and bg colors.
         enterString("\033[38;2;255;127;2m");
         int expectedForeground = 0xff000000 | (255 << 16) | (127 << 8) | 2;
-        assertEquals(expectedForeground, mTerminal.mForeColor);
-        assertEquals(TextStyle.COLOR_INDEX_BACKGROUND, mTerminal.mBackColor);
+        assertEquals(expectedForeground, mTerminal.mforecolor);
+        assertEquals(TextStyle.COLOR_INDEX_BACKGROUND, mTerminal.mbackcolor);
         enterString("\033[48;2;1;2;254m");
         int expectedBackground = 0xff000000 | (1 << 16) | (2 << 8) | 254;
-        assertEquals(expectedForeground, mTerminal.mForeColor);
-        assertEquals(expectedBackground, mTerminal.mBackColor);
+        assertEquals(expectedForeground, mTerminal.mforecolor);
+        assertEquals(expectedBackground, mTerminal.mbackcolor);
 
         // 24 bit colors, set fg and bg at once:
         enterString(("\033[0m")); // Reset fg and bg colors.
-        assertEquals(TextStyle.COLOR_INDEX_FOREGROUND, mTerminal.mForeColor);
-        assertEquals(TextStyle.COLOR_INDEX_BACKGROUND, mTerminal.mBackColor);
+        assertEquals(TextStyle.COLOR_INDEX_FOREGROUND, mTerminal.mforecolor);
+        assertEquals(TextStyle.COLOR_INDEX_BACKGROUND, mTerminal.mbackcolor);
         enterString("\033[38;2;255;127;2;48;2;1;2;254m");
-        assertEquals(expectedForeground, mTerminal.mForeColor);
-        assertEquals(expectedBackground, mTerminal.mBackColor);
+        assertEquals(expectedForeground, mTerminal.mforecolor);
+        assertEquals(expectedBackground, mTerminal.mbackcolor);
 
         // 24 bit colors, invalid input:
         enterString("\033[38;2;300;127;2;48;2;1;300;254m");
-        assertEquals(expectedForeground, mTerminal.mForeColor);
-        assertEquals(expectedBackground, mTerminal.mBackColor);
+        assertEquals(expectedForeground, mTerminal.mforecolor);
+        assertEquals(expectedBackground, mTerminal.mbackcolor);
     }
 
 	public void testBackgroundColorErase() {

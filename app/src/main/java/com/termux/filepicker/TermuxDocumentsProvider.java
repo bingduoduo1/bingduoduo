@@ -39,41 +39,29 @@ import java.util.LinkedList;
  * 两个指向相同文件的途径,这会让用户感到困惑
  */
 public class TermuxDocumentsProvider extends DocumentsProvider {
-
+    
     private static final String ALL_MIME_TYPES = "*/*";
-
+    
     private static final File BASE_DIR = new File(TermuxService.HOME_PATH);
-
-
+    
     // The default columns to return information about a root if no specific
     // columns are requested in a query.
-    private static final String[] DEFAULT_ROOT_PROJECTION = new String[]{
-        Root.COLUMN_ROOT_ID,
-        Root.COLUMN_MIME_TYPES,
-        Root.COLUMN_FLAGS,
-        Root.COLUMN_ICON,
-        Root.COLUMN_TITLE,
-        Root.COLUMN_SUMMARY,
-        Root.COLUMN_DOCUMENT_ID,
-        Root.COLUMN_AVAILABLE_BYTES
-    };
-
+    private static final String[] DEFAULT_ROOT_PROJECTION =
+            new String[] { Root.COLUMN_ROOT_ID, Root.COLUMN_MIME_TYPES, Root.COLUMN_FLAGS, Root.COLUMN_ICON,
+                Root.COLUMN_TITLE, Root.COLUMN_SUMMARY, Root.COLUMN_DOCUMENT_ID, Root.COLUMN_AVAILABLE_BYTES };
+    
     // The default columns to return information about a document if no specific
     // columns are requested in a query.
-    private static final String[] DEFAULT_DOCUMENT_PROJECTION = new String[]{
-        Document.COLUMN_DOCUMENT_ID,
-        Document.COLUMN_MIME_TYPE,
-        Document.COLUMN_DISPLAY_NAME,
-        Document.COLUMN_LAST_MODIFIED,
-        Document.COLUMN_FLAGS,
-        Document.COLUMN_SIZE
-    };
-
+    private static final String[] DEFAULT_DOCUMENT_PROJECTION =
+            new String[] { Document.COLUMN_DOCUMENT_ID, Document.COLUMN_MIME_TYPE, Document.COLUMN_DISPLAY_NAME,
+                Document.COLUMN_LAST_MODIFIED, Document.COLUMN_FLAGS, Document.COLUMN_SIZE };
+    
     @Override
     public Cursor queryRoots(String[] projection) throws FileNotFoundException {
         final MatrixCursor result = new MatrixCursor(projection != null ? projection : DEFAULT_ROOT_PROJECTION);
-        @SuppressWarnings("ConstantConditions") final String applicationName = getContext().getString(R.string.application_name);
-
+        @SuppressWarnings("ConstantConditions")
+        final String applicationName = getContext().getString(R.string.application_name);
+        
         final MatrixCursor.RowBuilder row = result.newRow();
         row.add(Root.COLUMN_ROOT_ID, getDocIdForFile(BASE_DIR));
         row.add(Root.COLUMN_DOCUMENT_ID, getDocIdForFile(BASE_DIR));
@@ -85,16 +73,17 @@ public class TermuxDocumentsProvider extends DocumentsProvider {
         row.add(Root.COLUMN_ICON, R.drawable.ic_launcher);
         return result;
     }
-
+    
     @Override
     public Cursor queryDocument(String documentId, String[] projection) throws FileNotFoundException {
         final MatrixCursor result = new MatrixCursor(projection != null ? projection : DEFAULT_DOCUMENT_PROJECTION);
         includeFile(result, documentId, null);
         return result;
     }
-
+    
     @Override
-    public Cursor queryChildDocuments(String parentDocumentId, String[] projection, String sortOrder) throws FileNotFoundException {
+    public Cursor queryChildDocuments(String parentDocumentId, String[] projection, String sortOrder)
+            throws FileNotFoundException {
         final MatrixCursor result = new MatrixCursor(projection != null ? projection : DEFAULT_DOCUMENT_PROJECTION);
         final File parent = getFileForDocId(parentDocumentId);
         for (File file : parent.listFiles()) {
@@ -104,26 +93,28 @@ public class TermuxDocumentsProvider extends DocumentsProvider {
         }
         return result;
     }
-
+    
     @Override
-    public ParcelFileDescriptor openDocument(final String documentId, String mode, CancellationSignal signal) throws FileNotFoundException {
+    public ParcelFileDescriptor openDocument(final String documentId, String mode, CancellationSignal signal)
+            throws FileNotFoundException {
         final File file = getFileForDocId(documentId);
         final int accessMode = ParcelFileDescriptor.parseMode(mode);
         return ParcelFileDescriptor.open(file, accessMode);
     }
-
+    
     @Override
-    public AssetFileDescriptor openDocumentThumbnail(String documentId, Point sizeHint, CancellationSignal signal) throws FileNotFoundException {
+    public AssetFileDescriptor openDocumentThumbnail(String documentId, Point sizeHint, CancellationSignal signal)
+            throws FileNotFoundException {
         final File file = getFileForDocId(documentId);
         final ParcelFileDescriptor pfd = ParcelFileDescriptor.open(file, ParcelFileDescriptor.MODE_READ_ONLY);
         return new AssetFileDescriptor(pfd, 0, file.length());
     }
-
+    
     @Override
     public boolean onCreate() {
         return true;
     }
-
+    
     @Override
     public void deleteDocument(String documentId) throws FileNotFoundException {
         File file = getFileForDocId(documentId);
@@ -131,27 +122,27 @@ public class TermuxDocumentsProvider extends DocumentsProvider {
             throw new FileNotFoundException("Failed to delete document with id " + documentId);
         }
     }
-
+    
     @Override
     public String getDocumentType(String documentId) throws FileNotFoundException {
         File file = getFileForDocId(documentId);
         return getMimeType(file);
     }
-
+    
     @Override
     public Cursor querySearchDocuments(String rootId, String query, String[] projection) throws FileNotFoundException {
         final MatrixCursor result = new MatrixCursor(projection != null ? projection : DEFAULT_DOCUMENT_PROJECTION);
         final File parent = getFileForDocId(rootId);
-
+        
         // This example implementation searches file names for the query and doesn't rank search
-        // results, so we can stop as soon as we find a sufficient number of matches.  Other
+        // results, so we can stop as soon as we find a sufficient number of matches. Other
         // implementations might rank results and use other data about files, rather than the file
         // name, to produce a match.
         final LinkedList<File> pending = new LinkedList<>();
         pending.add(parent);
-
-        final int MAX_SEARCH_RESULTS = 50;
-        while (!pending.isEmpty() && result.getCount() < MAX_SEARCH_RESULTS) {
+        
+        final int maxSearchResults = 50;
+        while (!pending.isEmpty() && result.getCount() < maxSearchResults) {
             final File file = pending.removeFirst();
             // Avoid folders outside the $HOME folders linked in to symlinks (to avoid e.g. search
             // through the whole SD card).
@@ -172,10 +163,10 @@ public class TermuxDocumentsProvider extends DocumentsProvider {
                 }
             }
         }
-
+        
         return result;
     }
-
+    
     /**
      * Get the document id given a file. This document id must be consistent across time as other
      * applications may save the ID and use it to reference documents later.
@@ -185,16 +176,19 @@ public class TermuxDocumentsProvider extends DocumentsProvider {
     private static String getDocIdForFile(File file) {
         return file.getAbsolutePath();
     }
-
+    
     /**
      * Get the file given a document id (the reverse of {@link #getDocIdForFile(File)}).
      */
     private static File getFileForDocId(String docId) throws FileNotFoundException {
         final File f = new File(docId);
-        if (!f.exists()) throw new FileNotFoundException(f.getAbsolutePath() + " not found");
+        if (!f.exists())
+        {
+            throw new FileNotFoundException(f.getAbsolutePath() + " not found");
+        }
         return f;
     }
-
+    
     private static String getMimeType(File file) {
         if (file.isDirectory()) {
             return Document.MIME_TYPE_DIR;
@@ -204,12 +198,15 @@ public class TermuxDocumentsProvider extends DocumentsProvider {
             if (lastDot >= 0) {
                 final String extension = name.substring(lastDot + 1).toLowerCase();
                 final String mime = MimeTypeMap.getSingleton().getMimeTypeFromExtension(extension);
-                if (mime != null) return mime;
+                if (mime != null)
+                {
+                    return mime;
+                }
             }
             return "application/octet-stream";
         }
     }
-
+    
     /**
      * Add a representation of a file to a cursor.
      *
@@ -217,25 +214,30 @@ public class TermuxDocumentsProvider extends DocumentsProvider {
      * @param docId  the document ID representing the desired file (may be null if given file)
      * @param file   the File object representing the desired file (may be null if given docID)
      */
-    private void includeFile(MatrixCursor result, String docId, File file)
-        throws FileNotFoundException {
+    private void includeFile(MatrixCursor result, String docId, File file) throws FileNotFoundException {
         if (docId == null) {
             docId = getDocIdForFile(file);
         } else {
             file = getFileForDocId(docId);
         }
-
+        
         int flags = 0;
         if (file.isDirectory()) {
-            if (file.isDirectory() && file.canWrite()) flags |= Document.FLAG_DIR_SUPPORTS_CREATE;
+            if (file.isDirectory() && file.canWrite())
+            {
+                flags |= Document.FLAG_DIR_SUPPORTS_CREATE;
+            }
         } else if (file.canWrite()) {
             flags |= Document.FLAG_SUPPORTS_WRITE | Document.FLAG_SUPPORTS_DELETE;
         }
-
+        
         final String displayName = file.getName();
         final String mimeType = getMimeType(file);
-        if (mimeType.startsWith("image/")) flags |= Document.FLAG_SUPPORTS_THUMBNAIL;
-
+        if (mimeType.startsWith("image/"))
+        {
+            flags |= Document.FLAG_SUPPORTS_THUMBNAIL;
+        }
+        
         final MatrixCursor.RowBuilder row = result.newRow();
         row.add(Document.COLUMN_DOCUMENT_ID, docId);
         row.add(Document.COLUMN_DISPLAY_NAME, displayName);
@@ -245,5 +247,5 @@ public class TermuxDocumentsProvider extends DocumentsProvider {
         row.add(Document.COLUMN_FLAGS, flags);
         row.add(Document.COLUMN_ICON, R.drawable.ic_launcher);
     }
-
+    
 }

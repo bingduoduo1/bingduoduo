@@ -1,5 +1,4 @@
 
-
 package com.bingduoduo.editor.base.mvp;
 
 /**
@@ -14,7 +13,7 @@ public interface IMvpView {
      * @param flag the flag
      */
     void otherSuccess(int flag);
-
+    
     /**
      * 失败时调用
      *
@@ -23,7 +22,7 @@ public interface IMvpView {
      * @param flag      标志 如标志登陆，标志列表数据请求。。。。
      */
     void onFailure(int errorCode, String message, int flag);
-
+    
     /**
      * 显示Progress
      *
@@ -32,7 +31,7 @@ public interface IMvpView {
      * @param flag    操作标志
      */
     void showWait(String message, boolean canBack, int flag);
-
+    
     /**
      * 隐藏Progress
      * @param flag 标志

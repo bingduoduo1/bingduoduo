@@ -135,13 +135,13 @@ public abstract class TerminalTestCase extends TestCase {
 
 	protected TerminalTestCase assertInvariants() {
 		TerminalBuffer screen = mTerminal.getScreen();
-		TerminalRow[] lines = screen.mLines;
+		TerminalRow[] lines = screen.mlines;
 
 		Set<LineWrapper> linesSet = new HashSet<>();
 		for (int i = 0; i < lines.length; i++) {
 			if (lines[i] == null) continue;
 			assertTrue("Line exists at multiple places: " + i, linesSet.add(new LineWrapper(lines[i])));
-			char[] text = lines[i].mText;
+			char[] text = lines[i].mtext;
 			int usedChars = lines[i].getSpaceUsed();
 			int currentColumn = 0;
 			for (int j = 0; j < usedChars; j++) {
@@ -160,13 +160,13 @@ public abstract class TerminalTestCase extends TestCase {
 				assertFalse("The first column should not start with combining character", currentColumn == 0 && width < 0);
 				if (width > 0) currentColumn += width;
 			}
-			assertEquals("Line whose width does not match screens. line=" + new String(lines[i].mText, 0, lines[i].getSpaceUsed()),
-					screen.mColumns, currentColumn);
+			assertEquals("Line whose width does not match screens. line=" + new String(lines[i].mtext, 0, lines[i].getSpaceUsed()),
+					screen.mcolumns, currentColumn);
 		}
 
-		assertEquals("The alt buffer should have have no history", mTerminal.mAltBuffer.mTotalRows, mTerminal.mAltBuffer.mScreenRows);
+		assertEquals("The alt buffer should have have no history", mTerminal.maltbuffer.mtotalrows, mTerminal.maltbuffer.screenRows);
 		if (mTerminal.isAlternateBufferActive()) {
-			assertEquals("The alt buffer should be the same size as the screen", mTerminal.mRows, mTerminal.mAltBuffer.mTotalRows);
+			assertEquals("The alt buffer should be the same size as the screen", mTerminal.mrows, mTerminal.maltbuffer.mtotalrows);
 		}
 
 		return this;
@@ -174,7 +174,7 @@ public abstract class TerminalTestCase extends TestCase {
 
 	protected void assertLineIs(int line, String expected) {
 		TerminalRow l = mTerminal.getScreen().allocateFullLineIfNecessary(mTerminal.getScreen().externalToInternalRow(line));
-		char[] chars = l.mText;
+		char[] chars = l.mtext;
 		int textLen = l.getSpaceUsed();
 		if (textLen != expected.length()) fail("Expected '" + expected + "' (len=" + expected.length() + "), was='"
 				+ new String(chars, 0, textLen) + "' (len=" + textLen + ")");
@@ -185,7 +185,7 @@ public abstract class TerminalTestCase extends TestCase {
 	}
 
 	public TerminalTestCase assertLinesAre(String... lines) {
-		assertEquals(lines.length, mTerminal.getScreen().mScreenRows);
+		assertEquals(lines.length, mTerminal.getScreen().screenRows);
 		for (int i = 0; i < lines.length; i++)
 			try {
 				assertLineIs(i, lines[i]);
@@ -203,12 +203,12 @@ public abstract class TerminalTestCase extends TestCase {
 
 	public TerminalTestCase assertLineWraps(boolean... lines) {
 		for (int i = 0; i < lines.length; i++)
-			assertEquals("line=" + i, lines[i], mTerminal.getScreen().mLines[mTerminal.getScreen().externalToInternalRow(i)].mLineWrap);
+			assertEquals("line=" + i, lines[i], mTerminal.getScreen().mlines[mTerminal.getScreen().externalToInternalRow(i)].mlinewrap);
 		return this;
 	}
 
 	protected TerminalTestCase assertLineStartsWith(int line, int... codePoints) {
-		char[] chars = mTerminal.getScreen().mLines[mTerminal.getScreen().externalToInternalRow(line)].mText;
+		char[] chars = mTerminal.getScreen().mlines[mTerminal.getScreen().externalToInternalRow(line)].mtext;
 		int charIndex = 0;
 		for (int i = 0; i < codePoints.length; i++) {
 			int lineCodePoint = chars[charIndex++];
@@ -253,7 +253,7 @@ public abstract class TerminalTestCase extends TestCase {
 	}
 
 	public TerminalTestCase assertEffectAttributesSet(EffectLine... lines) {
-		assertEquals(lines.length, mTerminal.getScreen().mScreenRows);
+		assertEquals(lines.length, mTerminal.getScreen().screenRows);
 		for (int i = 0; i < lines.length; i++) {
 			int[] line = lines[i].styles;
 			for (int j = 0; j < line.length; j++) {
@@ -267,7 +267,7 @@ public abstract class TerminalTestCase extends TestCase {
 	}
 
 	public TerminalTestCase assertForegroundIndices(EffectLine... lines) {
-		assertEquals(lines.length, mTerminal.getScreen().mScreenRows);
+		assertEquals(lines.length, mTerminal.getScreen().screenRows);
 		for (int i = 0; i < lines.length; i++) {
 			int[] line = lines[i].styles;
 			for (int j = 0; j < line.length; j++) {
@@ -292,12 +292,12 @@ public abstract class TerminalTestCase extends TestCase {
 	}
 
 	public void assertForegroundColorAt(int externalRow, int column, int color) {
-		long style = mTerminal.getScreen().mLines[mTerminal.getScreen().externalToInternalRow(externalRow)].getStyle(column);
+		long style = mTerminal.getScreen().mlines[mTerminal.getScreen().externalToInternalRow(externalRow)].getStyle(column);
 		assertEquals(color, TextStyle.decodeForeColor(style));
 	}
 
 	public TerminalTestCase assertColor(int colorIndex, int expected) {
-		int actual = mTerminal.mColors.mCurrentColors[colorIndex];
+		int actual = mTerminal.mcolors.mcurrentcolors[colorIndex];
 		if (expected != actual) {
 			fail("Color index=" + colorIndex + ", expected=" + Integer.toHexString(expected) + ", was=" + Integer.toHexString(actual));
 		}

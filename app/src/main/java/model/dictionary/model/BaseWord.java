@@ -1,41 +1,43 @@
 package model.dictionary.model;
 
 public abstract class BaseWord {
-    protected final String mRawData;
-    protected final NatureLanguageType mNatureType;
-
+    protected final String mrawdata;
+    protected final NatureLanguageType mnaturetype;
+    
     public BaseWord(String rawData, NatureLanguageType natureType) {
-        mRawData = rawData;
-        mNatureType = natureType;
+        mrawdata = rawData;
+        mnaturetype = natureType;
     }
-
+    
     public String getRawData() {
-        return mRawData;
+        return mrawdata;
     }
-
+    
     public NatureLanguageType getNatureType() {
-        return mNatureType;
+        return mnaturetype;
     }
-
-
+    
     @Override
-    public boolean equals(Object obj){
-        if(null == obj)return false;
-        BaseWord word = (BaseWord)obj;
-        if((this.mRawData).equals(word.getRawData())  &&
-            this.mNatureType == word.getNatureType())
+    public boolean equals(Object obj) {
+        if (null == obj)
+        {
+            return false;
+        }
+        BaseWord word = (BaseWord) obj;
+        if ((this.mrawdata).equals(word.getRawData()) && this.mnaturetype == word.getNatureType())
+        {
             return true;
+        }
         return false;
-
-
+        
     }
-
+    
     @Override
-    public int hashCode(){
+    public int hashCode() {
         int hash = 7;
-        hash = 31 * hash +  mNatureType.hashCode();
-        hash = 31 * hash + (mRawData== null ? 0 : mRawData.hashCode());
+        hash = 31 * hash + mnaturetype.hashCode();
+        hash = 31 * hash + (mrawdata == null ? 0 : mrawdata.hashCode());
         return hash;
-
+        
     }
 }

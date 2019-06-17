@@ -6,20 +6,21 @@ import model.dictionary.exception.NotMatchActionTypeExpection;
 import static model.dictionary.helper.InputActionHelper.inputActionContentCheck;
 
 public class InputAction extends model.dictionary.model.BaseAction {
-    private String mContent;
-
-    public InputAction(ActionType actionType, ExecutePlaceType executePlace, String content) throws DictionaryException {
+    private String mcontent;
+    
+    public InputAction(ActionType actionType, ExecutePlaceType executePlace, String content)
+            throws DictionaryException {
         super(actionType, executePlace);
         if (actionType != ActionType.INPUT) {
             throw new NotMatchActionTypeExpection();
         }
         if (!inputActionContentCheck(content)) {
-            throw new DictionaryException("invalid input action content------------------"+content+"\n");
+            throw new DictionaryException("invalid input action content------------------" + content + "\n");
         }
-        mContent = content;
+        mcontent = content;
     }
-
+    
     public String getContent() {
-        return mContent;
+        return mcontent;
     }
 }

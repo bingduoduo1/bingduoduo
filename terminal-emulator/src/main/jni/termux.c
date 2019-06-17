@@ -112,7 +112,7 @@ static int create_subprocess(JNIEnv* env,
     }
 }
 // 开启子进程
-JNIEXPORT jint JNICALL Java_com_termux_terminal_JNI_createSubprocess(
+JNIEXPORT jint JNICALL Java_com_termux_terminal_Jni_createSubprocess(
         JNIEnv* env,
         jclass TERMUX_UNUSED(clazz),
         jstring cmd,
@@ -178,7 +178,7 @@ JNIEXPORT jint JNICALL Java_com_termux_terminal_JNI_createSubprocess(
     return ptm;
 }
 // set window size
-JNIEXPORT void JNICALL Java_com_termux_terminal_JNI_setPtyWindowSize(JNIEnv* TERMUX_UNUSED(env), jclass TERMUX_UNUSED(clazz), jint fd, jint rows, jint cols)
+JNIEXPORT void JNICALL Java_com_termux_terminal_Jni_setPtyWindowSize(JNIEnv* TERMUX_UNUSED(env), jclass TERMUX_UNUSED(clazz), jint fd, jint rows, jint cols)
 {
     struct winsize sz = { .ws_row = (unsigned short) rows, .ws_col = (unsigned short) cols };
     ioctl(fd, TIOCSWINSZ, &sz);
@@ -194,7 +194,7 @@ JNIEXPORT void JNICALL Java_com_termux_terminal_JNI_setPtyUTF8Mode(JNIEnv* TERMU
     }
 }
 
-JNIEXPORT jint JNICALL Java_com_termux_terminal_JNI_waitFor(JNIEnv* TERMUX_UNUSED(env), jclass TERMUX_UNUSED(clazz), jint pid)
+JNIEXPORT jint JNICALL Java_com_termux_terminal_Jni_waitFor(JNIEnv* TERMUX_UNUSED(env), jclass TERMUX_UNUSED(clazz), jint pid)
 {
     int status;
     waitpid(pid, &status, 0);
@@ -208,7 +208,7 @@ JNIEXPORT jint JNICALL Java_com_termux_terminal_JNI_waitFor(JNIEnv* TERMUX_UNUSE
     }
 }
 
-JNIEXPORT void JNICALL Java_com_termux_terminal_JNI_close(JNIEnv* TERMUX_UNUSED(env), jclass TERMUX_UNUSED(clazz), jint fileDescriptor)
+JNIEXPORT void JNICALL Java_com_termux_terminal_Jni_close(JNIEnv* TERMUX_UNUSED(env), jclass TERMUX_UNUSED(clazz), jint fileDescriptor)
 {
     close(fileDescriptor);
 }

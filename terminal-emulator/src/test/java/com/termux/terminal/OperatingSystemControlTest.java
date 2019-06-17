@@ -89,28 +89,28 @@ public class OperatingSystemControlTest extends TerminalTestCase {
 	public void testSetColor() throws Exception {
 		// "OSC 4; $INDEX; $COLORSPEC BEL" => Change color $INDEX to the color specified by $COLORSPEC.
 		withTerminalSized(4, 4).enterString("\033]4;5;#00FF00\007");
-		assertEquals(Integer.toHexString(0xFF00FF00), Integer.toHexString(mTerminal.mColors.mCurrentColors[5]));
+		assertEquals(Integer.toHexString(0xFF00FF00), Integer.toHexString(mTerminal.mcolors.mcurrentcolors[5]));
 		enterString("\033]4;5;#00FFAB\007");
-		assertEquals(mTerminal.mColors.mCurrentColors[5], 0xFF00FFAB);
+		assertEquals(mTerminal.mcolors.mcurrentcolors[5], 0xFF00FFAB);
 		enterString("\033]4;255;#ABFFAB\007");
-		assertEquals(mTerminal.mColors.mCurrentColors[255], 0xFFABFFAB);
+		assertEquals(mTerminal.mcolors.mcurrentcolors[255], 0xFFABFFAB);
 		// Two indexed colors at once:
 		enterString("\033]4;7;#00FF00;8;#0000FF\007");
-		assertEquals(mTerminal.mColors.mCurrentColors[7], 0xFF00FF00);
-		assertEquals(mTerminal.mColors.mCurrentColors[8], 0xFF0000FF);
+		assertEquals(mTerminal.mcolors.mcurrentcolors[7], 0xFF00FF00);
+		assertEquals(mTerminal.mcolors.mcurrentcolors[8], 0xFF0000FF);
 	}
 
 	void assertIndexColorsMatch(int[] expected) {
 		for (int i = 0; i < 255; i++)
-			assertEquals("index=" + i, expected[i], mTerminal.mColors.mCurrentColors[i]);
+			assertEquals("index=" + i, expected[i], mTerminal.mcolors.mcurrentcolors[i]);
 	}
 
 	public void testResetColor() throws Exception {
 		withTerminalSized(4, 4);
 		int[] initialColors = new int[TextStyle.NUM_INDEXED_COLORS];
-		System.arraycopy(mTerminal.mColors.mCurrentColors, 0, initialColors, 0, initialColors.length);
+		System.arraycopy(mTerminal.mcolors.mcurrentcolors, 0, initialColors, 0, initialColors.length);
 		int[] expectedColors = new int[initialColors.length];
-		System.arraycopy(mTerminal.mColors.mCurrentColors, 0, expectedColors, 0, expectedColors.length);
+		System.arraycopy(mTerminal.mcolors.mcurrentcolors, 0, expectedColors, 0, expectedColors.length);
 		Random rand = new Random();
 		for (int endType = 0; endType < 3; endType++) {
 			// Both BEL (7) and ST (ESC \) can end an OSC sequence.
@@ -122,19 +122,19 @@ public class OperatingSystemControlTest extends TerminalTestCase {
 				int b = expectedColors[i] & 0xFF;
 				String rgbHex = String.format("%02x", r) + String.format("%02x", g) + String.format("%02x", b);
 				enterString("\033]4;" + i + ";#" + rgbHex + ender);
-				assertEquals(expectedColors[i], mTerminal.mColors.mCurrentColors[i]);
+				assertEquals(expectedColors[i], mTerminal.mcolors.mcurrentcolors[i]);
 			}
 		}
 
 		enterString("\033]104;0\007");
-		expectedColors[0] = TerminalColors.COLOR_SCHEME.mDefaultColors[0];
+		expectedColors[0] = TerminalColors.COLOR_SCHEME.mdefaultcolors[0];
 		assertIndexColorsMatch(expectedColors);
 		enterString("\033]104;1;2\007");
-		expectedColors[1] = TerminalColors.COLOR_SCHEME.mDefaultColors[1];
-		expectedColors[2] = TerminalColors.COLOR_SCHEME.mDefaultColors[2];
+		expectedColors[1] = TerminalColors.COLOR_SCHEME.mdefaultcolors[1];
+		expectedColors[2] = TerminalColors.COLOR_SCHEME.mdefaultcolors[2];
 		assertIndexColorsMatch(expectedColors);
 		enterString("\033]104\007"); // Reset all colors.
-		assertIndexColorsMatch(TerminalColors.COLOR_SCHEME.mDefaultColors);
+		assertIndexColorsMatch(TerminalColors.COLOR_SCHEME.mdefaultcolors);
 	}
 
 	public void disabledTestSetClipboard() {
@@ -148,7 +148,7 @@ public class OperatingSystemControlTest extends TerminalTestCase {
 		enterString("\033]4;5;#00FFAB\007").assertColor(5, 0xFF00FFAB);
 		enterString("\033]4;255;#ABFFAB\007").assertColor(255, 0xFFABFFAB);
 		mTerminal.reset();
-		assertIndexColorsMatch(TerminalColors.COLOR_SCHEME.mDefaultColors);
+		assertIndexColorsMatch(TerminalColors.COLOR_SCHEME.mdefaultcolors);
 	}
 
 	public void testSettingDynamicColors() {

@@ -14,13 +14,13 @@ import android.provider.MediaStore;
 import android.util.Log;
 import android.webkit.MimeTypeMap;
 
+import androidx.annotation.NonNull;
+
 import com.termux.terminal.EmulatorDebug;
 
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-
-import androidx.annotation.NonNull;
 
 /**
  * @cn-annotator butub
@@ -86,7 +86,10 @@ public class TermuxOpenReceiver extends BroadcastReceiver {
             MimeTypeMap mimeTypes = MimeTypeMap.getSingleton();
             // Lower casing makes it work with e.g. "JPG":
             contentTypeToUse = mimeTypes.getMimeTypeFromExtension(fileExtension.toLowerCase());
-            if (contentTypeToUse == null) contentTypeToUse = "application/octet-stream";
+            if (contentTypeToUse == null)
+            {
+                contentTypeToUse = "application/octet-stream";
+            }
         } else {
             contentTypeToUse = contentTypeExtra;
         }

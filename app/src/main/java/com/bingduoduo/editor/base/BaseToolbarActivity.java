@@ -1,53 +1,57 @@
 
-
 package com.bingduoduo.editor.base;
 
 import android.os.Build;
-import androidx.annotation.NonNull;
-//import android.support.design.widget.AppBarLayout;
-//import androidx.app.ActionBar;
-//import android.support.v7.widget.Toolbzar;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 
-import com.termux.R;
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.ActionBar;
+import androidx.appcompat.widget.Toolbar;
+
 import com.bingduoduo.editor.utils.Check;
 import com.google.android.material.appbar.AppBarLayout;
+import com.termux.R;
 
 import java.lang.reflect.Method;
 
-import androidx.appcompat.app.ActionBar;
-import androidx.appcompat.widget.Toolbar;
 import butterknife.Bind;
 
+//import android.support.design.widget.AppBarLayout;
+//import androidx.app.ActionBar;
+//import android.support.v7.widget.Toolbzar;
 
 /**
  * 带有Toolbar的Activity封装
  */
 public abstract class BaseToolbarActivity extends BaseActivity {
     @Bind(R.id.id_toolbar)
-    protected Toolbar mToolbar;
+    protected Toolbar toolbar;
     @Bind(R.id.id_appbarLayout)
-    protected AppBarLayout mAppBar;
-
+    protected AppBarLayout appBarLayout;
+    
     @Override
     protected void init() {
         super.init();
-        initActionBar(mToolbar);
-        initAppBarLayout(mAppBar);
+        initActionBar(toolbar);
+        initAppBarLayout(appBarLayout);
     }
-
+    
     protected void initAppBarLayout(AppBarLayout appBar) {
-        if (appBar == null) return;
+        if (appBar == null)
+        {
+            return;
+        }
         if (Build.VERSION.SDK_INT >= 21) {
-            this.mAppBar.setElevation(0f);
+            this.appBarLayout.setElevation(0f);
         }
     }
+    
     /**
      * 初始化actionbar
      *
-     * @param toolbar the mToolbar
+     * @param toolbar the toolbar
      */
     private void initActionBar(Toolbar toolbar) {
         if (!Check.isEmpty(getSubtitleString())) {
@@ -55,22 +59,25 @@ public abstract class BaseToolbarActivity extends BaseActivity {
         }
         toolbar.setTitle(getTitleString());
         setSupportActionBar(toolbar);
-        if (hasBackButton()) {//如果需要返回按钮
+        if (hasBackButton()) {
+            // 如果需要返回按钮
             ActionBar actionBar = getSupportActionBar();
-            if (actionBar != null) actionBar.setDisplayHomeAsUpEnabled(true);
-
+            if (actionBar != null)
+            {
+                actionBar.setDisplayHomeAsUpEnabled(true);
+            }
+            
         }
     }
-
+    
     public Toolbar getToolbar() {
-        return mToolbar;
+        return toolbar;
     }
-
-
+    
     public AppBarLayout getAppBar() {
-        return mAppBar;
+        return appBarLayout;
     }
-
+    
     /**
      * 子类可以重写,若不重写默认为程序名字
      *
@@ -80,10 +87,11 @@ public abstract class BaseToolbarActivity extends BaseActivity {
     protected String getTitleString() {
         return BaseApplication.string(R.string.app_name);
     }
-
+    
     protected boolean hasBackButton() {
         return false;
     }
+    
     /**
      * 子类可以重写,若不重写默认为空 返回String资源
      *
@@ -93,25 +101,24 @@ public abstract class BaseToolbarActivity extends BaseActivity {
     protected String getSubtitleString() {
         return "";
     }
-
+    
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case android.R.id.home:
-                // finish();
                 onBackPressed();// 返回
                 return true;
+            default:
+                return super.onOptionsItemSelected(item);
         }
-        return super.onOptionsItemSelected(item);
     }
-
+    
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         setOverflowIconVisible(menu);
         return super.onCreateOptionsMenu(menu);
     }
-
-
+    
     /**
      * 显示菜单图标
      *

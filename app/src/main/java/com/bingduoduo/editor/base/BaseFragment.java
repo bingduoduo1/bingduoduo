@@ -1,5 +1,3 @@
-
-
 package com.bingduoduo.editor.base;
 
 import android.content.Context;
@@ -19,7 +17,7 @@ import butterknife.ButterKnife;
  * fragment基类
  */
 public abstract class BaseFragment extends Fragment implements BaseViewInterface {
-    protected Context mContext;
+    protected Context mcontext;
     protected View rootView;
     protected BaseApplication application;
 
@@ -29,14 +27,15 @@ public abstract class BaseFragment extends Fragment implements BaseViewInterface
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        mContext = getActivity();
-        application = (BaseApplication) mContext.getApplicationContext();
+        mcontext = getActivity();
+        application = (BaseApplication) mcontext.getApplicationContext();
         if (rootView == null) {
             rootView = View.inflate(getActivity(), getLayoutId(), null);
         }
         ButterKnife.bind(this, rootView);
         return rootView;
     }
+
     @Override
     public void onResume() {
         super.onResume();
@@ -45,6 +44,7 @@ public abstract class BaseFragment extends Fragment implements BaseViewInterface
             initData();
         }
     }
+
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
@@ -52,34 +52,36 @@ public abstract class BaseFragment extends Fragment implements BaseViewInterface
             onFirstLaunched();
         }
     }
+
     @Override
     public void onPause() {
         super.onPause();
     }
-
 
     @Override
     public void onDestroy() {
 
         super.onDestroy();
     }
+
     @Override
     public void onDestroyView() {
         super.onDestroyView();
         // 保存状态
         saveStateToArguments();
         ButterKnife.unbind(rootView);
-        mContext = null;
+        mcontext = null;
         rootView = null;
     }
+
     protected void onFirstLaunched() {
         //包含菜单到所在Activity
         setHasOptionsMenu(hasMenu());
         onCreateAfter(null);
     }
 
-
     private boolean isFirstFocused = true;
+
     public boolean hasMenu() {
         return false;
     }
@@ -89,6 +91,7 @@ public abstract class BaseFragment extends Fragment implements BaseViewInterface
      *
      * @return the boolean
      */
+
     public boolean onBackPressed() {
         return false;
     }
@@ -96,6 +99,7 @@ public abstract class BaseFragment extends Fragment implements BaseViewInterface
     /**
      * 需要重写hasMenu() 返回True，才会创建菜单
      */
+
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         super.onCreateOptionsMenu(menu, inflater);
@@ -105,6 +109,7 @@ public abstract class BaseFragment extends Fragment implements BaseViewInterface
      * 需要重写hasMenu() 返回True，才会回调
      * On options item selected boolean.
      */
+
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         return super.onOptionsItemSelected(item);
@@ -115,7 +120,6 @@ public abstract class BaseFragment extends Fragment implements BaseViewInterface
         return state;
     }
 
-
     @Override
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
@@ -125,7 +129,9 @@ public abstract class BaseFragment extends Fragment implements BaseViewInterface
 
     private void saveStateToArguments() {
         if (getView() != null)
+        {
             savedState = new Bundle();
+        }
         if (savedState != null) {
             Bundle b = getArguments();
             if (b != null) {
@@ -134,6 +140,7 @@ public abstract class BaseFragment extends Fragment implements BaseViewInterface
 
         }
     }
+
     private boolean restoreStateFromArguments() {
         Bundle b = getArguments();
         if (b == null) {
@@ -145,6 +152,7 @@ public abstract class BaseFragment extends Fragment implements BaseViewInterface
         }
         return true;
     }
+
     protected void onSaveState(Bundle outState) {
     }
 }

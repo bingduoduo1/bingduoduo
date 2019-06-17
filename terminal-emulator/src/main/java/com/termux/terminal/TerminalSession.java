@@ -38,25 +38,24 @@ import java.util.UUID;//Universally Unique Identifier 通用唯一标识码
  *  NOTE: 会话可能会在EmulatorView关闭后仍然存活，所以需要对于回调方法小心处理。
  */
 public final class TerminalSession extends TerminalOutput {
-
+    
     /** 改变Session 后需要回调的方法*/
     /** Callback to be invoked when a {@link TerminalSession} changes. */
     public interface SessionChangedCallback {
         void onTextChanged(TerminalSession changedSession);
-
+        
         void onTitleChanged(TerminalSession changedSession);
-
+        
         void onSessionFinished(TerminalSession finishedSession);
-
+        
         void onClipboardText(TerminalSession session, String text);
-
+        
         void onBell(TerminalSession session);
-
+        
         void onColorsChanged(TerminalSession session);
-
+        
     }
-
-
+    
     private static FileDescriptor wrapFileDescriptor(int fileDescriptor) {
         FileDescriptor result = new FileDescriptor();
         try {
@@ -75,65 +74,68 @@ public final class TerminalSession extends TerminalOutput {
         }
         return result;
     }
-
+    
     private static final int MSG_NEW_INPUT = 1;
     private static final int MSG_PROCESS_EXITED = 4;
-
-    public final String mHandle = UUID.randomUUID().toString();
-
-    TerminalEmulator mEmulator;
-
+    
+    public final String mhandle = UUID.randomUUID().toString();
+    
+    TerminalEmulator memulator;
+    
     /**
      * A queue written to from a separate thread when the process outputs, and read by main thread to process by
      * terminal emulator.
      * 一个用于与进程交互的io缓冲区, 通过线程监听进程的输出,写入到这个缓冲区,然后在main线程中处理
      */
-    final ByteQueue mProcessToTerminalIOQueue = new ByteQueue(4096);
+    final ByteQueue mprocesstoterminalioqueue = new ByteQueue(4096);
     /**
      * A queue written to from the main thread due to user interaction, and read by another thread which forwards by
-     * writing to the {@link #mTerminalFileDescriptor}.
+     * writing to the {@link #mterminalfiledescriptor}.
      * 一个用于与进程交互的io缓冲区, 通过线程监听用户输入,写入到进程的对应文件中
      */
-    final ByteQueue mTerminalToProcessIOQueue = new ByteQueue(4096);
-    /** Buffer to write translate code points into utf8 before writing to mTerminalToProcessIOQueue */
-    private final byte[] mUtf8InputBuffer = new byte[5];
-
+    final ByteQueue mterminaltoprocessioqueue = new ByteQueue(4096);
+    /** Buffer to write translate code points into utf8 before writing to mterminaltoprocessioqueue */
+    private final byte[] mutf8Inputbuffer = new byte[5];
+    
     /** Callback which gets notified when a session finishes or changes title. */
-    final SessionChangedCallback mChangeCallback;
-
+    final SessionChangedCallback mchangecallback;
+    
     /** The pid of the shell process. 0 if not started and -1 if finished running. */
-    int mShellPid;//shell 对应的进程的id, 0->未启动,　-1->结束运行
-
-    /** The exit status of the shell process. Only valid if ${@link #mShellPid} is -1. */
-    int mShellExitStatus;
-
+    int mshellpid;// shell 对应的进程的id, 0->未启动, -1->结束运行
+    
+    /** The exit status of the shell process. Only valid if ${@link #mshellpid} is -1. */
+    int mshellexitstatus;
+    
     /**
      * The file descriptor referencing the master half of a pseudo-terminal pair, resulting from calling
-     * {@link JNI#createSubprocess(String, String, String[], String[], int[], int, int)}.
+     * {@link Jni#createSubprocess(String, String, String[], String[], int[], int, int)}.
      */
-    private int mTerminalFileDescriptor;
-
+    private int mterminalfiledescriptor;
+    
     /** Set by the application for user identification of session, not by terminal. */
-    public String mSessionName;
-
+    public String msessionname;
+    
     // pass:Handler 是异步通信的类，主要接受子线程发送的数据, 并用此数据配合主线程更新UI.
     @SuppressLint("HandlerLeak")
-    final Handler mMainThreadHandler = new Handler() {//main Thread　消息处理器,todo, 显示到页面
-        final byte[] mReceiveBuffer = new byte[4 * 1024];
-
+    final Handler mmainthreadhandler = new Handler() {
+        // main Thread 消息处理器,todo, 显示到页面
+        final byte[] mreceivebuffer = new byte[4 * 1024];
+        
         @Override
         public void handleMessage(Message msg) {
-            if (msg.what == MSG_NEW_INPUT && isRunning()) {//新的输入
-                int bytesRead = mProcessToTerminalIOQueue.read(mReceiveBuffer, false);
+            if (msg.what == MSG_NEW_INPUT && isRunning()) {
+                // 新的输入
+                int bytesRead = mprocesstoterminalioqueue.read(mreceivebuffer, false);
                 if (bytesRead > 0) {
-                    mEmulator.append(mReceiveBuffer, bytesRead);
+                    memulator.append(mreceivebuffer, bytesRead);
                     notifyScreenUpdate();
                 }
-            } else if (msg.what == MSG_PROCESS_EXITED) {//进程退出了
+            } else if (msg.what == MSG_PROCESS_EXITED) {
+                // 进程退出了
                 int exitCode = (Integer) msg.obj;
                 cleanupResources(exitCode);
-                mChangeCallback.onSessionFinished(TerminalSession.this);
-
+                mchangecallback.onSessionFinished(TerminalSession.this);
+                
                 String exitDescription = "\r\n[Process completed";
                 if (exitCode > 0) {
                     // Non-zero process exit.
@@ -143,19 +145,19 @@ public final class TerminalSession extends TerminalOutput {
                     exitDescription += " (signal " + (-exitCode) + ")";
                 }
                 exitDescription += " - press Enter]";
-
+                
                 byte[] bytesToWrite = exitDescription.getBytes(StandardCharsets.UTF_8);
-                mEmulator.append(bytesToWrite, bytesToWrite.length);
+                memulator.append(bytesToWrite, bytesToWrite.length);
                 notifyScreenUpdate();
             }
         }
     };
-
-    private final String mShellPath;
-    private final String mCwd;
-    private final String[] mArgs;
-    private final String[] mEnv;
-
+    
+    private final String mshellpath;
+    private final String mcwd;
+    private final String[] margs;
+    private final String[] menv;
+    
     /** 一个Session
      *
      * @param shellPath, 运行路径, exetuablePath
@@ -164,32 +166,36 @@ public final class TerminalSession extends TerminalOutput {
      * @param env, 环境变量, env
      * @param changeCallback, 回调，TermuxService
      */
-    public TerminalSession(String shellPath, String cwd, String[] args, String[] env, SessionChangedCallback changeCallback) {
-        mChangeCallback = changeCallback;
-
-        this.mShellPath = shellPath;
-        this.mCwd = cwd;
-        this.mArgs = args;
-        this.mEnv = env;
-    }// Constructor
-
+    public TerminalSession(String shellPath, String cwd, String[] args, String[] env,
+            SessionChangedCallback changeCallback) {
+        mchangecallback = changeCallback;
+        
+        this.mshellpath = shellPath;
+        this.mcwd = cwd;
+        this.margs = args;
+        this.menv = env;
+    }
+    // Constructor
+    
     /** Inform the attached pty of the new size and reflow or initialize the emulator.
      *
      * */
-    public void updateSize(int columns, int rows) {//在何处调用？
-        if (mEmulator == null) {//没有对应的模拟器,就创建一个
+    public void updateSize(int columns, int rows) {
+        // 在何处调用？
+        if (memulator == null) {
+            // 没有对应的模拟器,就创建一个
             initializeEmulator(columns, rows);
         } else {
-            JNI.setPtyWindowSize(mTerminalFileDescriptor, rows, columns);
-            mEmulator.resize(columns, rows);
+            Jni.setPtyWindowSize(mterminalfiledescriptor, rows, columns);
+            memulator.resize(columns, rows);
         }
     }
-
+    
     /** The terminal title as set through escape sequences or null if none set. */
     public String getTitle() {
-        return (mEmulator == null) ? null : mEmulator.getTitle();
+        return (memulator == null) ? null : memulator.getTitle();
     }
-
+    
     /**
      * Set the terminal emulator's window size and start terminal emulation.
      * 设置terminal emulator size  启动模拟器
@@ -197,40 +203,53 @@ public final class TerminalSession extends TerminalOutput {
      * @param rows    The number of rows in the terminal window.
      */
     public void initializeEmulator(int columns, int rows) {
-        mEmulator = new TerminalEmulator(this, columns, rows, /* transcript= */2000);
-
-        int[] processId = new int[1]; //开启子进程
+        memulator = new TerminalEmulator(this, columns, rows, /* transcript= */2000);
+        
+        int[] processId = new int[1]; // 开启子进程
         // 注意JNI, 看起来蛮有趣的， 这个
-        mTerminalFileDescriptor = JNI.createSubprocess(mShellPath, mCwd, mArgs, mEnv, processId, rows, columns);
-        mShellPid = processId[0];
-
-        final FileDescriptor terminalFileDescriptorWrapped = wrapFileDescriptor(mTerminalFileDescriptor);
-
-        new Thread("TermSessionInputReader[pid=" + mShellPid + "]") {// 读线程
+        mterminalfiledescriptor = Jni.createSubprocess(mshellpath, mcwd, margs, menv, processId, rows, columns);
+        mshellpid = processId[0];
+        
+        final FileDescriptor terminalFileDescriptorWrapped = wrapFileDescriptor(mterminalfiledescriptor);
+        
+        new Thread("TermSessionInputReader[pid=" + mshellpid + "]") {
+            // 读线程
             @Override
-            public void run() {// 注意： termainlFileDescriptorWrapped
+            public void run() {
+                // 注意： termainlFileDescriptorWrapped
                 try (InputStream termIn = new FileInputStream(terminalFileDescriptorWrapped)) {
                     final byte[] buffer = new byte[4096];
                     while (true) {
                         int read = termIn.read(buffer);
-                        if (read == -1) return; // 不停地扫TermIn，然后写入Process 2 Termainl Byte Queue
-                        if (!mProcessToTerminalIOQueue.write(buffer, 0, read)) return;
-                        mMainThreadHandler.sendEmptyMessage(MSG_NEW_INPUT);
+                        if (read == -1)
+                        {
+                            return; // 不停地扫TermIn，然后写入Process 2 Termainl Byte Queue
+                        }
+                        if (!mprocesstoterminalioqueue.write(buffer, 0, read))
+                        {
+                            return;
+                        }
+                        mmainthreadhandler.sendEmptyMessage(MSG_NEW_INPUT);
                     }
                 } catch (Exception e) {
                     // Ignore, just shutting down.
                 }
             }
         }.start();
-
-        new Thread("TermSessionOutputWriter[pid=" + mShellPid + "]") {//写线程
+        
+        new Thread("TermSessionOutputWriter[pid=" + mshellpid + "]") {
+            // 写线程
             @Override
             public void run() {
                 final byte[] buffer = new byte[4096];// Only a file Stream
                 try (FileOutputStream termOut = new FileOutputStream(terminalFileDescriptorWrapped)) {
-                    while (true) {// 不停地去扫描 Terminal 2 process 的缓冲 Byte Queue
-                        int bytesToWrite = mTerminalToProcessIOQueue.read(buffer, true);
-                        if (bytesToWrite == -1) return;
+                    while (true) {
+                        // 不停地去扫描 Terminal 2 process 的缓冲 Byte Queue
+                        int bytesToWrite = mterminaltoprocessioqueue.read(buffer, true);
+                        if (bytesToWrite == -1)
+                        {
+                            return;
+                        }
                         termOut.write(buffer, 0, bytesToWrite);
                     }
                 } catch (IOException e) {
@@ -238,17 +257,18 @@ public final class TerminalSession extends TerminalOutput {
                 }
             }
         }.start();
-
-        new Thread("TermSessionWaiter[pid=" + mShellPid + "]") {
+        
+        new Thread("TermSessionWaiter[pid=" + mshellpid + "]") {
             @Override
             public void run() {
-                int processExitCode = JNI.waitFor(mShellPid);// JNI
-                mMainThreadHandler.sendMessage(mMainThreadHandler.obtainMessage(MSG_PROCESS_EXITED, processExitCode));
+                int processExitCode = Jni.waitFor(mshellpid);// Jni
+                mmainthreadhandler.sendMessage(mmainthreadhandler.obtainMessage(MSG_PROCESS_EXITED, processExitCode));
             }
         }.start();
-
-    }//end initEmulator
-
+        
+    }
+    // end initEmulator
+    
     /** Write data to the shell process. */
     /**
      *
@@ -257,116 +277,122 @@ public final class TerminalSession extends TerminalOutput {
      */
     @Override
     public void write(byte[] data, int offset, int count) {
-        if (mShellPid > 0) mTerminalToProcessIOQueue.write(data, offset, count);
+        if (mshellpid > 0)
+        {
+            mterminaltoprocessioqueue.write(data, offset, count);
+        }
     }
-
+    
     /** Write the Unicode code point to the terminal encoded in UTF-8. */
     public void writeCodePoint(boolean prependEscape, int codePoint) {
         if (codePoint > 1114111 || (codePoint >= 0xD800 && codePoint <= 0xDFFF)) {
             // 1114111 (= 2**16 + 1024**2 - 1) is the highest code point, [0xD800,0xDFFF] is the surrogate range.
             throw new IllegalArgumentException("Invalid code point: " + codePoint);
         }
-
+        
         int bufferPosition = 0;
-        if (prependEscape) mUtf8InputBuffer[bufferPosition++] = 27;
-
+        if (prependEscape)
+        {
+            mutf8Inputbuffer[bufferPosition++] = 27;
+        }
+        
         if (codePoint <= /* 7 bits */0b1111111) {
-            mUtf8InputBuffer[bufferPosition++] = (byte) codePoint;
+            mutf8Inputbuffer[bufferPosition++] = (byte) codePoint;
         } else if (codePoint <= /* 11 bits */0b11111111111) {
             /* 110xxxxx leading byte with leading 5 bits */
-            mUtf8InputBuffer[bufferPosition++] = (byte) (0b11000000 | (codePoint >> 6));
-			/* 10xxxxxx continuation byte with following 6 bits */
-            mUtf8InputBuffer[bufferPosition++] = (byte) (0b10000000 | (codePoint & 0b111111));
+            mutf8Inputbuffer[bufferPosition++] = (byte) (0b11000000 | (codePoint >> 6));
+            /* 10xxxxxx continuation byte with following 6 bits */
+            mutf8Inputbuffer[bufferPosition++] = (byte) (0b10000000 | (codePoint & 0b111111));
         } else if (codePoint <= /* 16 bits */0b1111111111111111) {
-			/* 1110xxxx leading byte with leading 4 bits */
-            mUtf8InputBuffer[bufferPosition++] = (byte) (0b11100000 | (codePoint >> 12));
-			/* 10xxxxxx continuation byte with following 6 bits */
-            mUtf8InputBuffer[bufferPosition++] = (byte) (0b10000000 | ((codePoint >> 6) & 0b111111));
-			/* 10xxxxxx continuation byte with following 6 bits */
-            mUtf8InputBuffer[bufferPosition++] = (byte) (0b10000000 | (codePoint & 0b111111));
+            /* 1110xxxx leading byte with leading 4 bits */
+            mutf8Inputbuffer[bufferPosition++] = (byte) (0b11100000 | (codePoint >> 12));
+            /* 10xxxxxx continuation byte with following 6 bits */
+            mutf8Inputbuffer[bufferPosition++] = (byte) (0b10000000 | ((codePoint >> 6) & 0b111111));
+            /* 10xxxxxx continuation byte with following 6 bits */
+            mutf8Inputbuffer[bufferPosition++] = (byte) (0b10000000 | (codePoint & 0b111111));
         } else { /* We have checked codePoint <= 1114111 above, so we have max 21 bits = 0b111111111111111111111 */
-			/* 11110xxx leading byte with leading 3 bits */
-            mUtf8InputBuffer[bufferPosition++] = (byte) (0b11110000 | (codePoint >> 18));
-			/* 10xxxxxx continuation byte with following 6 bits */
-            mUtf8InputBuffer[bufferPosition++] = (byte) (0b10000000 | ((codePoint >> 12) & 0b111111));
-			/* 10xxxxxx continuation byte with following 6 bits */
-            mUtf8InputBuffer[bufferPosition++] = (byte) (0b10000000 | ((codePoint >> 6) & 0b111111));
-			/* 10xxxxxx continuation byte with following 6 bits */
-            mUtf8InputBuffer[bufferPosition++] = (byte) (0b10000000 | (codePoint & 0b111111));
+            /* 11110xxx leading byte with leading 3 bits */
+            mutf8Inputbuffer[bufferPosition++] = (byte) (0b11110000 | (codePoint >> 18));
+            /* 10xxxxxx continuation byte with following 6 bits */
+            mutf8Inputbuffer[bufferPosition++] = (byte) (0b10000000 | ((codePoint >> 12) & 0b111111));
+            /* 10xxxxxx continuation byte with following 6 bits */
+            mutf8Inputbuffer[bufferPosition++] = (byte) (0b10000000 | ((codePoint >> 6) & 0b111111));
+            /* 10xxxxxx continuation byte with following 6 bits */
+            mutf8Inputbuffer[bufferPosition++] = (byte) (0b10000000 | (codePoint & 0b111111));
         }
-        write(mUtf8InputBuffer, 0, bufferPosition);
+        write(mutf8Inputbuffer, 0, bufferPosition);
     }
-
+    
     public TerminalEmulator getEmulator() {
-        return mEmulator;
+        return memulator;
     }
-
-    /** Notify the {@link #mChangeCallback} that the screen has changed. */
+    
+    /** Notify the {@link #mchangecallback} that the screen has changed. */
     protected void notifyScreenUpdate() {
-        mChangeCallback.onTextChanged(this);
+        mchangecallback.onTextChanged(this);
     }
-
+    
     /** Reset state for terminal emulator state. */
     public void reset() {
-        mEmulator.reset();
+        memulator.reset();
         notifyScreenUpdate();
     }
-
+    
     /** Finish this terminal session by sending SIGKILL to the shell. */
     public void finishIfRunning() {
         if (isRunning()) {
             try {
-                Os.kill(mShellPid, OsConstants.SIGKILL);
+                Os.kill(mshellpid, OsConstants.SIGKILL);
             } catch (ErrnoException e) {
                 Log.w("termux", "Failed sending SIGKILL: " + e.getMessage());
             }
         }
     }
-
+    
     /** Cleanup resources when the process exits. */
     void cleanupResources(int exitStatus) {
         synchronized (this) {
-            mShellPid = -1;
-            mShellExitStatus = exitStatus;
+            mshellpid = -1;
+            mshellexitstatus = exitStatus;
         }
-
+        
         // Stop the reader and writer threads, and close the I/O streams
-        mTerminalToProcessIOQueue.close();
-        mProcessToTerminalIOQueue.close();
-        JNI.close(mTerminalFileDescriptor);
+        mterminaltoprocessioqueue.close();
+        mprocesstoterminalioqueue.close();
+        Jni.close(mterminalfiledescriptor);
     }
-
+    
     @Override
     public void titleChanged(String oldTitle, String newTitle) {
-        mChangeCallback.onTitleChanged(this);
+        mchangecallback.onTitleChanged(this);
     }
-
+    
     public synchronized boolean isRunning() {
-        return mShellPid != -1;
+        return mshellpid != -1;
     }
-
+    
     /** Only valid if not {@link #isRunning()}. */
     public synchronized int getExitStatus() {
-        return mShellExitStatus;
+        return mshellexitstatus;
     }
-
+    
     @Override
     public void clipboardText(String text) {
-        mChangeCallback.onClipboardText(this, text);
+        mchangecallback.onClipboardText(this, text);
     }
-
+    
     @Override
     public void onBell() {
-        mChangeCallback.onBell(this);
+        mchangecallback.onBell(this);
     }
-
+    
     @Override
     public void onColorsChanged() {
-        mChangeCallback.onColorsChanged(this);
+        mchangecallback.onColorsChanged(this);
     }
-
+    
     public int getPid() {
-        return mShellPid;
+        return mshellpid;
     }
-
+    
 }

@@ -23,73 +23,79 @@ import com.termux.terminal.WcWidth;
  */
 
 public final class TerminalRenderer {
-
-    final int mTextSize;
-    final Typeface mTypeface;
-    private final Paint mTextPaint = new Paint();
-
+    
+    final int mtextsize;
+    final Typeface mtypeface;
+    private final Paint mtextpaint = new Paint();
+    
     /** The width of a single mono spaced character obtained by {@link Paint#measureText(String)} on a single 'X'. */
-    final float mFontWidth;
+    final float mfontwidth;
     /** The {@link Paint#getFontSpacing()}. See http://www.fampennings.nl/maarten/android/08numgrid/font.png */
-    final int mFontLineSpacing;
+    final int mfontlinespacing;
     /** The {@link Paint#ascent()}. See http://www.fampennings.nl/maarten/android/08numgrid/font.png */
-    private final int mFontAscent;
-    /** The {@link #mFontLineSpacing} + {@link #mFontAscent}. */
-    final int mFontLineSpacingAndAscent;
-
+    private final int mfontascent;
+    /** The {@link #mfontlinespacing} + {@link #mfontascent}. */
+    final int mfontlinespacingandascent;
+    
     private final float[] asciiMeasures = new float[127];
-
+    
     public TerminalRenderer(int textSize, Typeface typeface) {
-        mTextSize = textSize;
-        mTypeface = typeface;
-
-        mTextPaint.setTypeface(typeface);
-        mTextPaint.setAntiAlias(true);
-        mTextPaint.setTextSize(textSize);
-
-        mFontLineSpacing = (int) Math.ceil(mTextPaint.getFontSpacing());
-        mFontAscent = (int) Math.ceil(mTextPaint.ascent());
-        mFontLineSpacingAndAscent = mFontLineSpacing + mFontAscent;
-        mFontWidth = mTextPaint.measureText("X");
-
+        mtextsize = textSize;
+        mtypeface = typeface;
+        
+        mtextpaint.setTypeface(typeface);
+        mtextpaint.setAntiAlias(true);
+        mtextpaint.setTextSize(textSize);
+        
+        mfontlinespacing = (int) Math.ceil(mtextpaint.getFontSpacing());
+        mfontascent = (int) Math.ceil(mtextpaint.ascent());
+        mfontlinespacingandascent = mfontlinespacing + mfontascent;
+        mfontwidth = mtextpaint.measureText("X");
+        
         StringBuilder sb = new StringBuilder(" ");
         for (int i = 0; i < asciiMeasures.length; i++) {
             sb.setCharAt(0, (char) i);
-            asciiMeasures[i] = mTextPaint.measureText(sb, 0, 1);
+            asciiMeasures[i] = mtextpaint.measureText(sb, 0, 1);
         }
     }
-
+    
     /** Render the terminal to a canvas with at a specified row scroll, and an optional rectangular selection. */
-    public final void render(TerminalEmulator mEmulator, Canvas canvas, int topRow,
-                             int selectionY1, int selectionY2, int selectionX1, int selectionX2) {
-        final boolean reverseVideo = mEmulator.isReverseVideo();
-        final int endRow = topRow + mEmulator.mRows;
-        final int columns = mEmulator.mColumns;
-        final int cursorCol = mEmulator.getCursorCol();
-        final int cursorRow = mEmulator.getCursorRow();
-        final boolean cursorVisible = mEmulator.isShowingCursor();
-        final TerminalBuffer screen = mEmulator.getScreen();
-        final int[] palette = mEmulator.mColors.mCurrentColors;
-        final int cursorShape = mEmulator.getCursorStyle();
-
+    public final void render(TerminalEmulator memulator, Canvas canvas, int topRow, int selectionY1, int selectionY2,
+            int selectionX1, int selectionX2) {
+        final boolean reverseVideo = memulator.isReverseVideo();
+        final int endRow = topRow + memulator.mrows;
+        final int columns = memulator.mcolumns;
+        final int cursorCol = memulator.getCursorCol();
+        final int cursorRow = memulator.getCursorRow();
+        final boolean cursorVisible = memulator.isShowingCursor();
+        final TerminalBuffer screen = memulator.getScreen();
+        final int[] palette = memulator.mcolors.mcurrentcolors;
+        final int cursorShape = memulator.getCursorStyle();
+        
         if (reverseVideo)
+        {
             canvas.drawColor(palette[TextStyle.COLOR_INDEX_FOREGROUND], PorterDuff.Mode.SRC);
-
-        float heightOffset = mFontLineSpacingAndAscent;
+        }
+        
+        float heightOffset = mfontlinespacingandascent;
         for (int row = topRow; row < endRow; row++) {
-            heightOffset += mFontLineSpacing;
-
+            heightOffset += mfontlinespacing;
+            
             final int cursorX = (row == cursorRow && cursorVisible) ? cursorCol : -1;
-            int selx1 = -1, selx2 = -1;
+            int selx1 = -1;
+            int selx2 = -1;
             if (row >= selectionY1 && row <= selectionY2) {
-                if (row == selectionY1) selx1 = selectionX1;
-                selx2 = (row == selectionY2) ? selectionX2 : mEmulator.mColumns;
+                if (row == selectionY1)
+                {
+                    selx1 = selectionX1;
+                }
+                selx2 = (row == selectionY2) ? selectionX2 : memulator.mcolumns;
             }
-
+            
             TerminalRow lineObject = screen.allocateFullLineIfNecessary(screen.externalToInternalRow(row));
-            final char[] line = lineObject.mText;
+            final char[] line = lineObject.mtext;
             final int charsUsedInLine = lineObject.getSpaceUsed();
-
+            
             long lastRunStyle = 0;
             boolean lastRunInsideCursor = false;
             int lastRunStartColumn = -1;
@@ -97,34 +103,41 @@ public final class TerminalRenderer {
             boolean lastRunFontWidthMismatch = false;
             int currentCharIndex = 0;
             float measuredWidthForRun = 0.f;
-
-            for (int column = 0; column < columns; ) {
+            
+            for (int column = 0; column < columns;) {
                 final char charAtIndex = line[currentCharIndex];
                 final boolean charIsHighsurrogate = Character.isHighSurrogate(charAtIndex);
                 final int charsForCodePoint = charIsHighsurrogate ? 2 : 1;
-                final int codePoint = charIsHighsurrogate ? Character.toCodePoint(charAtIndex, line[currentCharIndex + 1]) : charAtIndex;
+                final int codePoint =
+                        charIsHighsurrogate ? Character.toCodePoint(charAtIndex, line[currentCharIndex + 1])
+                                : charAtIndex;
                 final int codePointWcWidth = WcWidth.width(codePoint);
-                final boolean insideCursor = (column >= selx1 && column <= selx2) || (cursorX == column || (codePointWcWidth == 2 && cursorX == column + 1));
+                final boolean insideCursor = (column >= selx1 && column <= selx2)
+                        || (cursorX == column || (codePointWcWidth == 2 && cursorX == column + 1));
                 final long style = lineObject.getStyle(column);
-
+                
                 // Check if the measured text width for this code point is not the same as that expected by wcwidth().
                 // This could happen for some fonts which are not truly monospace, or for more exotic characters such as
                 // smileys which android font renders as wide.
                 // If this is detected, we draw this code point scaled to match what wcwidth() expects.
-                final float measuredCodePointWidth = (codePoint < asciiMeasures.length) ? asciiMeasures[codePoint] : mTextPaint.measureText(line,
-                    currentCharIndex, charsForCodePoint);
-                final boolean fontWidthMismatch = Math.abs(measuredCodePointWidth / mFontWidth - codePointWcWidth) > 0.01;
-
-                if (style != lastRunStyle || insideCursor != lastRunInsideCursor || fontWidthMismatch || lastRunFontWidthMismatch) {
+                final float measuredCodePointWidth = (codePoint < asciiMeasures.length) ? asciiMeasures[codePoint]
+                        : mtextpaint.measureText(line, currentCharIndex, charsForCodePoint);
+                final boolean fontWidthMismatch =
+                        Math.abs(measuredCodePointWidth / mfontwidth - codePointWcWidth) > 0.01;
+                
+                if (style != lastRunStyle || insideCursor != lastRunInsideCursor || fontWidthMismatch
+                        || lastRunFontWidthMismatch) {
                     if (column == 0) {
                         // Skip first column as there is nothing to draw, just record the current style.
                     } else {
                         final int columnWidthSinceLastRun = column - lastRunStartColumn;
                         final int charsSinceLastRun = currentCharIndex - lastRunStartIndex;
-                        int cursorColor = lastRunInsideCursor ? mEmulator.mColors.mCurrentColors[TextStyle.COLOR_INDEX_CURSOR] : 0;
+                        int cursorColor =
+                                lastRunInsideCursor ? memulator.mcolors.mcurrentcolors[TextStyle.COLOR_INDEX_CURSOR]
+                                        : 0;
                         drawTextRun(canvas, line, palette, heightOffset, lastRunStartColumn, columnWidthSinceLastRun,
-                            lastRunStartIndex, charsSinceLastRun, measuredWidthForRun,
-                            cursorColor, cursorShape, lastRunStyle, reverseVideo);
+                                lastRunStartIndex, charsSinceLastRun, measuredWidthForRun, cursorColor, cursorShape,
+                                lastRunStyle, reverseVideo);
                     }
                     measuredWidthForRun = 0.f;
                     lastRunStyle = style;
@@ -142,18 +155,19 @@ public final class TerminalRenderer {
                     currentCharIndex += Character.isHighSurrogate(line[currentCharIndex]) ? 2 : 1;
                 }
             }
-
+            
             final int columnWidthSinceLastRun = columns - lastRunStartColumn;
             final int charsSinceLastRun = currentCharIndex - lastRunStartIndex;
-            int cursorColor = lastRunInsideCursor ? mEmulator.mColors.mCurrentColors[TextStyle.COLOR_INDEX_CURSOR] : 0;
-            drawTextRun(canvas, line, palette, heightOffset, lastRunStartColumn, columnWidthSinceLastRun, lastRunStartIndex, charsSinceLastRun,
-                measuredWidthForRun, cursorColor, cursorShape, lastRunStyle, reverseVideo);
+            int cursorColor = lastRunInsideCursor ? memulator.mcolors.mcurrentcolors[TextStyle.COLOR_INDEX_CURSOR] : 0;
+            drawTextRun(canvas, line, palette, heightOffset, lastRunStartColumn, columnWidthSinceLastRun,
+                    lastRunStartIndex, charsSinceLastRun, measuredWidthForRun, cursorColor, cursorShape, lastRunStyle,
+                    reverseVideo);
         }
     }
-
+    
     private void drawTextRun(Canvas canvas, char[] text, int[] palette, float y, int startColumn, int runWidthColumns,
-                             int startCharIndex, int runWidthChars, float mes, int cursor, int cursorStyle,
-                             long textStyle, boolean reverseVideo) {
+            int startCharIndex, int runWidthChars, float mes, int cursor, int cursorStyle, long textStyle,
+            boolean reverseVideo) {
         int foreColor = TextStyle.decodeForeColor(textStyle);
         final int effect = TextStyle.decodeEffect(textStyle);
         int backColor = TextStyle.decodeBackColor(textStyle);
@@ -162,17 +176,20 @@ public final class TerminalRenderer {
         final boolean italic = (effect & TextStyle.CHARACTER_ATTRIBUTE_ITALIC) != 0;
         final boolean strikeThrough = (effect & TextStyle.CHARACTER_ATTRIBUTE_STRIKETHROUGH) != 0;
         final boolean dim = (effect & TextStyle.CHARACTER_ATTRIBUTE_DIM) != 0;
-
+        
         if ((foreColor & 0xff000000) != 0xff000000) {
             // Let bold have bright colors if applicable (one of the first 8):
-            if (bold && foreColor >= 0 && foreColor < 8) foreColor += 8;
+            if (bold && foreColor >= 0 && foreColor < 8)
+            {
+                foreColor += 8;
+            }
             foreColor = palette[foreColor];
         }
-
+        
         if ((backColor & 0xff000000) != 0xff000000) {
             backColor = palette[backColor];
         }
-
+        
         // Reverse video here if _one and only one_ of the reverse flags are set:
         final boolean reverseVideoHere = reverseVideo ^ (effect & (TextStyle.CHARACTER_ATTRIBUTE_INVERSE)) != 0;
         if (reverseVideoHere) {
@@ -180,11 +197,11 @@ public final class TerminalRenderer {
             foreColor = backColor;
             backColor = tmp;
         }
-
-        float left = startColumn * mFontWidth;
-        float right = left + runWidthColumns * mFontWidth;
-
-        mes = mes / mFontWidth;
+        
+        float left = startColumn * mfontwidth;
+        float right = left + runWidthColumns * mfontwidth;
+        
+        mes = mes / mfontwidth;
         boolean savedMatrix = false;
         if (Math.abs(mes - runWidthColumns) > 0.01) {
             canvas.save();
@@ -193,21 +210,27 @@ public final class TerminalRenderer {
             right *= mes / runWidthColumns;
             savedMatrix = true;
         }
-
+        
         if (backColor != palette[TextStyle.COLOR_INDEX_BACKGROUND]) {
             // Only draw non-default background.
-            mTextPaint.setColor(backColor);
-            canvas.drawRect(left, y - mFontLineSpacingAndAscent + mFontAscent, right, y, mTextPaint);
+            mtextpaint.setColor(backColor);
+            canvas.drawRect(left, y - mfontlinespacingandascent + mfontascent, right, y, mtextpaint);
         }
-
+        
         if (cursor != 0) {
-            mTextPaint.setColor(cursor);
-            float cursorHeight = mFontLineSpacingAndAscent - mFontAscent;
-            if (cursorStyle == TerminalEmulator.CURSOR_STYLE_UNDERLINE) cursorHeight /= 4.;
-            else if (cursorStyle == TerminalEmulator.CURSOR_STYLE_BAR) right -= ((right - left) * 3) / 4.;
-            canvas.drawRect(left, y - cursorHeight, right, y, mTextPaint);
+            mtextpaint.setColor(cursor);
+            float cursorHeight = mfontlinespacingandascent - mfontascent;
+            if (cursorStyle == TerminalEmulator.CURSOR_STYLE_UNDERLINE)
+            {
+                cursorHeight /= 4.;
+            }
+            else if (cursorStyle == TerminalEmulator.CURSOR_STYLE_BAR)
+            {
+                right -= ((right - left) * 3) / 4.;
+            }
+            canvas.drawRect(left, y - cursorHeight, right, y, mtextpaint);
         }
-
+        
         if ((effect & TextStyle.CHARACTER_ATTRIBUTE_INVISIBLE) == 0) {
             if (dim) {
                 int red = (0xFF & (foreColor >> 16));
@@ -220,17 +243,20 @@ public final class TerminalRenderer {
                 blue = blue * 2 / 3;
                 foreColor = 0xFF000000 + (red << 16) + (green << 8) + blue;
             }
-
-            mTextPaint.setFakeBoldText(bold);
-            mTextPaint.setUnderlineText(underline);
-            mTextPaint.setTextSkewX(italic ? -0.35f : 0.f);
-            mTextPaint.setStrikeThruText(strikeThrough);
-            mTextPaint.setColor(foreColor);
-
+            
+            mtextpaint.setFakeBoldText(bold);
+            mtextpaint.setUnderlineText(underline);
+            mtextpaint.setTextSkewX(italic ? -0.35f : 0.f);
+            mtextpaint.setStrikeThruText(strikeThrough);
+            mtextpaint.setColor(foreColor);
+            
             // The text alignment is the default Paint.Align.LEFT.
-            canvas.drawText(text, startCharIndex, runWidthChars, left, y - mFontLineSpacingAndAscent, mTextPaint);
+            canvas.drawText(text, startCharIndex, runWidthChars, left, y - mfontlinespacingandascent, mtextpaint);
         }
-
-        if (savedMatrix) canvas.restore();
+        
+        if (savedMatrix)
+        {
+            canvas.restore();
+        }
     }
 }

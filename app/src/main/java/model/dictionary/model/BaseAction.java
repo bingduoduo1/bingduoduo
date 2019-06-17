@@ -1,20 +1,15 @@
 package model.dictionary.model;
 
 public abstract class BaseAction {
-    private ActionType mActionType;
-    private ExecutePlaceType mExecutePlace;
+    private ActionType mactionType;
+    private ExecutePlaceType mexecutePlace;
 
     BaseAction(ActionType actionType, ExecutePlaceType executePlace) {
-        mActionType = actionType;
-        mExecutePlace = executePlace;
+        mactionType = actionType;
+        mexecutePlace = executePlace;
     }
 
-//    public ActionType getActionType()
-//    {
-//        return mActionType;
-//    }
-
     public ExecutePlaceType getExecutePlace() {
-        return mExecutePlace;
+        return mexecutePlace;
     }
 }

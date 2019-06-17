@@ -1,10 +1,9 @@
 
-
 package com.bingduoduo.editor.presenter;
 
+import android.text.TextUtils;
 
 import androidx.annotation.NonNull;
-import android.text.TextUtils;
 
 import com.bingduoduo.editor.base.mvp.BasePresenter;
 
@@ -20,7 +19,7 @@ public class EditorFragmentPresenter extends BasePresenter<IEditorFragmentView> 
     private String fileName;
     // 是否为新创建文件
     private boolean isCreateFile;
-
+    
     public EditorFragmentPresenter(File file) {
         if (file.isDirectory()) {
             this.filePath = file.getAbsolutePath();
@@ -31,49 +30,57 @@ public class EditorFragmentPresenter extends BasePresenter<IEditorFragmentView> 
             this.filePath = file.getParent();
         }
     }
-
-
+    
     /**
      * 加载当前文件
      */
     public void loadFile() {
-        mCompositeSubscription.add(mDataManager.readFile(getFile())
-                .subscribe(content -> {
-                    if (getMvpView() == null) return;
-                    getMvpView().onReadSuccess(fileName, content);
-                }, throwable -> {
-                    callFailure(-1, throwable.getMessage(), IEditorFragmentView.CALL_LOAOD_FILE);
-                }));
-
+        compositeSubscription.add(dataManager.readFile(getFile()).subscribe(content -> {
+            if (getMvpView() == null)
+            {
+                return;
+            }
+            getMvpView().onReadSuccess(fileName, content);
+        }, throwable -> {
+                callFailure(-1, throwable.getMessage(), IEditorFragmentView.CALL_LOAOD_FILE);
+            }));
+        
     }
-
+    
     @NonNull
     public File getFile() {
         return new File(filePath, fileName);
     }
-
+    
     private boolean textChanged = false;
-
+    
     /**
      * 刷新保存图标的状态
      */
     public void refreshMenuIcon() {
-        if (getMvpView() != null) return;
+        if (getMvpView() != null)
+        {
+            return;
+        }
         if (textChanged)
+        {
             getMvpView().otherSuccess(IEditorFragmentView.CALL_NO_SAVE);
+        }
         else
+        {
             getMvpView().otherSuccess(IEditorFragmentView.CALL_SAVE);
-
+        }
+        
     }
-
+    
     public void textChange() {
         textChanged = true;
         if (getMvpView() != null) {
             getMvpView().otherSuccess(IEditorFragmentView.CALL_NO_SAVE);
         }
-
+        
     }
-
+    
     /**
      * 保存当前内容
      *
@@ -83,7 +90,7 @@ public class EditorFragmentPresenter extends BasePresenter<IEditorFragmentView> 
     public void save(String name, String content) {
         saveForExit(name, content, false);
     }
-
+    
     /**
      * 保存当前内容并退出
      *
@@ -96,8 +103,11 @@ public class EditorFragmentPresenter extends BasePresenter<IEditorFragmentView> 
             callFailure(-1, "名字不能为空", IEditorFragmentView.CALL_SAVE);
             return;
         }
-        if (content == null) return;
-
+        if (content == null)
+        {
+            return;
+        }
+        
         // 上一次文件名为空
         if (TextUtils.isEmpty(fileName)) {
             // 新建文件
@@ -111,8 +121,8 @@ public class EditorFragmentPresenter extends BasePresenter<IEditorFragmentView> 
             }
             fileName = name;
         }
-
-        mDataManager.saveFile(getFile(), content).subscribe(success -> {
+        
+        dataManager.saveFile(getFile(), content).subscribe(success -> {
             if (success) {
                 isCreateFile = false;
                 textChanged = false;
@@ -122,34 +132,46 @@ public class EditorFragmentPresenter extends BasePresenter<IEditorFragmentView> 
                 }
                 if (getMvpView() != null) {
                     if (exit)
+                    {
                         getMvpView().otherSuccess(IEditorFragmentView.CALL_EXIT);
+                    }
                     else
+                    {
                         getMvpView().otherSuccess(IEditorFragmentView.CALL_SAVE);
+                    }
                 }
             } else {
                 callFailure(-1, "保存失败", IEditorFragmentView.CALL_SAVE);
             }
         }, throwable -> {
-            callFailure(-1, "保存失败", IEditorFragmentView.CALL_SAVE);
-        });
+                callFailure(-1, "保存失败", IEditorFragmentView.CALL_SAVE);
+            });
     }
-
+    
     private boolean rename(String newName) {
         String name = fileName;
-        if (newName.equals(name)) return true;
-
+        if (newName.equals(name))
+        {
+            return true;
+        }
+        
         File oldFile = getFile();
         File newPath = new File(filePath, newName);
-        if (oldFile.getAbsolutePath().equals(newPath.getAbsolutePath())) return true;
-
+        if (oldFile.getAbsolutePath().equals(newPath.getAbsolutePath()))
+        {
+            return true;
+        }
+        
         fileName = newPath.getName();
-
+        
         if (newPath.exists())// 文件已经存在了
+        {
             return false;
+        }
         boolean b = oldFile.renameTo(newPath);
         return b;
     }
-
+    
     public boolean isSave() {
         return !textChanged;
     }

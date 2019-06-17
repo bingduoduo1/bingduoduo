@@ -32,7 +32,7 @@ public class TerminalRowTest extends TestCase {
 	}
 
 	private void assertLineStartsWith(int... codePoints) {
-		char[] chars = row.mText;
+		char[] chars = row.mtext;
 		int charIndex = 0;
 		for (int i = 0; i < codePoints.length; i++) {
 			int lineCodePoint = chars[charIndex++];
@@ -108,7 +108,7 @@ public class TerminalRowTest extends TestCase {
 			rawLine[lineIndex] = someChars[charIndex];
 			row.setChar(lineIndex, someChars[charIndex], 0);
 		}
-		char[] lineChars = row.mText;
+		char[] lineChars = row.mtext;
 		for (int i = 0; i < rawLine.length; i++) {
 			assertEquals(rawLine[i], lineChars[i]);
 		}
@@ -199,21 +199,21 @@ public class TerminalRowTest extends TestCase {
 		assertEquals(2, Character.toChars(second).length);
 
 		row.setChar(0, second, 0);
-		assertEquals(second, Character.toCodePoint(row.mText[0], row.mText[1]));
-		assertEquals(' ', row.mText[2]);
+		assertEquals(second, Character.toCodePoint(row.mtext[0], row.mtext[1]));
+		assertEquals(' ', row.mtext[2]);
 		assertEquals(2, row.findStartOfColumn(1));
 
 		row.setChar(0, first, 0);
-		assertEquals(first, Character.toCodePoint(row.mText[0], row.mText[1]));
-		assertEquals(' ', row.mText[2]);
+		assertEquals(first, Character.toCodePoint(row.mtext[0], row.mtext[1]));
+		assertEquals(' ', row.mtext[2]);
 		assertEquals(2, row.findStartOfColumn(1));
 
 		row.setChar(1, second, 0);
 		row.setChar(2, 'a', 0);
-		assertEquals(first, Character.toCodePoint(row.mText[0], row.mText[1]));
-		assertEquals(second, Character.toCodePoint(row.mText[2], row.mText[3]));
-		assertEquals('a', row.mText[4]);
-		assertEquals(' ', row.mText[5]);
+		assertEquals(first, Character.toCodePoint(row.mtext[0], row.mtext[1]));
+		assertEquals(second, Character.toCodePoint(row.mtext[2], row.mtext[3]));
+		assertEquals('a', row.mtext[4]);
+		assertEquals(' ', row.mtext[5]);
 		assertEquals(0, row.findStartOfColumn(0));
 		assertEquals(2, row.findStartOfColumn(1));
 		assertEquals(4, row.findStartOfColumn(2));
@@ -221,10 +221,10 @@ public class TerminalRowTest extends TestCase {
 		assertEquals(6, row.findStartOfColumn(4));
 
 		row.setChar(0, ' ', 0);
-		assertEquals(' ', row.mText[0]);
-		assertEquals(second, Character.toCodePoint(row.mText[1], row.mText[2]));
-		assertEquals('a', row.mText[3]);
-		assertEquals(' ', row.mText[4]);
+		assertEquals(' ', row.mtext[0]);
+		assertEquals(second, Character.toCodePoint(row.mtext[1], row.mtext[2]));
+		assertEquals('a', row.mtext[3]);
+		assertEquals(' ', row.mtext[4]);
 		assertEquals(0, row.findStartOfColumn(0));
 		assertEquals(1, row.findStartOfColumn(1));
 		assertEquals(3, row.findStartOfColumn(2));
@@ -236,7 +236,7 @@ public class TerminalRowTest extends TestCase {
 		}
 		for (int i = 0; i < 80; i++) {
 			int idx = row.findStartOfColumn(i);
-			assertEquals(i % 2 == 0 ? first : second, Character.toCodePoint(row.mText[idx], row.mText[idx + 1]));
+			assertEquals(i % 2 == 0 ? first : second, Character.toCodePoint(row.mtext[idx], row.mtext[idx + 1]));
 		}
 		for (int i = 0; i < 80; i++) {
 			row.setChar(i, i % 2 == 0 ? 'a' : 'b', 0);
@@ -244,40 +244,40 @@ public class TerminalRowTest extends TestCase {
 		for (int i = 0; i < 80; i++) {
 			int idx = row.findStartOfColumn(i);
 			assertEquals(i, idx);
-			assertEquals(i % 2 == 0 ? 'a' : 'b', row.mText[i]);
+			assertEquals(i % 2 == 0 ? 'a' : 'b', row.mtext[i]);
 		}
 	}
 
 	public void testOverwritingDoubleDisplayWidthWithNormalDisplayWidth() {
 		// Initial "OO "
 		row.setChar(0, ONE_JAVA_CHAR_DISPLAY_WIDTH_TWO_1, 0);
-		assertEquals(ONE_JAVA_CHAR_DISPLAY_WIDTH_TWO_1, row.mText[0]);
-		assertEquals(' ', row.mText[1]);
+		assertEquals(ONE_JAVA_CHAR_DISPLAY_WIDTH_TWO_1, row.mtext[0]);
+		assertEquals(' ', row.mtext[1]);
 		assertEquals(0, row.findStartOfColumn(0));
 		assertEquals(0, row.findStartOfColumn(1));
 		assertEquals(1, row.findStartOfColumn(2));
 
 		// Setting first column to a clears second: "a  "
 		row.setChar(0, 'a', 0);
-		assertEquals('a', row.mText[0]);
-		assertEquals(' ', row.mText[1]);
+		assertEquals('a', row.mtext[0]);
+		assertEquals(' ', row.mtext[1]);
 		assertEquals(0, row.findStartOfColumn(0));
 		assertEquals(1, row.findStartOfColumn(1));
 		assertEquals(2, row.findStartOfColumn(2));
 
 		// Back to initial "OO "
 		row.setChar(0, ONE_JAVA_CHAR_DISPLAY_WIDTH_TWO_1, 0);
-		assertEquals(ONE_JAVA_CHAR_DISPLAY_WIDTH_TWO_1, row.mText[0]);
-		assertEquals(' ', row.mText[1]);
+		assertEquals(ONE_JAVA_CHAR_DISPLAY_WIDTH_TWO_1, row.mtext[0]);
+		assertEquals(' ', row.mtext[1]);
 		assertEquals(0, row.findStartOfColumn(0));
 		assertEquals(0, row.findStartOfColumn(1));
 		assertEquals(1, row.findStartOfColumn(2));
 
 		// Setting first column to a clears first: " a "
 		row.setChar(1, 'a', 0);
-		assertEquals(' ', row.mText[0]);
-		assertEquals('a', row.mText[1]);
-		assertEquals(' ', row.mText[2]);
+		assertEquals(' ', row.mtext[0]);
+		assertEquals('a', row.mtext[1]);
+		assertEquals(' ', row.mtext[2]);
 		assertEquals(0, row.findStartOfColumn(0));
 		assertEquals(1, row.findStartOfColumn(1));
 		assertEquals(2, row.findStartOfColumn(2));
@@ -286,8 +286,8 @@ public class TerminalRowTest extends TestCase {
 	public void testOverwritingDoubleDisplayWidthWithSelf() {
 		row.setChar(0, ONE_JAVA_CHAR_DISPLAY_WIDTH_TWO_1, 0);
 		row.setChar(0, ONE_JAVA_CHAR_DISPLAY_WIDTH_TWO_1, 0);
-		assertEquals(ONE_JAVA_CHAR_DISPLAY_WIDTH_TWO_1, row.mText[0]);
-		assertEquals(' ', row.mText[1]);
+		assertEquals(ONE_JAVA_CHAR_DISPLAY_WIDTH_TWO_1, row.mtext[0]);
+		assertEquals(' ', row.mtext[1]);
 		assertEquals(0, row.findStartOfColumn(0));
 		assertEquals(0, row.findStartOfColumn(1));
 		assertEquals(1, row.findStartOfColumn(2));
@@ -302,29 +302,29 @@ public class TerminalRowTest extends TestCase {
 		assertEquals(2, WcWidth.width(ONE_JAVA_CHAR_DISPLAY_WIDTH_TWO_2));
 
 		row.setChar(0, ONE_JAVA_CHAR_DISPLAY_WIDTH_TWO_1, 0);
-		assertEquals(ONE_JAVA_CHAR_DISPLAY_WIDTH_TWO_1, row.mText[0]);
+		assertEquals(ONE_JAVA_CHAR_DISPLAY_WIDTH_TWO_1, row.mtext[0]);
 		assertEquals(0, row.findStartOfColumn(1));
-		assertEquals(' ', row.mText[1]);
+		assertEquals(' ', row.mtext[1]);
 
 		row.setChar(0, 'a', 0);
-		assertEquals('a', row.mText[0]);
-		assertEquals(' ', row.mText[1]);
+		assertEquals('a', row.mtext[0]);
+		assertEquals(' ', row.mtext[1]);
 		assertEquals(1, row.findStartOfColumn(1));
 
 		row.setChar(0, ONE_JAVA_CHAR_DISPLAY_WIDTH_TWO_1, 0);
-		assertEquals(ONE_JAVA_CHAR_DISPLAY_WIDTH_TWO_1, row.mText[0]);
+		assertEquals(ONE_JAVA_CHAR_DISPLAY_WIDTH_TWO_1, row.mtext[0]);
 		// The first character fills both first columns.
 		assertEquals(0, row.findStartOfColumn(1));
 		row.setChar(2, 'a', 0);
-		assertEquals(ONE_JAVA_CHAR_DISPLAY_WIDTH_TWO_1, row.mText[0]);
-		assertEquals('a', row.mText[1]);
+		assertEquals(ONE_JAVA_CHAR_DISPLAY_WIDTH_TWO_1, row.mtext[0]);
+		assertEquals('a', row.mtext[1]);
 		assertEquals(1, row.findStartOfColumn(2));
 
 		row.setChar(0, 'c', 0);
-		assertEquals('c', row.mText[0]);
-		assertEquals(' ', row.mText[1]);
-		assertEquals('a', row.mText[2]);
-		assertEquals(' ', row.mText[3]);
+		assertEquals('c', row.mtext[0]);
+		assertEquals(' ', row.mtext[1]);
+		assertEquals('a', row.mtext[2]);
+		assertEquals(' ', row.mtext[3]);
 		assertEquals(0, row.findStartOfColumn(0));
 		assertEquals(1, row.findStartOfColumn(1));
 		assertEquals(2, row.findStartOfColumn(2));
@@ -343,18 +343,18 @@ public class TerminalRowTest extends TestCase {
 		assertEquals(1, row.findStartOfColumn(2));
 		assertEquals(1, row.findStartOfColumn(3));
 		assertEquals(2, row.findStartOfColumn(4));
-		assertEquals(ONE_JAVA_CHAR_DISPLAY_WIDTH_TWO_1, row.mText[0]);
-		assertEquals(ONE_JAVA_CHAR_DISPLAY_WIDTH_TWO_2, row.mText[1]);
-		assertEquals('a', row.mText[2]);
-		assertEquals(' ', row.mText[3]);
+		assertEquals(ONE_JAVA_CHAR_DISPLAY_WIDTH_TWO_1, row.mtext[0]);
+		assertEquals(ONE_JAVA_CHAR_DISPLAY_WIDTH_TWO_2, row.mtext[1]);
+		assertEquals('a', row.mtext[2]);
+		assertEquals(' ', row.mtext[3]);
 
 		row.setChar(1, ONE_JAVA_CHAR_DISPLAY_WIDTH_TWO_2, 0);
 		// " AA a    "
-		assertEquals(' ', row.mText[0]);
-		assertEquals(ONE_JAVA_CHAR_DISPLAY_WIDTH_TWO_2, row.mText[1]);
-		assertEquals(' ', row.mText[2]);
-		assertEquals('a', row.mText[3]);
-		assertEquals(' ', row.mText[4]);
+		assertEquals(' ', row.mtext[0]);
+		assertEquals(ONE_JAVA_CHAR_DISPLAY_WIDTH_TWO_2, row.mtext[1]);
+		assertEquals(' ', row.mtext[2]);
+		assertEquals('a', row.mtext[3]);
+		assertEquals(' ', row.mtext[4]);
 		assertEquals(0, row.findStartOfColumn(0));
 		assertEquals(1, row.findStartOfColumn(1));
 		assertEquals(1, row.findStartOfColumn(2));
@@ -383,14 +383,14 @@ public class TerminalRowTest extends TestCase {
 			currentColumn += WcWidth.width(point);
 		}
 		// assertLineStartsWith(points);
-		// assertEquals(Character.highSurrogate(0xC2541), line.mText[0]);
-		// assertEquals(Character.lowSurrogate(0xC2541), line.mText[1]);
-		// assertEquals('a', line.mText[2]);
-		// assertEquals('8', line.mText[3]);
-		// assertEquals(Character.highSurrogate(0x73EE), line.mText[4]);
-		// assertEquals(Character.lowSurrogate(0x73EE), line.mText[5]);
+		// assertEquals(Character.highSurrogate(0xC2541), line.mtext[0]);
+		// assertEquals(Character.lowSurrogate(0xC2541), line.mtext[1]);
+		// assertEquals('a', line.mtext[2]);
+		// assertEquals('8', line.mtext[3]);
+		// assertEquals(Character.highSurrogate(0x73EE), line.mtext[4]);
+		// assertEquals(Character.lowSurrogate(0x73EE), line.mtext[5]);
 		//
-		// char[] chars = line.mText;
+		// char[] chars = line.mtext;
 		// int charIndex = 0;
 		// for (int i = 0; i < points.length; i++) {
 		// char c = chars[charIndex];
@@ -419,14 +419,14 @@ public class TerminalRowTest extends TestCase {
 	public void testInsertWideAtLastColumn() {
 		row.setChar(COLUMNS - 2, 'Z', 0);
 		row.setChar(COLUMNS - 1, 'a', 0);
-		assertEquals('Z', row.mText[row.findStartOfColumn(COLUMNS - 2)]);
-		assertEquals('a', row.mText[row.findStartOfColumn(COLUMNS - 1)]);
+		assertEquals('Z', row.mtext[row.findStartOfColumn(COLUMNS - 2)]);
+		assertEquals('a', row.mtext[row.findStartOfColumn(COLUMNS - 1)]);
 		row.setChar(COLUMNS - 1, 'ö', 0);
-		assertEquals('Z', row.mText[row.findStartOfColumn(COLUMNS - 2)]);
-		assertEquals('ö', row.mText[row.findStartOfColumn(COLUMNS - 1)]);
+		assertEquals('Z', row.mtext[row.findStartOfColumn(COLUMNS - 2)]);
+		assertEquals('ö', row.mtext[row.findStartOfColumn(COLUMNS - 1)]);
 		// line.setChar(COLUMNS - 1, ONE_JAVA_CHAR_DISPLAY_WIDTH_TWO_1);
-		// assertEquals('Z', line.mText[line.findStartOfColumn(COLUMNS - 2)]);
-		// assertEquals(' ', line.mText[line.findStartOfColumn(COLUMNS - 1)]);
+		// assertEquals('Z', line.mtext[line.findStartOfColumn(COLUMNS - 2)]);
+		// assertEquals(' ', line.mtext[line.findStartOfColumn(COLUMNS - 1)]);
 	}
 
 }

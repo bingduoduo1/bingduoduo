@@ -14,6 +14,6 @@ public class DictionaryException extends GlobalException {
 
     @Override
     protected void initExceptionLevel() {
-        mExceptionLevel = ExceptionLevel.Dictionary;
+        mexceptionlevel = ExceptionLevel.Dictionary;
     }
 }

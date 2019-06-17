@@ -27,36 +27,38 @@ import static android.content.ContentValues.TAG;
  * 后台工作
  */
 public final class BackgroundJob {
-
+    
     private static final String LOG_TAG = "termux-task";
-
-    final Process mProcess;
-
+    
+    final Process mprocess;
+    
     public BackgroundJob(String cwd, String fileToExecute, final String[] args, final TermuxService service) {
         String[] env = buildEnvironment(false, cwd);
-        if (cwd == null) cwd = TermuxService.HOME_PATH;
-
+        if (cwd == null) {
+            cwd = TermuxService.HOME_PATH;
+        }
+        
         final String[] progArray = setupProcessArgs(fileToExecute, args);
         final String processDescription = Arrays.toString(progArray);
-
+        
         Process process;
         try {
             process = Runtime.getRuntime().exec(progArray, env, new File(cwd));
         } catch (IOException e) {
-            mProcess = null;
+            mprocess = null;
             // TODO: Visible error message?
             Log.e(LOG_TAG, "Failed running background job: " + processDescription, e);
             return;
         }
-
-        mProcess = process;
-        final int pid = getPid(mProcess);
-
+        
+        mprocess = process;
+        final int pid = getPid(mprocess);
+        
         new Thread() {
             @Override
             public void run() {
                 Log.i(LOG_TAG, "[" + pid + "] starting: " + processDescription);
-                InputStream stdout = mProcess.getInputStream();
+                InputStream stdout = mprocess.getInputStream();
                 BufferedReader reader = new BufferedReader(new InputStreamReader(stdout, StandardCharsets.UTF_8));
                 String line;
                 try {
@@ -67,9 +69,9 @@ public final class BackgroundJob {
                 } catch (IOException e) {
                     Log.e(LOG_TAG, "Error reading output", e);
                 }
-
+                
                 try {
-                    int exitCode = mProcess.waitFor();
+                    int exitCode = mprocess.waitFor();
                     service.onBackgroundJobExited(BackgroundJob.this);
                     if (exitCode == 0) {
                         Log.i(LOG_TAG, "[" + pid + "] exited normally");
@@ -81,12 +83,11 @@ public final class BackgroundJob {
                 }
             }
         }.start();
-
-
+        
         new Thread() {
             @Override
             public void run() {
-                InputStream stderr = mProcess.getErrorStream();
+                InputStream stderr = mprocess.getErrorStream();
                 BufferedReader reader = new BufferedReader(new InputStreamReader(stderr, StandardCharsets.UTF_8));
                 String line;
                 try {
@@ -100,12 +101,15 @@ public final class BackgroundJob {
             }
         };
     }
-
-    public static String[] buildEnvironment(boolean failSafe, String cwd) {//得到环境变量String[]
+    
+    public static String[] buildEnvironment(boolean failSafe, String cwd) {
+        // 得到环境变量String[]
         new File(TermuxService.HOME_PATH).mkdirs();
-
-        if (cwd == null) cwd = TermuxService.HOME_PATH;
-
+        
+        if (cwd == null) {
+            cwd = TermuxService.HOME_PATH;
+        }
+        
         final String termEnv = "TERM=xterm-256color";
         final String homeEnv = "HOME=" + TermuxService.HOME_PATH;
         final String prefixEnv = "PREFIX=" + TermuxService.PREFIX_PATH;
@@ -117,18 +121,21 @@ public final class BackgroundJob {
         if (failSafe) {
             // Keep the default path so that system binaries can be used in the failsafe session.
             final String pathEnv = "PATH=" + System.getenv("PATH");
-            return new String[]{termEnv, homeEnv, prefixEnv, androidRootEnv, androidDataEnv, pathEnv, externalStorageEnv};
+            return new String[] { termEnv, homeEnv, prefixEnv, androidRootEnv, androidDataEnv, pathEnv,
+                                    externalStorageEnv };
         } else {
             final String ldEnv = "LD_LIBRARY_PATH=" + TermuxService.PREFIX_PATH + "/lib";
             final String langEnv = "LANG=en_US.UTF-8";
-            final String pathEnv = "PATH=" + TermuxService.PREFIX_PATH + "/bin:" + TermuxService.PREFIX_PATH + "/bin/applets";
+            final String pathEnv =
+                    "PATH=" + TermuxService.PREFIX_PATH + "/bin:" + TermuxService.PREFIX_PATH + "/bin/applets";
             final String pwdEnv = "PWD=" + cwd;
             final String tmpdirEnv = "TMPDIR=" + TermuxService.PREFIX_PATH + "/tmp";
-
-            return new String[]{termEnv, homeEnv, prefixEnv, ldEnv, langEnv, pathEnv, pwdEnv, androidRootEnv, androidDataEnv, externalStorageEnv, tmpdirEnv};
+            
+            return new String[] { termEnv, homeEnv, prefixEnv, ldEnv, langEnv, pathEnv, pwdEnv, androidRootEnv,
+                                    androidDataEnv, externalStorageEnv, tmpdirEnv };
         }
     }
-
+    
     public static int getPid(Process p) {
         try {
             Field f = p.getClass().getDeclaredField("pid");
@@ -142,14 +149,15 @@ public final class BackgroundJob {
             return -1;
         }
     }
-
-    static String[] setupProcessArgs(String fileToExecute, String[] args) {//寻找需要运行程序的解释器？
+    
+    static String[] setupProcessArgs(String fileToExecute, String[] args) {
+        // 寻找需要运行程序的解释器？
         // The file to execute may either be:
         // - An elf file, in which we execute it directly.
         // - A script file without shebang, which we execute with our standard shell $PREFIX/bin/sh instead of the
-        //   system /system/bin/sh. The system shell may vary and may not work at all due to LD_LIBRARY_PATH.
+        // system /system/bin/sh. The system shell may vary and may not work at all due to LD_LIBRARY_PATH.
         // - A file with shebang, which we try to handle with e.g. /bin/foo -> $PREFIX/bin/foo.
-        Log.d(TAG, "setupProcessArgs: " + fileToExecute +" ````````````````````````````````````");
+        Log.d(TAG, "setupProcessArgs: " + fileToExecute + " ````````````````````````````````````");
         String interpreter = null;
         try {
             File file = new File(fileToExecute);
@@ -190,12 +198,16 @@ public final class BackgroundJob {
         } catch (IOException e) {
             // Ignore.
         }
-
+        
         List<String> result = new ArrayList<>();
-        if (interpreter != null) result.add(interpreter);
+        if (interpreter != null) {
+            result.add(interpreter);
+        }
         result.add(fileToExecute);
-        if (args != null) Collections.addAll(result, args);//把args全都扔到result中
+        if (args != null) {
+            Collections.addAll(result, args);// 把args全都扔到result中
+        }
         return result.toArray(new String[0]);
     }
-
+    
 }

@@ -1,5 +1,4 @@
 
-
 package com.bingduoduo.editor.model;
 
 import com.bingduoduo.editor.entity.FileBean;
@@ -20,7 +19,7 @@ public interface IFileModel {
      * @return the file bean
      */
     Observable<FileBean> getFileBeanObservable(File file);
-
+    
     /**
      * 将文件类型转换
      * Gets file observable.
@@ -29,8 +28,7 @@ public interface IFileModel {
      * @return the file observable
      */
     Observable<File> getFileObservable(FileBean fileBean);
-
-
+    
     /**
      * 将文件类型转换为FileBean
      * Gets file bean.
@@ -40,7 +38,7 @@ public interface IFileModel {
      * @return the file bean
      */
     FileBean getFile(File file, String name);
-
+    
     /**
      * 将FileBean类型转换为File
      * Gets file bean.

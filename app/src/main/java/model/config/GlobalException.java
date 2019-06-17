@@ -3,7 +3,7 @@ package model.config;
 import static model.config.ExceptionLevel.GLOBAL;
 
 public class GlobalException extends Exception {
-    protected ExceptionLevel mExceptionLevel;
+    protected ExceptionLevel mexceptionlevel;
 
     public GlobalException() {
         initExceptionLevel();
@@ -15,10 +15,10 @@ public class GlobalException extends Exception {
     }
 
     public String getExceptionLevel() {
-        return ExceptionLevel.toString(mExceptionLevel);
+        return ExceptionLevel.toString(mexceptionlevel);
     }
 
     protected void initExceptionLevel() {
-        mExceptionLevel = GLOBAL;
+        mexceptionlevel = GLOBAL;
     }
 }

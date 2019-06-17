@@ -130,7 +130,10 @@ public final class KeyHandler {
 
     static String getCodeFromTermcap(String termcap, boolean cursorKeysApplication, boolean keypadApplication) {
         Integer keyCodeAndMod = TERMCAP_TO_KEYCODE.get(termcap);
-        if (keyCodeAndMod == null) return null;
+        if (keyCodeAndMod == null)
+        {
+            return null;
+        }
         int keyCode = keyCodeAndMod;
         int keyMod = 0;
         if ((keyCode & KEYMOD_SHIFT) != 0) {
@@ -276,6 +279,8 @@ public final class KeyHandler {
                 return keypadApplication ? transformForModifiers("\033O", keyMode, 'y') : "9";
             case KEYCODE_NUMPAD_EQUALS:
                 return keypadApplication ? transformForModifiers("\033O", keyMode, 'X') : "=";
+            default:
+                break;
         }
 
         return null;

@@ -36,7 +36,7 @@ public class TermuxFileReceiverActivity extends Activity {
      * name input dialog to be implicitly dismissed, and we do not want to finish the activity directly
      * when showing the error dialog.
      */
-    boolean mFinishOnDismissNameDialog = true;
+    boolean mfinishondismissnamedialog = true;
 
     @Override
     protected void onResume() {
@@ -56,8 +56,12 @@ public class TermuxFileReceiverActivity extends Activity {
                     handleUrlAndFinish(sharedText);
                 } else {
                     String subject = intent.getStringExtra(Intent.EXTRA_SUBJECT);
-                    if (subject == null) subject = intent.getStringExtra(Intent.EXTRA_TITLE);
-                    if (subject != null) subject += ".txt";
+                    if (subject == null) {
+                        subject = intent.getStringExtra(Intent.EXTRA_TITLE);
+                    }
+                    if (subject != null) {
+                        subject += ".txt";
+                    }
                     promptNameAndSave(new ByteArrayInputStream(sharedText.getBytes(StandardCharsets.UTF_8)), subject);
                 }
             } else if (sharedUri != null) {
@@ -83,8 +87,10 @@ public class TermuxFileReceiverActivity extends Activity {
     }
 
     void showErrorDialogAndQuit(String message) {
-        mFinishOnDismissNameDialog = false;
-        new AlertDialog.Builder(this).setMessage(message).setOnDismissListener(dialog -> finish()).setPositiveButton(android.R.string.ok, (dialog, which) -> finish()).show();
+        mfinishondismissnamedialog = false;
+        new AlertDialog.Builder(
+            this).setMessage(message).setOnDismissListener(dialog -> finish()).setPositiveButton(android.R.string.ok,
+                (dialog, which) -> finish()).show();
     }
 
     void handleContentUri(final Uri uri, String subjectFromIntent) {
@@ -95,11 +101,15 @@ public class TermuxFileReceiverActivity extends Activity {
             try (Cursor c = getContentResolver().query(uri, projection, null, null, null)) {
                 if (c != null && c.moveToFirst()) {
                     final int fileNameColumnId = c.getColumnIndex(OpenableColumns.DISPLAY_NAME);
-                    if (fileNameColumnId >= 0) attachmentFileName = c.getString(fileNameColumnId);
+                    if (fileNameColumnId >= 0) {
+                        attachmentFileName = c.getString(fileNameColumnId);
+                    }
                 }
             }
 
-            if (attachmentFileName == null) attachmentFileName = subjectFromIntent;
+            if (attachmentFileName == null) {
+                attachmentFileName = subjectFromIntent;
+            }
 
             InputStream in = getContentResolver().openInputStream(uri);
             promptNameAndSave(in, attachmentFileName);
@@ -112,7 +122,9 @@ public class TermuxFileReceiverActivity extends Activity {
     void promptNameAndSave(final InputStream in, final String attachmentFileName) {
         DialogUtils.textInput(this, R.string.file_received_title, attachmentFileName, R.string.file_received_edit_button, text -> {
             File outFile = saveStreamWithName(in, text);
-            if (outFile == null) return;
+            if (outFile == null) {
+                return;
+            }
 
             final File editorProgramFile = new File(EDITOR_PROGRAM);
             if (!editorProgramFile.isFile()) {
@@ -134,7 +146,10 @@ public class TermuxFileReceiverActivity extends Activity {
             finish();
         },
             R.string.file_received_open_folder_button, text -> {
-                if (saveStreamWithName(in, text) == null) return;
+                if (saveStreamWithName(in, text) == null)
+                {
+                    return;
+                }
 
                 Intent executeIntent = new Intent(TermuxService.ACTION_EXECUTE);
                 executeIntent.putExtra(TermuxService.EXTRA_CURRENT_WORKING_DIRECTORY, TERMUX_RECEIVEDIR);
@@ -143,7 +158,9 @@ public class TermuxFileReceiverActivity extends Activity {
                 finish();
             },
             android.R.string.cancel, text -> finish(), dialog -> {
-                if (mFinishOnDismissNameDialog) finish();
+                if (mfinishondismissnamedialog) {
+                    finish();
+                }
             });
     }
 

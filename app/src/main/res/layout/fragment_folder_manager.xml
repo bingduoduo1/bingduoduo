@@ -117,7 +117,7 @@
             fab:menu_shadowXOffset="1dp"
             fab:menu_shadowYOffset="3dp"
             fab:menu_showShadow="true"
-            app:layout_behavior="com.bingduoduo.editor.widget.ScrollAwareFABBehavior2">
+            app:layout_behavior="com.bingduoduo.editor.widget.Scrollawarefabbehavior2">
 
 
             <com.github.clans.fab.FloatingActionButton
@@ -155,5 +155,5 @@
         android:layout_gravity="bottom|end"
         android:layout_margin="16dp"
         android:src="@drawable/ic_add_white_24dp"
-        app:layout_behavior="com.bingduoduo.editor.widget.ScrollAwareFABBehavior2" /-->
+        app:layout_behavior="com.bingduoduo.editor.widget.Scrollawarefabbehavior2" /-->
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

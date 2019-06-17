@@ -3,6 +3,7 @@ package model.dictionary.application;
 import java.util.HashMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
 import model.dictionary.exception.DictionaryException;
 import model.dictionary.exception.NotImplementedError;
 import model.dictionary.model.ActionType;
@@ -103,13 +104,13 @@ public class CommandDictionary implements BaseDictionaryInterface {
     }
 
     @Override
-    public void initDictionary(String config_path) throws DictionaryException{
+    public void initDictionary(String configPath) throws DictionaryException {
         throw new NotImplementedError();
     }
 
     public BaseAction lookUpAction(BaseWord key) {
         //for (Map.Entry<BaseWord, BaseAction> entry : mdictionary.entrySet()) {
-            //Log.e(TAG, "Key:"+entry.getKey().getRawData() + " Value:" + entry.getValue().getActionType() );
+        //Log.e(TAG, "Key:"+entry.getKey().getRawData() + " Value:" + entry.getValue().getActionType() );
         //}
         Pattern cmdHelp = Pattern.compile("[a-z]+ help$");
         Matcher cmdHelpMatch = cmdHelp.matcher(key.getRawData());
@@ -118,7 +119,7 @@ public class CommandDictionary implements BaseDictionaryInterface {
             return mdictionary.get(key);
         } else if (cmdHelpMatch.find()) {
             String cmd = key.getRawData().split(" ")[0];
-//            Log.d(TAG, "cmd content:"+cmd);
+            //Log.d(TAG, "cmd content:"+cmd);
             if (cmd.equals("sh")) {
                 cmd = "ssh";
             }
@@ -126,7 +127,7 @@ public class CommandDictionary implements BaseDictionaryInterface {
                 cmd = "git";
             }
             try {
-                return new InputAction(ActionType.INPUT, ExecutePlaceType.SHELL, "man "+cmd);
+                return new InputAction(ActionType.INPUT, ExecutePlaceType.SHELL, "man " + cmd);
             } catch (DictionaryException e) {
                 e.printStackTrace();
                 return null;

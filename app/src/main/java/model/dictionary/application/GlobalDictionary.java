@@ -1,37 +1,37 @@
 package model.dictionary.application;
 
-
 import android.util.Log;
 
 import model.dictionary.exception.DictionaryException;
-import model.dictionary.exception.NotImplementedError;
 import model.dictionary.model.BaseAction;
 import model.dictionary.model.CommandAction;
 import model.dictionary.model.InputAction;
 
 public class GlobalDictionary implements LookUpInterface {
     private static final String TAG = GlobalDictionary.class.getName();
-    private PythonDictionary mPythonDict;
-    private CommandDictionary mCommandDict;
-    private TextDictionary mTextDict;
-    private PytorchDictionary mPytorchDict;
+    private PythonDictionary mpythondict;
+    private CommandDictionary mcommanddict;
+    private TextDictionary mtextdict;
+    private PytorchDictionary mpytorchdict;
     private static GlobalDictionary mGlobalDict = new GlobalDictionary();
-
+    
     private GlobalDictionary() {
-        mPythonDict = PythonDictionary.createDictionary();
-        mCommandDict = CommandDictionary.createDictionary();
-        mTextDict = TextDictionary.createDictionary();
-        mPytorchDict = PytorchDictionary.createDictionary();
+        mpythondict = PythonDictionary.createDictionary();
+        mcommanddict = CommandDictionary.createDictionary();
+        mtextdict = TextDictionary.createDictionary();
+        mpytorchdict = PytorchDictionary.createDictionary();
     }
+    
     public static GlobalDictionary createDictionary() {
         return mGlobalDict;
     }
+    
     @Override
     public void exactLookUpWord(String word, StringBuffer action) throws DictionaryException {
         BaseAction actionRef = null;
-
-        //Log.d(TAG, "exactLookUpWord:"+word +";");
-        actionRef = mPytorchDict.lookUpAction(word);
+        
+        // Log.d(TAG, "exactLookUpWord:"+word +";");
+        actionRef = mpytorchdict.lookUpAction(word);
         if (actionRef != null) {
             if (actionRef instanceof InputAction) {
                 action.append(((InputAction) actionRef).getContent());
@@ -43,7 +43,7 @@ public class GlobalDictionary implements LookUpInterface {
                 throw new DictionaryException("invalid instance class name: " + actionRef.getClass().getSimpleName());
             }
         }
-        actionRef = mTextDict.lookUpAction(word);
+        actionRef = mtextdict.lookUpAction(word);
         if (actionRef != null) {
             if (actionRef instanceof InputAction) {
                 action.append(((InputAction) actionRef).getContent());
@@ -52,20 +52,20 @@ public class GlobalDictionary implements LookUpInterface {
                 throw new DictionaryException("invalid instance class name: " + actionRef.getClass().getSimpleName());
             }
         }
-        actionRef = mPythonDict.lookUpAction(word);
+        actionRef = mpythondict.lookUpAction(word);
         if (actionRef != null) {
             if (actionRef instanceof InputAction) {
-                action.append( ((InputAction) actionRef).getContent());
+                action.append(((InputAction) actionRef).getContent());
                 return;
             } else {
                 throw new DictionaryException("invalid instance class name: " + actionRef.getClass().getSimpleName());
             }
         }
-        actionRef = mCommandDict.lookUpAction(word);
+        actionRef = mcommanddict.lookUpAction(word);
         if (actionRef != null) {
             if (actionRef instanceof InputAction) {
                 action.append(((InputAction) actionRef).getContent());
-                return ;
+                return;
             } else {
                 throw new DictionaryException("invalid instance class name: " + actionRef.getClass().getSimpleName());
             }
@@ -73,14 +73,14 @@ public class GlobalDictionary implements LookUpInterface {
             throw new DictionaryException("Action Ref is Null! word: " + word + "\n");
         }
     }
-
+    
     @Override
-    public void fuzzyLookUpWord(String word, StringBuffer action) throws DictionaryException{
-        Log.d(TAG, "optim:"+word);
+    public void fuzzyLookUpWord(String word, StringBuffer action) throws DictionaryException {
+        Log.d(TAG, "optim:" + word);
         if (word.startsWith("优化算法")) {
             int loc = word.indexOf("等于");
-            String substr = word.substring(loc+2).replace(" ", "").toLowerCase();
-            Log.d(TAG, "optim1:"+substr);
+            String substr = word.substring(loc + 2).replace(" ", "").toLowerCase();
+            Log.d(TAG, "optim1:" + substr);
             switch (substr) {
                 case "adam": {
                     action.append("optim=adam");
@@ -88,9 +88,11 @@ public class GlobalDictionary implements LookUpInterface {
                 }
                 case "sjd": {
                     // fall through
+                    break;
                 }
                 case "szd": {
                     // fall through
+                    break;
                 }
                 case "sgd": {
                     action.append("optim=sgd");
@@ -101,9 +103,9 @@ public class GlobalDictionary implements LookUpInterface {
                 }
             }
         } else if (word.startsWith("学习率") || word.startsWith("学习力") || word.startsWith("缺席率")
-            || word.startsWith("learning_rate") || word.startsWith("learning rate")) {
+                || word.startsWith("learning_rate") || word.startsWith("learning rate")) {
             int loc = word.indexOf("等于");
-            String substr = word.substring(loc+2);
+            String substr = word.substring(loc + 2);
             try {
                 float value = Float.parseFloat(substr);
                 action.append("learning_rate=");
@@ -114,6 +116,6 @@ public class GlobalDictionary implements LookUpInterface {
         } else {
             throw new DictionaryException("invalid fuzzy look up\n");
         }
-        //throw new NotImplementedError();
+        // throw new NotImplementedError();
     }
 }
